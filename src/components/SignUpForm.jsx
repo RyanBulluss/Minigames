@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { signUp } from "../../utilities/users-service";
+import { signUp } from "../utilities/users-service";
 
 export default class SignUpForm extends Component {
   state = {
@@ -22,7 +22,7 @@ export default class SignUpForm extends Component {
     try {
       const { name, email, password } = this.state;
       const formData = { name, email, password };
-      console.log(formData)
+      console.log(formData);
       const user = await signUp(formData);
       this.props.setUser(user);
     } catch {
@@ -34,7 +34,7 @@ export default class SignUpForm extends Component {
     const disable = this.state.password !== this.state.confirm;
     return (
       <div>
-        <h1 className='text-4xl font-bold text-center m-8'>Sign Up</h1>
+        <h1 className="text-4xl font-bold text-center m-8">Sign Up</h1>
         <div className="form-container">
           <form autoComplete="off" onSubmit={this.handleSubmit}>
             <label>Name</label>
