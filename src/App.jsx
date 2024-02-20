@@ -12,7 +12,7 @@ export default function App() {
   return (
     <main>
       {user ? (
-        <div className="min-h-[100vh] flex">
+        <div className="min-h-[100vh] flex bg-second">
           
           <Routes>
             <Route path="/" element={<GamesPage user={user} setUser={setUser} />} />

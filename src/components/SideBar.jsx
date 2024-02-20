@@ -9,11 +9,11 @@ export default function SideBar({ user, setUser, setCurrentGame }) {
   }
 
   return (
-    <nav className="w-40 bg-first p-4 flex flex-col justify-between">
+    <nav className="w-40 bg-first py-4 flex flex-col justify-between">
       <div>
-        <h1 className="text-2xl mb-8">Minigames</h1>
+        <h1 className="hover:bg-second hover:cursor-pointer p-2 text-2xl mb-8">Minigames</h1>
         {allGames.map((game, idx) => (
-            <button onClick={() => setCurrentGame(game.name)}>{game.name}</button>
+            <div key={idx} className="hover:bg-second p-2 hover:cursor-pointer" onClick={() => setCurrentGame(game.name)}>{game.name}</div>
         ))}
       </div>
       <div>
