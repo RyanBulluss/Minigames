@@ -18,7 +18,7 @@ const Snake = () => {
   const [snakeLength, setSnakeLength] = useState(snakeStartLength);
   const [direction, setDirection] = useState("RIGHT");
   const [lastDirection, setLastDirection] = useState("RIGHT");
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [alive, setAlive] = useState(true);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
@@ -30,11 +30,10 @@ const Snake = () => {
 
     if (snake.length > snakeLength) newSnake.pop();
 
-    
     if (outOfBounds(newPosition)) return gameOver();
     if (hittingSelf(newPosition)) return gameOver();
     hittingFood(newPosition);
-    
+
     renderSnake(newSnake);
     setSnake(newSnake);
   }
@@ -42,12 +41,12 @@ const Snake = () => {
   function hittingFood(newPosition) {
     if (state[newPosition[0]][newPosition[1]].food) {
       setSnakeLength(snakeLength + 1);
-      setScore(score + 1)
-      setState(s => {
+      setScore(score + 1);
+      setState((s) => {
         const newState = [...s];
         newState[newPosition[0]][newPosition[1]].food = false;
         return newState;
-      })
+      });
       spawnFood();
     }
   }
@@ -89,8 +88,21 @@ const Snake = () => {
     setAlive(false);
   }
 
+  function restartGame() {
+    setPlaying(true);
+    setAlive(true);
+    setState(createState());
+    setSnake(snakeStartPosition);
+    setSnakeLength(snakeStartLength);
+    setDirection("RIGHT");
+    setLastDirection("RIGHT");
+    setTimer(0);
+    setScore(0);
+  }
+
   useEffect(() => {
     const handleKeyPress = (e) => {
+      e.preventDefault();
       switch (e.key) {
         case "w":
           if (lastDirection === "DOWN") return;
@@ -108,6 +120,11 @@ const Snake = () => {
           if (lastDirection === "LEFT") return;
           setDirection("RIGHT");
           break;
+        case " ":
+          if (alive) {
+            setPlaying(!playing);
+          } else restartGame();
+          break;
       }
     };
     window.addEventListener("keydown", handleKeyPress);
@@ -115,7 +132,7 @@ const Snake = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [lastDirection]);
+  }, [lastDirection, playing, alive]);
 
   useEffect(() => {
     if (!playing) return;
@@ -126,6 +143,16 @@ const Snake = () => {
 
     return () => clearInterval(interval);
   }, [snake, direction, playing, alive]);
+
+  useEffect(() => {
+    if (!playing) return;
+    if (!alive) return;
+    const interval = setInterval(() => {
+      setTimer(timer + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [playing, alive, timer]);
 
   function renderSnake(newSnake) {
     setState((s) => {
@@ -148,8 +175,23 @@ const Snake = () => {
         setPlaying={setPlaying}
         playing={playing}
         timer={timer}
+        restartGame={restartGame}
+        alive={alive}
       />
       <div className="h-full flex justify-center items-center snake-background">
+        {!playing && alive && (
+          <div className="bg-black/50 absolute h-[70vmin] w-[80vmin] z-50 flex flex-col justify-center items-center">
+            <h3>Game Paused</h3>
+            <h4>Press space to unpause</h4>
+          </div>
+        )}
+        {!alive && (
+          <div className="bg-black/60 absolute h-[70vmin] w-[80vmin] z-50 flex flex-col justify-center items-center">
+            <h3>You Died!</h3>
+            <h3>You score was {score}</h3>
+            <h4>Press space to play again</h4>
+          </div>
+        )}
         <div
           style={{
             gridTemplateColumns: `repeat(${boardWidth}, minmax(0, 1fr))`,

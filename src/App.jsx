@@ -12,11 +12,18 @@ export default function App() {
   return (
     <main>
       {user ? (
-        <div className="min-h-[100vh] flex bg-second">
-          
-          <Routes>
-            <Route path="/" element={<GamesPage user={user} setUser={setUser} />} />
-          </Routes>
+        <div>
+          <div className="flex xl:hidden bg-first">
+            PUT TOP BAR HERE (in app.jsx)
+          </div>
+          <div className="min-h-[100vh] flex bg-second">
+            <Routes>
+              <Route
+                path="/"
+                element={<GamesPage user={user} setUser={setUser} />}
+              />
+            </Routes>
+          </div>
         </div>
       ) : (
         <AuthPage setUser={setUser} />

@@ -3,13 +3,13 @@ const gamesList = [
         name: "Snake",
     },
     {
+        name: "Wordle",
+    },
+    {
         name: "Minesweeper",
     },
     {
         name: "Brick Breaker",
-    },
-    {
-        name: "Wordle",
     },
     {
         name: "Sudoku",
