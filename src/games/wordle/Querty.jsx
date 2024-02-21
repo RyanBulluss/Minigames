@@ -15,18 +15,18 @@ const Querty = ({
   function findColor(key) {
     if (!word) return;
     let guessed = false;
-    let yellow = false;
     let green = false;
 
     guesses.forEach((arr, idx) => {
       arr.forEach((c, wIdx) => {
-        if (c == key && idx < currentGuess) guessed = true;
-        if (c == key && idx < currentGuess && word[currentGuess]) guessed = true;
+        if (c === key && idx < currentGuess) guessed = true;
+        if (c === key && idx < currentGuess && word[wIdx] === key) green = true;
       });
     });
 
-    if (guessed && word.includes(key)) return "green";
-    if (guessed) return "blue";
+    if (green) return "rgb(83, 141, 78)";
+    if (guessed && word.includes(key)) return "rgb(181, 159, 59)";
+    if (guessed) return "#444";
   }
 
   return (
@@ -54,7 +54,7 @@ const Querty = ({
         {!playing && (
           <button
             onClick={handleStartGame}
-            className="flex h-8 px-2 items-center justify-center rounded-md bg-gray-400 font-semibold uppercase"
+            className="flex h-8 px-2 items-center justify-center rounded-md bg-third font-semibold uppercase"
           >
             Start Game
           </button>

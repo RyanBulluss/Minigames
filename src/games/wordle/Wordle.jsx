@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import WordleControls from "./WordleControls";
 import { wordList } from "./constants";
@@ -11,23 +11,38 @@ const Wordle = () => {
   const [guesses, setGuesses] = useState([[], [], [], [], [], []]);
   const [currentGuess, setCurrentGuess] = useState(0);
   const [message, setMessage] = useState("");
-
+  const [timer, setTimer] = useState(0);
+  
   function handleStartGame() {
     setWord(wordList[Math.floor(Math.random() * wordList.length)]);
     setPlaying(true);
     setGuesses([[], [], [], [], [], []]);
     setCurrentGuess(0);
     setMessage("");
+    setTimer(0);
   }
+
+  useEffect(() => {
+    if (!playing) return;
+    if (!word) return;
+    const interval = setInterval(() => {
+      setTimer(t => t + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [playing, word]);
 
   function handleWin() {
     setPlaying(false);
-    setMessage("You guessed the word in [insert time]!");
+    setMessage(`You guessed the word in ${timer} seconds!`);
+    
+    // add leaderboard logic here
   }
 
   function handleLoss() {
     setPlaying(false);
     setMessage(`The word was ${word.toUpperCase()}. Try again!`);
+    setTimer(0);
   }
 
   function handleEnter() {
@@ -61,7 +76,7 @@ const Wordle = () => {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <WordleControls />
+      <WordleControls timer={timer} />
       <div className="h-[80vmin] bg-gray-600">
         <div className="flex flex-col gap-2 justify-center items-center h-full">
           <h1 className="text-2xl uppercase">wordle</h1>
