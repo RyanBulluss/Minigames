@@ -30,13 +30,13 @@ const Querty = ({
   }
 
   return (
-    <div className="py-4">
+    <div className="py-2 md:py-4">
       {querty.map((row) => (
         <div className="flex justify-center">
           {row.split("").map((key) => (
             <button
               onClick={() => handleKeyPress(key)}
-              className="m-px flex h-8 w-8 items-center justify-center bg-gray-400 rounded-md font-semibold uppercase"
+              className="m-px flex h-[4vmin] w-[4vmin] text-[2vmin] items-center justify-center bg-gray-400 rounded-md font-semibold uppercase"
               style={{ backgroundColor: findColor(key) }}
             >
               {key}
@@ -47,21 +47,21 @@ const Querty = ({
       <div className="flex justify-between py-2">
         <button
           onClick={handleDelete}
-          className="flex h-8 w-16 items-center justify-center rounded-md bg-gray-400 font-semibold uppercase"
+          className="flex h-[4vmin] px-2 text-[2vmin] items-center justify-center rounded-md bg-gray-400 font-semibold uppercase"
         >
           DELETE
         </button>
         {!playing && (
           <button
             onClick={handleStartGame}
-            className="flex h-8 px-2 items-center justify-center rounded-md bg-third font-semibold uppercase"
+            className="flex h-[4vmin] text-[2vmin] px-2 md:px-3 items-center justify-center rounded-md bg-third font-semibold uppercase"
           >
             Start Game
           </button>
         )}
         <button
           onClick={handleEnter}
-          className="flex h-8 w-16 items-center justify-center rounded-md bg-gray-400 font-semibold uppercase"
+          className="flex h-[4vmin] px-2 text-[2vmin] items-center justify-center rounded-md bg-gray-400 font-semibold uppercase"
         >
           ENTER
         </button>

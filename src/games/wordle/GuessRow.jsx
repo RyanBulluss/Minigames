@@ -11,11 +11,11 @@ const GuessRow = ( {guess, word, showColor} ) => {
 
   return (
     <div className='grid gap-2 grid-cols-5 uppercase font-semibold'>
-        <div className='border w-10 h-10 flex items-center justify-center' style={{background: findColor(0)}}>{guess[0]}</div>
-        <div className='border w-10 h-10 flex items-center justify-center' style={{background: findColor(1)}}>{guess[1]}</div>
-        <div className='border w-10 h-10 flex items-center justify-center' style={{background: findColor(2)}}>{guess[2]}</div>
-        <div className='border w-10 h-10 flex items-center justify-center' style={{background: findColor(3)}}>{guess[3]}</div>
-        <div className='border w-10 h-10 flex items-center justify-center' style={{background: findColor(4)}}>{guess[4]}</div>
+        <div className='border w-[5vmin] h-[5vmin] flex items-center justify-center' style={{background: findColor(0)}}>{guess[0]}</div>
+        <div className='border w-[5vmin] h-[5vmin] flex items-center justify-center' style={{background: findColor(1)}}>{guess[1]}</div>
+        <div className='border w-[5vmin] h-[5vmin] flex items-center justify-center' style={{background: findColor(2)}}>{guess[2]}</div>
+        <div className='border w-[5vmin] h-[5vmin] flex items-center justify-center' style={{background: findColor(3)}}>{guess[3]}</div>
+        <div className='border w-[5vmin] h-[5vmin] flex items-center justify-center' style={{background: findColor(4)}}>{guess[4]}</div>
     </div>
   )
 }

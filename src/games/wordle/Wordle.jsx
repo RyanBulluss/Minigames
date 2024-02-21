@@ -78,10 +78,10 @@ const Wordle = () => {
     <div className="h-full w-full flex flex-col">
       <WordleControls timer={timer} />
       <div className="h-[80vmin] bg-gray-600">
-        <div className="flex flex-col gap-2 justify-center items-center h-full">
-          <h1 className="text-2xl uppercase">wordle</h1>
-          <div className="h-8">
-            <h3>{message}</h3>
+        <div className="flex flex-col gap-1 md:gap-2 justify-center items-center h-full">
+          <h1 className="text-[4vmin] uppercase">wordle</h1>
+          <div className="h-[4vmin]">
+            <h3 className="text-[2vmin]">{message}</h3>
           </div>
 
           {guesses.map((guess, idx) => (
