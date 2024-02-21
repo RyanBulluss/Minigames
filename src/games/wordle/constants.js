@@ -1,4 +1,4 @@
-const wordList = ["HELLO", "ALIVE", "UNDER", "READY", "PLACE", "SPEAR", "APPLE", "LILLY", ]
+const wordList = ["hello", "alive", "under", "ready", "place", "spear", "apple", "lilly", ]
 
 export {
     wordList

@@ -104,6 +104,22 @@ const Snake = () => {
     const handleKeyPress = (e) => {
       e.preventDefault();
       switch (e.key) {
+        case "ArrowUp":
+          if (lastDirection === "DOWN") return;
+          setDirection("UP");
+          break;
+        case "ArrowDown":
+          if (lastDirection === "UP") return;
+          setDirection("DOWN");
+          break;
+        case "ArrowRight":
+          if (lastDirection === "LEFT") return;
+          setDirection("RIGHT");
+          break;
+        case "ArrowLeft":
+          if (lastDirection === "RIGHT") return;
+          setDirection("LEFT");
+          break;
         case "w":
           if (lastDirection === "DOWN") return;
           setDirection("UP");
