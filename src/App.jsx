@@ -2,8 +2,6 @@ import { useState } from "react";
 import { getUser } from "./utilities/users-service";
 import AuthPage from "./pages/AuthPage";
 import GamesPage from "./pages/GamesPage";
-import SideBar from "./components/SideBar";
-
 import { Routes, Route } from "react-router-dom";
 
 export default function App() {
@@ -13,17 +11,12 @@ export default function App() {
     <main>
       {user ? (
         <div>
-          <div className="flex xl:hidden bg-first">
-            PUT TOP BAR HERE (in app.jsx)
-          </div>
-          <div className="min-h-[100vh] flex bg-second">
-            <Routes>
-              <Route
-                path="/"
-                element={<GamesPage user={user} setUser={setUser} />}
-              />
-            </Routes>
-          </div>
+          <Routes>
+            <Route
+              path="/"
+              element={<GamesPage user={user} setUser={setUser} />}
+            />
+          </Routes>
         </div>
       ) : (
         <AuthPage setUser={setUser} />

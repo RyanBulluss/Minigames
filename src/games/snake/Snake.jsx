@@ -196,7 +196,7 @@ const Snake = () => {
       />
       <div className="h-full flex justify-center items-center snake-background">
         {!playing && alive && (
-          <div className="bg-black/50 absolute h-[70vmin] w-[80vmin] z-50 flex flex-col justify-center items-center">
+          <div className="bg-black/50 absolute h-[70vmin] w-[80vmin] z-30 flex flex-col justify-center items-center">
             <h3>Game Paused</h3>
             <h4>Press space to unpause</h4>
           </div>
