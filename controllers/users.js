@@ -1,12 +1,22 @@
-const User = require('../../models/user');
+const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 module.exports = {
     create,
     login,
-    checkToken
+    checkToken,
+    getAllUsers
 };
+
+async function getAllUsers(req, res) {
+    try {
+        const users = await User.find({});
+        res.json( users );
+      } catch {
+        res.status(400).json('Failed to find users');
+      }
+}
 
 
 async function login(req, res) {
@@ -36,7 +46,6 @@ async function create(req, res) {
 // Helper functions
 
 function createJWT(user) {
-    console.log("hello")
     return jwt.sign(
         { user },
         process.env.SECRET,
