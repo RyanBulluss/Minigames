@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const snakeCtrl = require('../controllers/snake');
-const ensureLoggedIn = require('../config/ensureLoggedIn');
 
 router.post('/comments/', snakeCtrl.createComment);
 

@@ -101,6 +101,7 @@ const Snake = () => {
   }
 
   useEffect(() => {
+    if (!playing) return;
     const handleKeyPress = (e) => {
       e.preventDefault();
       switch (e.key) {
@@ -136,11 +137,12 @@ const Snake = () => {
           if (lastDirection === "LEFT") return;
           setDirection("RIGHT");
           break;
-        case " ":
-          if (alive) {
-            setPlaying(!playing);
-          } else restartGame();
-          break;
+          // commented to allow space for comments
+        // case " ":
+        //   if (alive) {
+        //     setPlaying(!playing);
+        //   } else restartGame();
+        //   break;
       }
     };
     window.addEventListener("keydown", handleKeyPress);
