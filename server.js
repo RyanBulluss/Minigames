@@ -23,7 +23,8 @@ app.use(require("./config/checkToken"));
 
 // Put API routes here, before the "catch all" route
 app.use("/users", require("./routes/users"));
-app.use("/snake", require("./routes/snake"));
+app.use("/comments", require("./routes/comments"));
+// app.use("/wordle", require("./routes/wordle"));
 // app.use("/api/wordle", require("./routes/users"));
 // app.use("/api/minesweeper", require("./routes/users"));
 // app.use("/api/brick-breaker", require("./routes/users"));

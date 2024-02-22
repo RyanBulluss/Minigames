@@ -26,7 +26,7 @@ export default function GamesPage({ user, setUser }) {
             <Leaderboard currentGame={currentGame} />
             <Ads />
           </div>
-          <Comments currentGame={currentGame} />
+          <Comments user={user} currentGame={currentGame} />
         </div>
       </div>
     </div>
