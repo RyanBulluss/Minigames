@@ -13,6 +13,8 @@ const Leaderboard = ({ currentGame, updateLb }) => {
         if (b.score === a.score) {
           // if same score lower time = winner
           return a.time - b.time
+        } else if (currentGame === "Wordle") {
+          return a.score - b.score
         } else return b.score - a.score
       }));
     }
@@ -24,7 +26,7 @@ const Leaderboard = ({ currentGame, updateLb }) => {
     <div className="h-[90vmin] w-[45vmin] bg-first">
       <div className="flex flex-col">{
         leaderboard.map((score, idx) => (
-          <div key={idx}>{score.score} {score.time}</div>
+          <div key={idx}>{idx + 1 + ")"} {currentGame === "Wordle" ? "Attempts:" : "Score:"} {score.score} Time: {score.time}</div>
         ))
       }</div>
     </div>

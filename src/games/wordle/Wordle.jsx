@@ -4,15 +4,16 @@ import WordleControls from "./WordleControls";
 import { wordList } from "./constants";
 import GuessRow from "./GuessRow";
 import Querty from "./Querty";
+import { createScore } from "../../utilities/leaderboards";
 
-const Wordle = () => {
+const Wordle = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(false);
   const [word, setWord] = useState(null);
   const [guesses, setGuesses] = useState([[], [], [], [], [], []]);
   const [currentGuess, setCurrentGuess] = useState(0);
   const [message, setMessage] = useState("");
   const [timer, setTimer] = useState(0);
-  
+
   function handleStartGame() {
     setWord(wordList[Math.floor(Math.random() * wordList.length)]);
     setPlaying(true);
@@ -26,17 +27,20 @@ const Wordle = () => {
     if (!playing) return;
     if (!word) return;
     const interval = setInterval(() => {
-      setTimer(t => t + 1);
+      setTimer((t) => t + 1);
     }, 1000);
 
     return () => clearInterval(interval);
   }, [playing, word]);
 
-  function handleWin() {
+  async function handleWin() {
     setPlaying(false);
     setMessage(`You guessed the word in ${timer} seconds!`);
-    
+
     // add leaderboard logic here
+    const newScore = await createScore(currentGame, user, currentGuess + 1, timer);
+    console.log(newScore);
+    setUpdateLb((lb) => !lb);
   }
 
   function handleLoss() {
