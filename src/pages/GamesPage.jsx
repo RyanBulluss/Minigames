@@ -8,6 +8,7 @@ import TopBar from "../components/TopBar";
 
 export default function GamesPage({ user, setUser }) {
   const [currentGame, setCurrentGame] = useState("");
+  const [updateLb, setUpdateLb] = useState(false);
 
   return (
     <div className="flex flex-col">
@@ -22,8 +23,8 @@ export default function GamesPage({ user, setUser }) {
         </div>
         <div className="min-h-[100vh] w-full p-4">
           <div className="flex flex-wrap gap-4">
-            <GameArea currentGame={currentGame} />
-            <Leaderboard currentGame={currentGame} />
+            <GameArea user={user} currentGame={currentGame} setUpdateLb={setUpdateLb} />
+            <Leaderboard user={user} currentGame={currentGame} updateLb={updateLb} />
             <Ads />
           </div>
           <Comments user={user} currentGame={currentGame} />

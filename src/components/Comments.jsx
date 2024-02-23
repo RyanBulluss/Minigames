@@ -25,7 +25,7 @@ const Comments = ({ currentGame, user }) => {
   async function getComments() {
     if (!currentGame) return;
     const arr = await getAllComments(currentGame);
-    setComments(arr)
+    setComments(arr.reverse())
   } 
 
   return (
@@ -49,7 +49,7 @@ const Comments = ({ currentGame, user }) => {
             </button>
           </form>
           {comments.map((com, idx) => (
-            <div key={idx}>{com.user.name} {com.text}</div>
+            <div key={idx}>{com.user.name} | {com.text} | {new Date(com.createdAt).toLocaleDateString()} {new Date(com.createdAt).toLocaleTimeString()}</div>
           ))}
         </div>
       )}

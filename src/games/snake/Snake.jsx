@@ -11,8 +11,9 @@ import {
 } from "./constants";
 import { checkNextPosition, rng } from "./functions";
 import GameCell from "./GameCell";
+import { createScore } from "../../utilities/leaderboards";
 
-const Snake = () => {
+const Snake = ( {currentGame, user, setUpdateLb } ) => {
   const [state, setState] = useState(createState());
   const [snake, setSnake] = useState(snakeStartPosition);
   const [snakeLength, setSnakeLength] = useState(snakeStartLength);
@@ -84,8 +85,10 @@ const Snake = () => {
     } else return false;
   }
 
-  function gameOver() {
+  async function gameOver() {
     setAlive(false);
+    const newScore = await createScore(currentGame, user, score, timer);
+    setUpdateLb(lb => !lb);
   }
 
   function restartGame() {
@@ -102,6 +105,7 @@ const Snake = () => {
 
   useEffect(() => {
     if (!playing) return;
+    if (!alive) return;
     const handleKeyPress = (e) => {
       e.preventDefault();
       switch (e.key) {

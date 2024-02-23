@@ -5,14 +5,14 @@ import BrickBreaker from '../games/brick breaker/BrickBreaker'
 import Wordle from '../games/wordle/Wordle'
 import Sudoku from '../games/sudoku/Sudoku'
 
-const GameArea = ( {currentGame} ) => {
+const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
     <div className='h-[90vmin] w-[90vmin] p-3 bg-first'>
-        {currentGame === "Snake" && <Snake />}
-        {currentGame === "Minesweeper" && <Minesweeper />}
-        {currentGame === "Brick Breaker" && <BrickBreaker />}
-        {currentGame === "Wordle" && <Wordle />}
-        {currentGame === "Sudoku" && <Sudoku />}
+        {currentGame === "Snake" && <Snake currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Minesweeper" && <Minesweeper currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Brick Breaker" && <BrickBreaker currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Wordle" && <Wordle currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Sudoku" && <Sudoku currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }
