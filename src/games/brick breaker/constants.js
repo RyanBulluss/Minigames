@@ -1,6 +1,6 @@
 const startBoard = {
-  height: 500,
-  width: 500,
+  // height: 500,
+  // width: 500,
   color: "#223",
 };
 

@@ -18,6 +18,5 @@ export async function createScore(game, user, score, time) {
 
 export async function getLeaderboard(game) {
   const result = await sendRequest(`${BASE_URL}${game}/`);
-  console.log(result);
   return result;
 }

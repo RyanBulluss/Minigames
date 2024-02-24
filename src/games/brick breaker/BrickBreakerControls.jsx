@@ -1,10 +1,10 @@
 import React from "react";
 
-const BrickBreakerControls = ({}) => {
+const BrickBreakerControls = ({ setPlaying }) => {
   return (
-    <div className="w-full h-[10vmin] flex justify-around items-center bg-sky-600">
+    <div className="w-full h-[10vmin] flex justify-around items-center bg-blue-700">
       <div className="w-2">
-        <button>Restart</button>
+        <button onClick={() => setPlaying((p) => true)}>Restart</button>
       </div>
       <button>Info</button>
       <div>Score: </div>

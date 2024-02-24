@@ -17,6 +17,5 @@ export async function createComment(game, user, comment) {
 
 export async function getAllComments(game) {
   const result = await sendRequest(`${BASE_URL}${game}/`);
-  console.log(result);
   return result;
 }

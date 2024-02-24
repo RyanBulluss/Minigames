@@ -5,6 +5,7 @@ import Comments from "../components/Comments";
 import Ads from "../components/Ads";
 import SideBar from "../components/SideBar";
 import TopBar from "../components/TopBar";
+import BrickBreaker from "../games/brick breaker/BrickBreaker";
 
 export default function GamesPage({ user, setUser }) {
   const [currentGame, setCurrentGame] = useState("");
