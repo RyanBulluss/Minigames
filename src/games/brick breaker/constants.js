@@ -1,4 +1,4 @@
-const bricksPerRow = 6 ;
+const bricksPerRow = 8 ;
 
 const level1 = [
   3, 3, 3, 3, 3, 3, 3, 3,

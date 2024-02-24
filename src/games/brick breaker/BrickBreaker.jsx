@@ -32,7 +32,7 @@ const BrickBreaker = () => {
     let x = 0;
     let y = 0;
     level.forEach((brick, idx) => {
-      if ((idx) % bricksPerRow === 0) {
+      if (idx % bricksPerRow === 0) {
         y += board.height / 12;
         x = 0;
       }
@@ -67,6 +67,7 @@ const BrickBreaker = () => {
         newBall.xSpeed = angle;
         return newBall;
       });
+      if (bricks.length === 0) createBricks(level1);
     }
   }
 
@@ -88,7 +89,7 @@ const BrickBreaker = () => {
     return angle;
   }
 
-  function checkBrick() {}
+
 
   function moveBall() {
     if (!playing) return;
@@ -161,12 +162,66 @@ const BrickBreaker = () => {
     const newBoard = boardRef.current;
     window.addEventListener("resize", resizeBoard);
     newBoard.addEventListener("mousemove", handleMouseMove);
-    createBricks(level1);
+
     return () => {
       window.removeEventListener("resize", resizeBoard);
       newBoard.removeEventListener("mousemove", handleMouseMove);
     };
   }, [board]);
+
+  // This function is unlovable, pls ignore him
+  function checkBrick() {
+    const newX = ball.x + ball.xSpeed;
+    const newY = ball.y + ball.ySpeed;
+    const ballRight = newX + ball.width;
+    const ballLeft = newX;
+    const ballBottom = newY + ball.height;
+    const ballTop = newY;
+
+    for (let idx = 0; idx < bricks.length; idx++) {
+      const brick = bricks[idx];
+      const brickLeft = brick.x;
+      const brickRight = brick.x + brick.width;
+      const brickTop = brick.y;
+      const brickBottom = brick.y + brick.height;
+      if (
+        ballRight >= brickLeft &&
+        ballLeft <= brickRight &&
+        ballBottom > brickTop &&
+        ballTop < brickBottom &&
+        brick.hitsRemaining > 0
+      ) {
+        const distTop = brickTop - ballBottom;
+        const distBottom = ballTop - brickBottom;
+        const distRight = ballLeft - brickRight;
+        const disLeft = brickLeft - ballRight;
+        console.log(distRight);
+        if (distTop > distBottom && distTop > distRight && distTop > disLeft)
+          setBall({ ...ball, ySpeed: -ball.ySpeed });
+        if (
+          distBottom > distTop &&
+          distBottom > distRight &&
+          distBottom > disLeft
+        )
+          setBall({ ...ball, ySpeed: -ball.ySpeed });
+        if (
+          distRight > distBottom &&
+          distRight > distTop &&
+          distRight > disLeft
+        )
+          setBall({ ...ball, xSpeed: -ball.xSpeed });
+        if (disLeft > distBottom && disLeft > distRight && disLeft > distTop)
+          setBall({ ...ball, xSpeed: -ball.xSpeed });
+
+        setBricks((b) => {
+          const newBricks = [...b];
+          newBricks[idx] = { ...brick, hitsRemaining: brick.hitsRemaining - 1 };
+          return newBricks;
+        });
+        break;
+      }
+    }
+  }
 
   return (
     <div className="h-full flex flex-col">
