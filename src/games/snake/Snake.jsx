@@ -39,6 +39,17 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
     setSnake(newSnake);
   }
 
+  useEffect(() => {
+    if (!playing) return;
+    if (!alive) return;
+    const interval = setInterval(() => {
+      moveSnake();
+    }, gameSpeed);
+
+    return () => clearInterval(interval);
+  }, [snake, direction, playing, alive]);
+
+
   function hittingFood(newPosition) {
     if (state[newPosition[0]][newPosition[1]].food) {
       setSnakeLength(snakeLength + 1);
@@ -87,7 +98,7 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
 
   async function gameOver() {
     setAlive(false);
-    const newScore = await createScore(currentGame, user, score, timer);
+    await createScore(currentGame, user, score, timer);
     setUpdateLb(lb => !lb);
   }
 
@@ -141,6 +152,8 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
           if (lastDirection === "LEFT") return;
           setDirection("RIGHT");
           break;
+        default:
+          return;
           // commented to allow space for comments
         // case " ":
         //   if (alive) {
@@ -156,15 +169,7 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
     };
   }, [lastDirection, playing, alive]);
 
-  useEffect(() => {
-    if (!playing) return;
-    if (!alive) return;
-    const interval = setInterval(() => {
-      moveSnake();
-    }, gameSpeed);
 
-    return () => clearInterval(interval);
-  }, [snake, direction, playing, alive]);
 
   useEffect(() => {
     if (!playing) return;

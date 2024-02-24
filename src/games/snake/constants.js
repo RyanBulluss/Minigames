@@ -30,6 +30,7 @@ function createState() {
   return newState;
 }
 
+
 export {
   boardHeight,
   boardWidth,

@@ -1,5 +1,4 @@
 import React from "react";
-import { boardSize } from "./constants";
 
 const GameCell = ({ content, y, x }) => {
   const color = y % 2 === 0 ? (x % 2 === 0 ? 1 : 2) : x % 2 === 0 ? 2 : 1;

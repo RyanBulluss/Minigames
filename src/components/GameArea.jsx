@@ -7,7 +7,7 @@ import Sudoku from '../games/sudoku/Sudoku'
 
 const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
-    <div className='h-[90vmin] w-[90vmin] p-3 bg-first'>
+    <div className=' min-h-[500px] min-w-[500px] h-[90vmin] w-[90vmin] p-3 bg-first'>
         {currentGame === "Snake" && <Snake currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Minesweeper" && <Minesweeper currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Brick Breaker" && <BrickBreaker currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}

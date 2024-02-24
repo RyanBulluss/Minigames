@@ -1,6 +1,6 @@
-const board = {
-  height: 70,
-  width: 80,
+const startBoard = {
+  height: 500,
+  width: 500,
   color: "#223",
 };
 
@@ -13,10 +13,10 @@ const startBall = {
 };
 
 const startPaddle = {
-  height: 3,
-  width: 20,
+  height: "5%",
+  width: "20%",
   x: 0,
   color: "white",
 };
 
-export { board, startBall, startPaddle };
+export { startBoard, startBall, startPaddle };
