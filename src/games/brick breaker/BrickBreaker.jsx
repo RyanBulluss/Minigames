@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import BrickBreakerControls from "./BrickBreakerControls";
-import { level1, bricksPerRow } from "./constants";
+import { levels, bricksPerRow } from "./constants";
 import Brick from "./Brick";
 
 const BrickBreaker = () => {
@@ -11,6 +11,8 @@ const BrickBreaker = () => {
   const [paddle, setPaddle] = useState({});
   const [ball, setBall] = useState({});
   const [bricks, setBricks] = useState([]);
+  const [timer, setTimer] = useState(0);
+  const [score, setScore] = useState(0);
 
   function checkBoundaries() {
     const newX = ball.x + ball.xSpeed;
@@ -67,8 +69,32 @@ const BrickBreaker = () => {
         newBall.xSpeed = angle;
         return newBall;
       });
-      if (bricks.length === 0) createBricks(level1);
+      if (
+        bricks.length === 0 ||
+        bricks.every((brick) => brick.hitsRemaining === 0)
+      ) {
+        if (bricks.length !== 0) {
+          setScore(score + 1000);
+        }
+        createBricks(levels[Math.floor(Math.random() * levels.length)]);
+      }
     }
+  }
+
+  function updateDifficulty() {
+    setPaddle((p) => {
+      const newPaddle = { ...p };
+      newPaddle.width = board.width / (5 + score / 5000);
+      return newPaddle;
+    });
+    setBall((b) => {
+      const newBall = { ...b };
+      newBall.ySpeed =
+        b.ySpeed > 0
+          ? board.height / (100 - score / 200)
+          : -board.height / (100 - score / 200);
+      return newBall;
+    });
   }
 
   function checkAngle() {
@@ -89,13 +115,12 @@ const BrickBreaker = () => {
     return angle;
   }
 
-
-
   function moveBall() {
     if (!playing) return;
     checkPaddle();
     checkBoundaries();
     checkBrick();
+    updateDifficulty();
 
     setBall((b) => {
       const newBall = { ...b };
@@ -149,6 +174,17 @@ const BrickBreaker = () => {
   }, []);
 
   useEffect(() => {
+    const interval2 = setInterval(() => {
+      if (!playing) return
+      setTimer(timer + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval2);
+    };
+  }, [timer]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       moveBall();
     }, 16);
@@ -167,7 +203,7 @@ const BrickBreaker = () => {
       window.removeEventListener("resize", resizeBoard);
       newBoard.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [board]);
+  }, [board, paddle]);
 
   // This function is unlovable, pls ignore him
   function checkBrick() {
@@ -195,37 +231,53 @@ const BrickBreaker = () => {
         const distBottom = ballTop - brickBottom;
         const distRight = ballLeft - brickRight;
         const disLeft = brickLeft - ballRight;
-        console.log(distRight);
+
+        setScore(score + 100);
         if (distTop > distBottom && distTop > distRight && distTop > disLeft)
-          setBall({ ...ball, ySpeed: -ball.ySpeed });
+          setBall({
+            ...ball,
+            ySpeed: ball.ySpeed > 0 ? -ball.ySpeed : ball.ySpeed,
+          });
         if (
           distBottom > distTop &&
           distBottom > distRight &&
           distBottom > disLeft
         )
-          setBall({ ...ball, ySpeed: -ball.ySpeed });
+          setBall({
+            ...ball,
+            ySpeed: ball.ySpeed < 0 ? -ball.ySpeed : ball.ySpeed,
+          });
         if (
           distRight > distBottom &&
           distRight > distTop &&
           distRight > disLeft
         )
-          setBall({ ...ball, xSpeed: -ball.xSpeed });
+          setBall({
+            ...ball,
+            xSpeed: ball.xSpeed > 0 ? ball.xSpeed : -ball.xSpeed,
+          });
         if (disLeft > distBottom && disLeft > distRight && disLeft > distTop)
-          setBall({ ...ball, xSpeed: -ball.xSpeed });
+          setBall({
+            ...ball,
+            xSpeed: ball.xSpeed < 0 ? ball.xSpeed : -ball.xSpeed,
+          });
 
         setBricks((b) => {
           const newBricks = [...b];
           newBricks[idx] = { ...brick, hitsRemaining: brick.hitsRemaining - 1 };
           return newBricks;
         });
-        break;
       }
     }
   }
 
   return (
     <div className="h-full flex flex-col">
-      <BrickBreakerControls setPlaying={setPlaying} />
+      <BrickBreakerControls
+        setPlaying={setPlaying}
+        timer={timer}
+        score={score}
+      />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
         <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
           {bricks.map((brick, idx) => (
