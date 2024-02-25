@@ -9,11 +9,11 @@ export default function Brick({ brick }) {
         left: brick.x,
         border: brick.hitsRemaining > 0 ? "solid black 1px" : "",
         background: brick.hitsRemaining === 3 ? 
-        "blue" :
+        "#a44" :
         brick.hitsRemaining === 2 ?
-        "red" :
+        "#44a" :
         brick.hitsRemaining === 1 ?
-        "green" : "",
+        "#4a4" : "",
       }}
     ></div>
   );

@@ -2,17 +2,32 @@ import React, { useState, useRef, useEffect } from "react";
 import BrickBreakerControls from "./BrickBreakerControls";
 import { levels, bricksPerRow } from "./constants";
 import Brick from "./Brick";
+import { createScore } from "../../utilities/leaderboards";
 
-const BrickBreaker = () => {
+const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
   const boardRef = useRef(null);
 
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [board, setBoard] = useState({});
   const [paddle, setPaddle] = useState({});
   const [ball, setBall] = useState({});
   const [bricks, setBricks] = useState([]);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
+
+  async function gameOver() {
+    setPlaying(false);
+    await createScore(currentGame, user, score, timer);
+    setUpdateLb(lb => !lb);
+  }
+
+  function handleRestart() {
+    setTimer(0);
+    setScore(0);
+    resizeBoard();
+    setBricks([]);
+    setPlaying(true); 
+  }
 
   function checkBoundaries() {
     const newX = ball.x + ball.xSpeed;
@@ -26,7 +41,7 @@ const BrickBreaker = () => {
       setBall({ ...ball, ySpeed: -ball.ySpeed });
     }
 
-    if (newY + ball.height >= board.height) setPlaying(false);
+    if (newY + ball.height >= board.height) gameOver();
   }
 
   function createBricks(level) {
@@ -120,7 +135,6 @@ const BrickBreaker = () => {
     checkPaddle();
     checkBoundaries();
     checkBrick();
-    updateDifficulty();
 
     setBall((b) => {
       const newBall = { ...b };
@@ -192,7 +206,7 @@ const BrickBreaker = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [ball.x]);
+  }, [ball.x, playing]);
 
   useEffect(() => {
     const newBoard = boardRef.current;
@@ -233,30 +247,30 @@ const BrickBreaker = () => {
         const disLeft = brickLeft - ballRight;
 
         setScore(score + 100);
-        if (distTop > distBottom && distTop > distRight && distTop > disLeft)
+        if (distTop >= distBottom && distTop >= distRight && distTop >= disLeft)
           setBall({
             ...ball,
             ySpeed: ball.ySpeed > 0 ? -ball.ySpeed : ball.ySpeed,
           });
         if (
-          distBottom > distTop &&
-          distBottom > distRight &&
-          distBottom > disLeft
+          distBottom >= distTop &&
+          distBottom >= distRight &&
+          distBottom >= disLeft
         )
           setBall({
             ...ball,
             ySpeed: ball.ySpeed < 0 ? -ball.ySpeed : ball.ySpeed,
           });
         if (
-          distRight > distBottom &&
-          distRight > distTop &&
-          distRight > disLeft
+          distRight >= distBottom &&
+          distRight >= distTop &&
+          distRight >= disLeft
         )
           setBall({
             ...ball,
             xSpeed: ball.xSpeed > 0 ? ball.xSpeed : -ball.xSpeed,
           });
-        if (disLeft > distBottom && disLeft > distRight && disLeft > distTop)
+        if (disLeft >= distBottom && disLeft >= distRight && disLeft >= distTop)
           setBall({
             ...ball,
             xSpeed: ball.xSpeed < 0 ? ball.xSpeed : -ball.xSpeed,
@@ -268,13 +282,14 @@ const BrickBreaker = () => {
           return newBricks;
         });
       }
+      updateDifficulty();
     }
   }
 
   return (
     <div className="h-full flex flex-col">
       <BrickBreakerControls
-        setPlaying={setPlaying}
+        handleRestart={handleRestart}
         timer={timer}
         score={score}
       />
