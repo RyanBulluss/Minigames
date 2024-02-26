@@ -6,7 +6,7 @@ module.exports = {
 };
 
 async function getAllScores(req, res) {
-    const leaderboard = await Score.find({ game: req.params.game });
+    const leaderboard = await Score.find({ game: req.params.game }).populate('user');
     res.json( leaderboard )
 }
 

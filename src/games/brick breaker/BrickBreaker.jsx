@@ -152,7 +152,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
       x: 0,
       width: newBoard.width / 5,
       height: newBoard.height / 20,
-      color: "black",
+      color: "#222",
     });
     setBall({
       y: 0,
@@ -161,7 +161,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
       xSpeed: newBoard.width / 100,
       width: newBoard.width / 30,
       height: newBoard.height / 30,
-      color: "black",
+      color: "#ddd",
     });
   }
 
@@ -196,7 +196,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
     return () => {
       clearInterval(interval2);
     };
-  }, [timer]);
+  }, [timer, playing]);
 
   useEffect(() => {
     const interval = setInterval(() => {
