@@ -24,7 +24,7 @@ const Leaderboard = ({ currentGame, updateLb }) => {
 
     function handleColors() {
       if (currentGame === "Snake") return setColors(["snake-background", "snake-controls"])
-      setColors(["#222", "#333"])
+      setColors(["bg-[#222]", "bg-[#333]"])
     }
 
     handleColors()
@@ -45,7 +45,7 @@ const Leaderboard = ({ currentGame, updateLb }) => {
         <tbody>
           {leaderboard.map((score, idx) => (
             <tr key={idx} className={idx % 2 === 0 ? colors[0] : colors[1]}>
-              <td>{idx + 1 + ")"}</td>
+              <td>{idx + 1 + " )"}</td>
               <td>{score.user.name}</td>
               <td>{score.score}</td>
               <td>{score.time}</td>

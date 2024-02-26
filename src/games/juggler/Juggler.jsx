@@ -1,0 +1,207 @@
+import React, { useEffect, useRef, useState } from "react";
+import JugglerControls from "./JugglerControls";
+
+const Juggler = ({ currentGame, user, setUpdateLb }) => {
+  const boardRef = useRef(null);
+  const [playing, setPlaying] = useState(true);
+  const [score, setScore] = useState(0);
+  const [timer, setTimer] = useState(0);
+  const [board, setBoard] = useState({});
+  const [paddle, setPaddle] = useState({});
+  const [balls, setBalls] = useState([{}]);
+
+  const handleMouseMove = (event) => {
+    const rect = boardRef.current.getBoundingClientRect();
+    const left = event.clientX - rect.left;
+
+    if (left - paddle.width / 2 < 0) {
+      setPaddle((p) => {
+        return { ...p, x: 0 };
+      });
+    } else if (left > board.width - paddle.width / 2) {
+      setPaddle((p) => {
+        return { ...p, x: board.width - paddle.width };
+      });
+    } else
+      setPaddle((p) => {
+        return { ...p, x: left - paddle.width / 2 };
+      });
+  };
+
+  function resizeBoard() {
+    const newBoard = boardRef.current.getBoundingClientRect();
+    setBoard(newBoard);
+    setPaddle({
+      y: newBoard.height - newBoard.height / 20,
+      x: 0,
+      width: newBoard.width / 5,
+      height: newBoard.height / 20,
+      color: "#222",
+    });
+    setBalls([
+      {
+        y: 0,
+        x: 0,
+        ySpeed: newBoard.height / 100,
+        xSpeed: newBoard.width / 100,
+        width: newBoard.width / 30,
+        height: newBoard.height / 30,
+        color: "#ddd",
+      },
+      {
+        y: 50,
+        x: 0,
+        ySpeed: newBoard.height / 100,
+        xSpeed: newBoard.width / 100,
+        width: newBoard.width / 30,
+        height: newBoard.height / 30,
+        color: "#ddd",
+      },
+    ]);
+  }
+
+  function checkAngle() {
+    const b = balls[0].x + balls[0].width / 2;
+    const tenth = paddle.width / 10;
+    const p = paddle.x;
+    let angle = board.width / 50;
+    if (b < p + tenth * 10) angle = board.width / 50;
+    if (b < p + tenth * 9) angle = board.width / 100;
+    if (b < p + tenth * 8) angle = board.width / 150;
+    if (b < p + tenth * 7) angle = board.width / 225;
+    if (b < p + tenth * 6) angle = board.width / 300;
+    if (b < p + tenth * 5) angle = -board.width / 300;
+    if (b < p + tenth * 4) angle = -board.width / 225;
+    if (b < p + tenth * 3) angle = -board.width / 150;
+    if (b < p + tenth * 2) angle = -board.width / 100;
+    if (b < p + tenth) angle = -board.width / 50;
+    return angle;
+  }
+
+  function checkBoundaries() {
+    balls.forEach((ball, idx) => {
+      const newX = ball.x + ball.xSpeed;
+      const newY = ball.y + ball.ySpeed;
+      let x = false;
+      let y = false;
+
+      if (newX + ball.width >= board.width || newX <= 0) {
+        x = true;
+      }
+
+      if (newY <= 0 || newY + ball.height >= board.height) {
+        y = true;
+      }
+
+      setBalls((bs) => {
+        const newBalls = [];
+        bs.forEach((obj) => newBalls.push({ ...obj }));
+        if (x) newBalls[idx].xSpeed = -bs[idx].xSpeed;
+        if (y) newBalls[idx].ySpeed = -bs[idx].ySpeed;
+        return newBalls;
+      });
+    });
+  }
+
+  function checkPaddle() {
+    balls.forEach((ball, idx) => {
+      const newX = ball.x + ball.xSpeed;
+      const newY = ball.y + ball.ySpeed;
+
+      if (
+        newX <= paddle.x + paddle.width &&
+        newX + ball.width >= paddle.x &&
+        newY + ball.height <= paddle.y + paddle.height &&
+        newY + ball.height > paddle.y
+      ) {
+        if (ball.ySpeed < 0) return;
+        const angle = checkAngle();
+        setBalls((b) => {
+          const newBalls = [...b];
+          newBalls[idx].ySpeed = -board.height / 50;
+          newBalls[idx].xSpeed = angle;
+          return newBalls;
+        });
+      }
+    });
+  }
+
+  function moveBall() {
+    if (!playing) return;
+    checkPaddle();
+    checkBoundaries();
+
+    setBalls((bs) => {
+      const newBalls = [];
+      bs.forEach((b) => {
+        const newBall = { ...b };
+        newBall.x += b.xSpeed;
+        newBall.y += b.ySpeed;
+        newBall.ySpeed += 0.13;
+        newBalls.push(newBall);
+      });
+      return newBalls;
+    });
+  }
+
+  useEffect(() => {
+    resizeBoard();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      moveBall();
+    }, 16);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [playing, balls]);
+
+  useEffect(() => {
+    const newBoard = boardRef.current;
+    window.addEventListener("resize", resizeBoard);
+    newBoard.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("resize", resizeBoard);
+      newBoard.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [board, paddle]);
+
+  return (
+    <div className="h-full flex flex-col">
+      <JugglerControls score={score} timer={timer} />
+      <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
+        <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
+          {balls.map((ball, idx) => (
+            <div
+              className="flex justify-center items-center"
+              style={{
+                position: "absolute",
+                height: ball.height,
+                width: ball.width,
+                top: ball.y,
+                left: ball.x,
+                background: ball.color,
+                borderRadius: "50%",
+              }}
+            ></div>
+          ))}
+          <div
+            style={{
+              position: "absolute",
+              height: paddle.height,
+              width: paddle.width,
+              top: paddle.y,
+              left: paddle.x,
+              background: paddle.color,
+            }}
+          ></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Juggler;

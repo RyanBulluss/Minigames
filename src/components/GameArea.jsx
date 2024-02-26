@@ -4,6 +4,7 @@ import Minesweeper from '../games/minesweeper/Minesweeper'
 import BrickBreaker from '../games/brick breaker/BrickBreaker'
 import Wordle from '../games/wordle/Wordle'
 import Sudoku from '../games/sudoku/Sudoku'
+import Juggler from '../games/juggler/Juggler'
 
 const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
@@ -12,6 +13,7 @@ const GameArea = ( {currentGame, user, setUpdateLb} ) => {
         {currentGame === "Snake" && <Snake currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Minesweeper" && <Minesweeper currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Brick Breaker" && <BrickBreaker currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Juggler" && <Juggler currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Wordle" && <Wordle currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Sudoku" && <Sudoku currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
