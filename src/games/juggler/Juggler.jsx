@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import JugglerControls from "./JugglerControls";
+import { createScore } from "../../utilities/leaderboards";
 
 const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
@@ -11,7 +12,22 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
 
   const [board, setBoard] = useState({});
   const [paddle, setPaddle] = useState({});
-  const [balls, setBalls] = useState([{}]);
+  const [balls, setBalls] = useState([]);
+
+  async function gameOver() {
+    setPlaying(false);
+    await createScore(currentGame, user, score, timer);
+    setUpdateLb(lb => !lb);
+  }
+
+  function handleRestart() {
+    setTimer(0);
+    setScore(0);
+    handleSizeChange();
+    setBalls([]);
+    setLives(3);
+    setPlaying(true); 
+  }
 
   const handleMouseMove = (event) => {
     const rect = boardRef.current.getBoundingClientRect();
@@ -50,7 +66,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         color: "#ddd",
       },
     ]);
-    // setScore
+    setScore((s) => s + 1);
   }
 
   function handleSizeChange() {
@@ -136,13 +152,13 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
       });
 
       if (newY + ball.height >= board.height) {
-        setLives(l => l - 1);
-        if (lives - 1 < 1) setPlaying(false);
-        setBalls(b => {
+        setLives((l) => l - 1);
+        if (lives - 1 < 1) gameOver();
+        setBalls((b) => {
           const newBalls = [...b];
           newBalls.splice(idx, 1);
           return newBalls;
-        })
+        });
       }
     });
   }
@@ -196,8 +212,14 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
       createBall();
     }, 5000);
 
+    const timerInterval = setInterval(() => {
+      if (!playing) return;
+      setTimer((t) => t + 1);
+    }, 1000);
+
     return () => {
       clearInterval(ballInterval);
+      clearInterval(timerInterval);
     };
   }, [board, playing]);
 
@@ -224,7 +246,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
 
   return (
     <div className="h-full flex flex-col">
-      <JugglerControls score={score} timer={timer} lives={lives} />
+      <JugglerControls score={score} timer={timer} lives={lives} handleRestart={handleRestart} />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
         <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
           {balls.map((ball, idx) => (
