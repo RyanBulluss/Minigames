@@ -6,6 +6,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(true);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
+
   const [board, setBoard] = useState({});
   const [paddle, setPaddle] = useState({});
   const [balls, setBalls] = useState([{}]);
@@ -28,7 +29,27 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
       });
   };
 
-  function resizeBoard() {
+  function rng(num) {
+    // returns between 0 and num - 1 (for index)
+    return Math.floor(Math.random() * num);
+  }
+
+  function createBall() {
+    console.log("hello");
+    setBalls((b) => [...b,
+      {
+        y: 0,
+        x: rng(board.width),
+        ySpeed: board.height / 500,
+        xSpeed: rng(board.width / 50) - board.width / 100,
+        width: board.width / 30,
+        height: board.height / 30,
+        color: "#ddd",
+      },
+    ]);
+  }
+
+  function handleSizeChange() {
     const newBoard = boardRef.current.getBoundingClientRect();
     setBoard(newBoard);
     setPaddle({
@@ -38,26 +59,35 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
       height: newBoard.height / 20,
       color: "#222",
     });
-    setBalls([
-      {
-        y: 0,
-        x: 0,
-        ySpeed: newBoard.height / 100,
-        xSpeed: newBoard.width / 100,
-        width: newBoard.width / 30,
-        height: newBoard.height / 30,
-        color: "#ddd",
-      },
-      {
-        y: 50,
-        x: 0,
-        ySpeed: newBoard.height / 100,
-        xSpeed: newBoard.width / 100,
-        width: newBoard.width / 30,
-        height: newBoard.height / 30,
-        color: "#ddd",
-      },
-    ]);
+    // setBalls([
+    //   {
+    //     y: 0,
+    //     x: 0,
+    //     ySpeed: newBoard.height / 500,
+    //     xSpeed: newBoard.width / 100,
+    //     width: newBoard.width / 30,
+    //     height: newBoard.height / 30,
+    //     color: "#ddd",
+    //   },
+    //   {
+    //     y: newBoard.height * 0.7,
+    //     x: newBoard.width * 0.9,
+    //     ySpeed: newBoard.height / 500,
+    //     xSpeed: -newBoard.width / 100,
+    //     width: newBoard.width / 30,
+    //     height: newBoard.height / 30,
+    //     color: "#ddd",
+    //   },
+    //   {
+    //     y: newBoard.height / 4,
+    //     x: newBoard.width / 2,
+    //     ySpeed: newBoard.height / 500,
+    //     xSpeed: newBoard.width / 100,
+    //     width: newBoard.width / 30,
+    //     height: newBoard.height / 30,
+    //     color: "#ddd",
+    //   },
+    // ]);
   }
 
   function checkAngle() {
@@ -118,7 +148,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         const angle = checkAngle();
         setBalls((b) => {
           const newBalls = [...b];
-          newBalls[idx].ySpeed = -board.height / 50;
+          newBalls[idx].ySpeed = -board.height / 100;
           newBalls[idx].xSpeed = angle;
           return newBalls;
         });
@@ -137,7 +167,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         const newBall = { ...b };
         newBall.x += b.xSpeed;
         newBall.y += b.ySpeed;
-        newBall.ySpeed += 0.13;
+        newBall.ySpeed += 0.05;
         newBalls.push(newBall);
       });
       return newBalls;
@@ -145,7 +175,17 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   }
 
   useEffect(() => {
-    resizeBoard();
+    handleSizeChange();
+  }, []);
+
+  useEffect(() => {
+    const ballInterval = setInterval(() => {
+      createBall();
+    }, 2000);
+
+    return () => {
+      clearInterval(ballInterval);
+    };
   }, []);
 
   useEffect(() => {
@@ -156,15 +196,15 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [playing, balls]);
+  }, [playing, balls, board]);
 
   useEffect(() => {
     const newBoard = boardRef.current;
-    window.addEventListener("resize", resizeBoard);
+    window.addEventListener("resize", handleSizeChange);
     newBoard.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener("resize", resizeBoard);
+      window.removeEventListener("resize", handleSizeChange);
       newBoard.removeEventListener("mousemove", handleMouseMove);
     };
   }, [board, paddle]);
