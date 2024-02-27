@@ -1,12 +1,12 @@
 import React from "react";
 
-const JugglerControls = ({ score, timer  }) => {
+const JugglerControls = ({ score, timer, lives }) => {
   return (
     <div className="w-full h-[10vmin] flex justify-around items-center bg-blue-700">
       <div className="w-2">
         <button>Play</button>
       </div>
-      <button>Info</button>
+      <button>Lives: {lives}</button>
       <div>Score: {score} </div>
       <div>Timer: {timer} </div>
     </div>

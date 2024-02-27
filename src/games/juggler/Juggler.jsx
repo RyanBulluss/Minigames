@@ -7,6 +7,8 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
 
+  const [lives, setLives] = useState(3);
+
   const [board, setBoard] = useState({});
   const [paddle, setPaddle] = useState({});
   const [balls, setBalls] = useState([{}]);
@@ -35,11 +37,12 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   }
 
   function createBall() {
-    console.log("hello");
-    setBalls((b) => [...b,
+    if (!playing) return;
+    setBalls((b) => [
+      ...b,
       {
         y: 0,
-        x: rng(board.width),
+        x: rng(board.width - 10) + 5,
         ySpeed: board.height / 500,
         xSpeed: rng(board.width / 50) - board.width / 100,
         width: board.width / 30,
@@ -47,6 +50,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         color: "#ddd",
       },
     ]);
+    // setScore
   }
 
   function handleSizeChange() {
@@ -55,7 +59,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
     setPaddle({
       y: newBoard.height - newBoard.height / 20,
       x: 0,
-      width: newBoard.width / 5,
+      width: newBoard.width / 3,
       height: newBoard.height / 20,
       color: "#222",
     });
@@ -90,21 +94,21 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
     // ]);
   }
 
-  function checkAngle() {
-    const b = balls[0].x + balls[0].width / 2;
+  function checkAngle(idx) {
+    const b = balls[idx].x + balls[idx].width / 2;
     const tenth = paddle.width / 10;
     const p = paddle.x;
     let angle = board.width / 50;
-    if (b < p + tenth * 10) angle = board.width / 50;
-    if (b < p + tenth * 9) angle = board.width / 100;
-    if (b < p + tenth * 8) angle = board.width / 150;
-    if (b < p + tenth * 7) angle = board.width / 225;
-    if (b < p + tenth * 6) angle = board.width / 300;
-    if (b < p + tenth * 5) angle = -board.width / 300;
-    if (b < p + tenth * 4) angle = -board.width / 225;
-    if (b < p + tenth * 3) angle = -board.width / 150;
-    if (b < p + tenth * 2) angle = -board.width / 100;
-    if (b < p + tenth) angle = -board.width / 50;
+    if (b < p + tenth * 10) angle = board.width / 150;
+    if (b < p + tenth * 9) angle = board.width / 225;
+    if (b < p + tenth * 8) angle = board.width / 225;
+    if (b < p + tenth * 7) angle = board.width / 300;
+    if (b < p + tenth * 6) angle = board.width / 500;
+    if (b < p + tenth * 5) angle = -board.width / 500;
+    if (b < p + tenth * 4) angle = -board.width / 300;
+    if (b < p + tenth * 3) angle = -board.width / 225;
+    if (b < p + tenth * 2) angle = -board.width / 225;
+    if (b < p + tenth) angle = -board.width / 150;
     return angle;
   }
 
@@ -119,7 +123,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         x = true;
       }
 
-      if (newY <= 0 || newY + ball.height >= board.height) {
+      if (newY <= 0) {
         y = true;
       }
 
@@ -130,6 +134,16 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         if (y) newBalls[idx].ySpeed = -bs[idx].ySpeed;
         return newBalls;
       });
+
+      if (newY + ball.height >= board.height) {
+        setLives(l => l - 1);
+        if (lives - 1 < 1) setPlaying(false);
+        setBalls(b => {
+          const newBalls = [...b];
+          newBalls.splice(idx, 1);
+          return newBalls;
+        })
+      }
     });
   }
 
@@ -137,7 +151,6 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
     balls.forEach((ball, idx) => {
       const newX = ball.x + ball.xSpeed;
       const newY = ball.y + ball.ySpeed;
-
       if (
         newX <= paddle.x + paddle.width &&
         newX + ball.width >= paddle.x &&
@@ -145,7 +158,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         newY + ball.height > paddle.y
       ) {
         if (ball.ySpeed < 0) return;
-        const angle = checkAngle();
+        const angle = checkAngle(idx);
         setBalls((b) => {
           const newBalls = [...b];
           newBalls[idx].ySpeed = -board.height / 100;
@@ -181,12 +194,12 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   useEffect(() => {
     const ballInterval = setInterval(() => {
       createBall();
-    }, 2000);
+    }, 5000);
 
     return () => {
       clearInterval(ballInterval);
     };
-  }, []);
+  }, [board, playing]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -211,7 +224,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
 
   return (
     <div className="h-full flex flex-col">
-      <JugglerControls score={score} timer={timer} />
+      <JugglerControls score={score} timer={timer} lives={lives} />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
         <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
           {balls.map((ball, idx) => (
