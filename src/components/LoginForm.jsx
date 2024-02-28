@@ -29,35 +29,42 @@ export default function LoginForm({ setUser, setLogin }) {
   }
 
   return (
-    <div>
+    <div className="w-full h-[100vh] flex flex-col items-center justify-center">
       <h1 className="text-4xl font-bold text-center">Log In</h1>
       <div className="form-container">
-        <form autoComplete="off" onSubmit={handleSubmit}>
-          <label>Email</label>
-          <input
-            type="text"
-            name="email"
-            value={credentials.email}
-            onChange={handleChange}
-            required
-          />
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            required
-          />
-          <button className="bg-[#F67F00]" type="submit">
+        <form
+          autoComplete="off"
+          onSubmit={handleSubmit}
+          className="flex flex-col justify-center w-[60vmin]"
+        >
+          <div className="h-64 flex justify-center flex-col">
+            <label>Email</label>
+            <input
+              type="text"
+              name="email"
+              value={credentials.email}
+              onChange={handleChange}
+              required
+            />
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={credentials.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button className="bg-[#F67F00] w-32 mx-auto mt-4" type="submit">
             LOG IN
           </button>
+          <p className="text-center">or</p>
+          <button className="" onClick={() => setLogin((login) => !login)}>
+            {"Sign up"}
+          </button>
+          <p className="error-message text-center">&nbsp;{error}</p>
         </form>
       </div>
-      <p className="error-message">&nbsp;{error}</p>
-      <button className="" onClick={() => setLogin(login => !login)}>
-        {"Sign up"}
-      </button>
     </div>
   );
 }

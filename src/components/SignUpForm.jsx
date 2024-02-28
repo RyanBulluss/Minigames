@@ -36,49 +36,62 @@ export default class SignUpForm extends Component {
       <div className="w-full h-[100vh] flex flex-col items-center justify-center">
         <h1 className="text-4xl font-bold text-center">Sign Up</h1>
         <div className="form-container ">
-          <form autoComplete="off" onSubmit={this.handleSubmit} className="flex flex-col w-[60vmin]">
-            <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={this.state.name}
-              onChange={this.handleChange}
-              required
-            />
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-              required
-            />
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-              required
-            />
-            <label>Confirm</label>
-            <input
-              type="password"
-              name="confirm"
-              value={this.state.confirm}
-              onChange={this.handleChange}
-              required
-            />
-            <button className="bg-[#F67F00] w-32 mx-auto mt-4" type="submit" disabled={disable}>
+          <form
+            autoComplete="off"
+            onSubmit={this.handleSubmit}
+            className="flex flex-col justify-center w-[60vmin] h-84"
+          >
+            <div className="h-64 flex justify-center flex-col">
+              <label>Name</label>
+              <input
+                type="text"
+                name="name"
+                value={this.state.name}
+                onChange={this.handleChange}
+                required
+              />
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={this.state.email}
+                onChange={this.handleChange}
+                required
+              />
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                value={this.state.password}
+                onChange={this.handleChange}
+                required
+              />
+              <label>Confirm</label>
+              <input
+                type="password"
+                name="confirm"
+                value={this.state.confirm}
+                onChange={this.handleChange}
+                required
+              />
+            </div>
+            <button
+              className="bg-[#F67F00] w-32 mx-auto mt-4"
+              type="submit"
+              disabled={disable}
+            >
               SIGN UP
             </button>
+            <p className="text-center">or</p>
+            <button
+              className=""
+              onClick={() => this.props.setLogin((login) => !login)}
+            >
+              {"Log in"}
+            </button>
+            <p className="error-message text-center">&nbsp;{this.state.error}</p>
           </form>
         </div>
-        or
-        <button className="" onClick={() => this.props.setLogin(login => !login)}>
-        {"Log in"}
-      </button>
-        <p className="error-message">&nbsp;{this.state.error}</p>
       </div>
     );
   }
