@@ -9,6 +9,9 @@ const gamesList = [
         name: "Minesweeper",
     },
     {
+        name: "Tetris",
+    },
+    {
         name: "Juggler",
     },
     {
