@@ -2,7 +2,8 @@ import React from 'react'
 
 const GameCell = ({ value }) => {
   return (
-    <div className='border' style={{
+    <div style={{
+      border: "1px solid lightgray",
         backgroundColor: value === 1 ? "orange" :
         value === 2 ? "blue" :
         value === 3 ? "purple" :

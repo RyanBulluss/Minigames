@@ -4,12 +4,15 @@ import { board, createState, getRandomPiece } from "./constants";
 import GameCell from "./GameCell";
 
 const Tetris = () => {
+  const [playing, setPlaying] = useState(false);
   const [state, setState] = useState(createState);
+  const [currentPiece, setCurrentPiece] = useState([]);
 
   function spawnPiece() {
     const newPiece = getRandomPiece();
     setState((s) => {
       const newState = JSON.parse(JSON.stringify(s));
+      const newCurrent = [];
       let y = 0;
       let x = 0;
       newPiece.forEach((val, idx) => {
@@ -18,19 +21,67 @@ const Tetris = () => {
           x = 0;
         }
         newState[y][x] = val;
+        newCurrent.push([y, x, val]);
         x++;
       });
+      setCurrentPiece(newCurrent);
       return newState;
     });
   }
 
+  function gameLoop() {
+    if (currentPiece.length < 1) return spawnPiece();
+    const newLocation = currentPiece.map((piece) => [
+      piece[0] + 1,
+      piece[1],
+      piece[2],
+    ]);
+    setState((s) => {
+      if (newLocation[newLocation.length - 1][0] > state.length - 1) {
+        setCurrentPiece([]);
+        return state;
+      }
+      const newState = JSON.parse(JSON.stringify(s));
+      let collision = false;
+
+      currentPiece.forEach((val) => {
+        newState[val[0]][val[1]] = 0;
+      });
+      newLocation.forEach((val) => {
+        if (val[2] !== 0 && newState.length < val[0]) {
+          collision = true;
+        }
+        if (newState[val[0]][val[1]] === 0) {
+          newState[val[0]][val[1]] = val[2];
+        }
+      });
+      console.log(collision);
+
+      if (collision) {
+        setCurrentPiece([]);
+        return s;
+      } else {
+        setCurrentPiece(newLocation);
+        return newState;
+      }
+    });
+  }
+
   useEffect(() => {
-    spawnPiece();
-  }, [])
+    if (!playing) return;
+
+    const interval = setInterval(() => {
+      gameLoop();
+    }, 300);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [playing, currentPiece]);
 
   return (
     <div className="h-full w-full flex flex-col">
-      <TetrisControls />
+      <TetrisControls setPlaying={setPlaying} />
       <div className="h-full flex justify-center items-center bg-gray-600">
         <div
           style={{
