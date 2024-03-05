@@ -63,6 +63,7 @@ const Tetris = () => {
   }
 
   function rotatePiece() {
+    if (currentPiece.length < 1) return;
     const newPiece = [];
     for (let i = 0; i < 4; i++) {
       newPiece.push(pieceAngle.slice(i * 4, i * 4 + 4));
@@ -77,33 +78,37 @@ const Tetris = () => {
     const rotatedPiece = reversedGrid.flat();
 
     setPieceAngle(rotatedPiece);
-    console.log(rotatedPiece);
 
     setState((s) => {
       const newState = JSON.parse(JSON.stringify(s));
-      let newPiece = [];
+      let anotherPiece = [];
       let collision = false;
 
       currentPiece.forEach((val) => {
         newState[val[0]][val[1]] = 0;
       });
 
-      let [y, x] = [currentPiece[0][0], currentPiece[0][1]];
+      let [y, x] = [currentPiece[0][0], currentPiece[0][1] - 1];
+      const oldX = x;
       rotatedPiece.forEach((num, idx) => {
         if (num !== 0) {
+          if (newState[y][x] !== 0) collision = true;
           newState[y][x] = num;
-          newPiece.push([y, x, num]);
+          anotherPiece.push([y, x, num]);
         }
         const idxPlus = idx + 1;
-        if (idxPlus % 4) {
+        if (idxPlus % 4 === 0) {
           y += 1;
-          x -= 4;
+          x = oldX;
         } else {
           x += 1;
         }
       });
-      setPieceAngle(rotatedPiece)
-      setCurrentPiece(newPiece);
+      
+      if (collision) return state;
+
+      setPieceAngle(rotatedPiece);
+      setCurrentPiece(anotherPiece);
       return newState;
     });
   }
