@@ -21,12 +21,37 @@ const Tetris = () => {
           x = 0;
         }
         newState[y][x] = val;
-        newCurrent.push([y, x, val]);
+        if (val) newCurrent.push([y, x, val]);
         x++;
       });
       setCurrentPiece(newCurrent);
       return newState;
     });
+  }
+
+  function movePiece(num) {
+    let validPos = true;
+    let newPosition = [];
+    currentPiece.forEach((piece) => {
+      if (piece[1] + num >= state[0].length || piece[1] + num < 0) {
+        validPos = false;
+      } else {
+        newPosition.push([piece[0], piece[1] + num, piece[2]]);
+      }
+    });
+    if (validPos) {
+      setState((s) => {
+        const newState = JSON.parse(JSON.stringify(s));
+        currentPiece.forEach((val) => {
+          newState[val[0]][val[1]] = 0;
+        });
+        newPosition.forEach((val) => {
+          newState[val[0]][val[1]] = val[2];
+        });
+        return newState;
+      });
+    }
+    setCurrentPiece(newPosition);
   }
 
   function gameLoop() {
@@ -51,11 +76,11 @@ const Tetris = () => {
         if (val[2] !== 0 && newState.length < val[0]) {
           collision = true;
         }
-        if (newState[val[0]][val[1]] === 0) {
-          newState[val[0]][val[1]] = val[2];
+        if (newState[val[0]][val[1]] !== 0) {
+          collision = true;
         }
+        newState[val[0]][val[1]] = val[2];
       });
-      console.log(collision);
 
       if (collision) {
         setCurrentPiece([]);
@@ -74,10 +99,30 @@ const Tetris = () => {
       gameLoop();
     }, 300);
 
+    const handleKeyPress = (e) => {
+      e.preventDefault();
+      switch (e.key) {
+        case "a":
+          movePiece(-1);
+          break;
+        case "d":
+          movePiece(1);
+          break;
+        default:
+          return;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
     return () => {
       clearInterval(interval);
+      window.removeEventListener("keydown", handleKeyPress);
     };
   }, [playing, currentPiece]);
+
+
+
 
   return (
     <div className="h-full w-full flex flex-col">
