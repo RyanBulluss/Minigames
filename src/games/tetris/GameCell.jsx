@@ -3,7 +3,7 @@ import React from 'react'
 const GameCell = ({ value }) => {
   return (
     <div style={{
-      border: "1px solid lightgray",
+      border: "1px solid rgba(169, 169, 169, 0.8)",
         backgroundColor: value === 1 ? "orange" :
         value === 2 ? "blue" :
         value === 3 ? "purple" :

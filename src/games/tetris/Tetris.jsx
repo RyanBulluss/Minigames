@@ -7,9 +7,11 @@ const Tetris = () => {
   const [playing, setPlaying] = useState(false);
   const [state, setState] = useState(createState);
   const [currentPiece, setCurrentPiece] = useState([]);
+  const [pieceAngle, setPieceAngle] = useState([]);
 
   function spawnPiece() {
     const newPiece = getRandomPiece();
+    setPieceAngle(newPiece);
     setState((s) => {
       const newState = JSON.parse(JSON.stringify(s));
       const newCurrent = [];
@@ -42,16 +44,68 @@ const Tetris = () => {
     if (validPos) {
       setState((s) => {
         const newState = JSON.parse(JSON.stringify(s));
+        let collision = false;
         currentPiece.forEach((val) => {
           newState[val[0]][val[1]] = 0;
         });
         newPosition.forEach((val) => {
+          if (newState[val[0]][val[1]] !== 0) {
+            collision = true;
+          }
           newState[val[0]][val[1]] = val[2];
         });
+        if (collision) return s;
+
+        setCurrentPiece(newPosition);
         return newState;
       });
     }
-    setCurrentPiece(newPosition);
+  }
+
+  function rotatePiece() {
+    const newPiece = [];
+    for (let i = 0; i < 4; i++) {
+      newPiece.push(pieceAngle.slice(i * 4, i * 4 + 4));
+    }
+
+    const transposedGrid = newPiece[0].map((_, colIndex) =>
+      newPiece.map((row) => row[colIndex])
+    );
+
+    const reversedGrid = transposedGrid.reverse();
+
+    const rotatedPiece = reversedGrid.flat();
+
+    setPieceAngle(rotatedPiece);
+    console.log(rotatedPiece);
+
+    setState((s) => {
+      const newState = JSON.parse(JSON.stringify(s));
+      let newPiece = [];
+      let collision = false;
+
+      currentPiece.forEach((val) => {
+        newState[val[0]][val[1]] = 0;
+      });
+
+      let [y, x] = [currentPiece[0][0], currentPiece[0][1]];
+      rotatedPiece.forEach((num, idx) => {
+        if (num !== 0) {
+          newState[y][x] = num;
+          newPiece.push([y, x, num]);
+        }
+        const idxPlus = idx + 1;
+        if (idxPlus % 4) {
+          y += 1;
+          x -= 4;
+        } else {
+          x += 1;
+        }
+      });
+      setPieceAngle(rotatedPiece)
+      setCurrentPiece(newPiece);
+      return newState;
+    });
   }
 
   function gameLoop() {
@@ -108,6 +162,24 @@ const Tetris = () => {
         case "d":
           movePiece(1);
           break;
+        case "s":
+          gameLoop();
+          break;
+        case "w":
+          rotatePiece();
+          break;
+        case "ArrowUp":
+          rotatePiece();
+          break;
+        case "ArrowLeft":
+          movePiece(-1);
+          break;
+        case "ArrowRight":
+          movePiece(1);
+          break;
+        case "ArrowDown":
+          gameLoop();
+          break;
         default:
           return;
       }
@@ -120,9 +192,6 @@ const Tetris = () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, [playing, currentPiece]);
-
-
-
 
   return (
     <div className="h-full w-full flex flex-col">
