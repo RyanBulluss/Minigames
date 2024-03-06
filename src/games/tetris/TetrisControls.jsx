@@ -1,14 +1,14 @@
 import React from "react";
 
-const TetrisControls = ({ setPlaying }) => {
+const TetrisControls = ({ startGame, timer, score }) => {
   return (
     <div className="w-full h-[10vmin] flex justify-around items-center bg-gray-500">
       <div className="w-2">
-        <button onClick={() => setPlaying(p => !p)}>Play</button>
+        <button onClick={startGame}>Play</button>
       </div>
       <button>Info</button>
-      <div>Score: 00</div>
-      <div>Timer: 00</div>
+      <div>Score: {score}</div>
+      <div>Timer: {timer}</div>
     </div>
   );
 };

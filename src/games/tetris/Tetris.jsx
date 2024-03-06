@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import TetrisControls from "./TetrisControls";
 import { board, createState, getRandomPiece } from "./constants";
 import GameCell from "./GameCell";
+import { createScore } from "../../utilities/leaderboards";
 
-const Tetris = () => {
+const Tetris = ( { currentGame, user, setUpdateLb } ) => {
   const [playing, setPlaying] = useState(false);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
@@ -13,6 +14,7 @@ const Tetris = () => {
 
   function spawnPiece() {
     const newState = checkRows();
+    if (checkLoss(newState)) return gameOver();
     const newPiece = getRandomPiece();
     setPieceAngle(newPiece);
     setState((s) => {
@@ -33,6 +35,15 @@ const Tetris = () => {
     });
   }
 
+  function startGame() {
+    setTimer(0);
+    setScore(0);
+    setState(createState);
+    setCurrentPiece([]);
+    setPieceAngle([]);
+    setPlaying(true);
+  }
+
   function checkRows() {
     const newState = JSON.parse(JSON.stringify(state));
 
@@ -40,10 +51,16 @@ const Tetris = () => {
       if (arr.every((n) => n)) {
         newState.splice(idx, 1);
         newState.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        setScore((s) => s + 100);
       }
     });
 
     return newState;
+  }
+
+  function checkLoss(newState) {
+    const loss = newState[3].some((n) => n !== 0);
+    return loss;
   }
 
   function movePiece(num) {
@@ -106,6 +123,7 @@ const Tetris = () => {
       let [y, x] = [currentPiece[0][0], currentPiece[0][1] - 1];
       const oldX = x;
       rotatedPiece.forEach((num, idx) => {
+        if (y > state.length - 1) return (collision = true);
         if (num !== 0) {
           if (newState[y][x] !== 0) collision = true;
           newState[y][x] = num;
@@ -126,6 +144,12 @@ const Tetris = () => {
       setCurrentPiece(anotherPiece);
       return newState;
     });
+  }
+
+  async function gameOver() {
+    setPlaying(false);
+    await createScore(currentGame, user, score, timer);
+    setUpdateLb(lb => !lb);
   }
 
   function gameLoop() {
@@ -167,11 +191,22 @@ const Tetris = () => {
   }
 
   useEffect(() => {
+    const timerInterval = setInterval(() => {
+      if (!playing) return;
+      setTimer((t) => t + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [playing]);
+
+  useEffect(() => {
     if (!playing) return;
 
     const interval = setInterval(() => {
       gameLoop();
-    }, 300);
+    }, 200);
 
     const handleKeyPress = (e) => {
       e.preventDefault();
@@ -215,7 +250,7 @@ const Tetris = () => {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <TetrisControls setPlaying={setPlaying} />
+      <TetrisControls startGame={startGame} timer={timer} score={score} />
       <div className="h-full flex justify-center items-center bg-gray-600">
         <div
           style={{
@@ -225,7 +260,7 @@ const Tetris = () => {
         >
           {state.map((row, yIdx) =>
             row.map((value, xIdx) => (
-              <GameCell key={yIdx + xIdx} value={value} />
+              <GameCell key={yIdx + xIdx} y={yIdx} value={value} />
             ))
           )}
         </div>
