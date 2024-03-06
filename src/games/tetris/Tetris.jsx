@@ -5,15 +5,17 @@ import GameCell from "./GameCell";
 
 const Tetris = () => {
   const [playing, setPlaying] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [score, setScore] = useState(0);
   const [state, setState] = useState(createState);
   const [currentPiece, setCurrentPiece] = useState([]);
   const [pieceAngle, setPieceAngle] = useState([]);
 
   function spawnPiece() {
+    const newState = checkRows();
     const newPiece = getRandomPiece();
     setPieceAngle(newPiece);
     setState((s) => {
-      const newState = JSON.parse(JSON.stringify(s));
       const newCurrent = [];
       let y = 0;
       let x = 0;
@@ -29,6 +31,19 @@ const Tetris = () => {
       setCurrentPiece(newCurrent);
       return newState;
     });
+  }
+
+  function checkRows() {
+    const newState = JSON.parse(JSON.stringify(state));
+
+    state.forEach((arr, idx) => {
+      if (arr.every((n) => n)) {
+        newState.splice(idx, 1);
+        newState.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      }
+    });
+
+    return newState;
   }
 
   function movePiece(num) {
@@ -104,7 +119,7 @@ const Tetris = () => {
           x += 1;
         }
       });
-      
+
       if (collision) return state;
 
       setPieceAngle(rotatedPiece);
