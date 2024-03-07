@@ -256,7 +256,7 @@ const Tetris = ( { currentGame, user, setUpdateLb } ) => {
           style={{
             gridTemplateColumns: `repeat(${board.width}, minmax(0, 1fr))`,
           }}
-          className="h-[70vmin] grid w-[35vmin]"
+          className="h-[70vmin] grid w-[35vmin] bg-black p-4 rounded-2xl"
         >
           {state.map((row, yIdx) =>
             row.map((value, xIdx) => (
