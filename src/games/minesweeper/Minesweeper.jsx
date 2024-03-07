@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import MinesweeperControls from "./MinesweeperControls";
 import GameCell from "./GameCell";
 import { createState, board, adjacents } from "./constants";
+import { createScore } from "../../utilities/leaderboards";
 
-const Minesweeper = () => {
+const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
   const [state, setState] = useState(createState);
   const [playing, setPlaying] = useState(true);
   const [score, setScore] = useState(0);
@@ -14,7 +15,7 @@ const Minesweeper = () => {
     setState((s) => {
       const newState = JSON.parse(JSON.stringify(s));
       newState[y][x].isRevealed = true;
-      if (state[y][x].adjacentMines === 0) floodCells(y, x, newState);
+      if (state[y][x].adjacentMines === 0 && !newState[y][x].isMine) floodCells(y, x, newState);
       if (newState[y][x].isMine || checkWin(newState)) gameOver();
       return newState;
     });
@@ -30,10 +31,12 @@ const Minesweeper = () => {
     });
   };
 
-  function gameOver() {
+  async function gameOver() {
+    console.log("hello")
+    await createScore(currentGame, user, score, timer);
+    setUpdateLb(lb => !lb);
     revealMines();
     setPlaying(false);
-    // Create leaderboard score
   }
 
   function revealMines() {
