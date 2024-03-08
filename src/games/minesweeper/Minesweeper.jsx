@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MinesweeperControls from "./MinesweeperControls";
 import GameCell from "./GameCell";
 import { createState, board, adjacents } from "./constants";
@@ -12,13 +12,14 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
 
   function handleCellClick(y, x) {
     if (!playing) return;
-    setState((s) => {
-      const newState = JSON.parse(JSON.stringify(s));
-      newState[y][x].isRevealed = true;
-      if (state[y][x].adjacentMines === 0 && !newState[y][x].isMine) floodCells(y, x, newState);
-      if (newState[y][x].isMine || checkWin(newState)) gameOver();
-      return newState;
-    });
+    const newState = JSON.parse(JSON.stringify(state));
+    if (newState[y][x].isRevealed) return;
+    newState[y][x].isRevealed = true;
+    if (state[y][x].adjacentMines === 0 && !newState[y][x].isMine) {
+      floodCells(y, x, newState);
+    } else if (!newState[y][x].isMine) setScore(s => s + 1);
+    setState(newState);
+    if (newState[y][x].isMine || checkWin(newState)) gameOver();
   }
 
   function handleRightClick(e, y, x) {
@@ -32,7 +33,6 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
   };
 
   async function gameOver() {
-    console.log("hello")
     await createScore(currentGame, user, score, timer);
     setUpdateLb(lb => !lb);
     revealMines();
@@ -59,6 +59,17 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
     return win;
   }
 
+  useEffect(() => {
+    if (!playing) return;
+    const interval = setInterval(() => {
+      setTimer(t => t + 1);
+    }, 1000)
+
+    return () => {
+      clearInterval(interval);
+    }
+  }, [playing, timer])
+
   function restartGame() {
     setTimer(0);
     setScore(0);
@@ -70,6 +81,7 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
   function floodCells(y, x, newState) {
     if (newState[y][x].isMine) return newState;
     newState[y][x].isRevealed = true;
+    setScore(s => s + 1);
     adjacents.forEach((adj) => {
       const newY = y + adj[0];
       const newX = x + adj[1];
@@ -80,9 +92,12 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
         newX < newState[0].length &&
         !newState[newY][newX].isRevealed &&
         !newState[newY][newX].isMine
-      ) {
-        if (newState[newY][newX].adjacentMines === 0 && !newState[newY][newX].isRevealed) floodCells(newY, newX, newState);
-        newState[newY][newX].isRevealed = true;
+        ) {
+          if (newState[newY][newX].adjacentMines === 0 && !newState[newY][newX].isRevealed) floodCells(newY, newX, newState);
+          if (!newState[newY][newX].adjacentMines !== 0 && !newState[newY][newX].isRevealed) {
+            newState[newY][newX].isRevealed = true;
+            setScore(s => s + 1);
+          }
       }
     });
   };
