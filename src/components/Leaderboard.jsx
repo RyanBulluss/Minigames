@@ -7,28 +7,28 @@ const Leaderboard = ({ currentGame, updateLb }) => {
   const [colors, setColors] = useState(["#222", "#333"]);
 
   useEffect(() => {
-    async function getAll() {
-      const newLeaderboard = await getLeaderboard(currentGame);
+    // async function getAll() {
+    //   const newLeaderboard = await getLeaderboard(currentGame);
 
-      setLeaderboard(
-        newLeaderboard.sort((a, b) => {
-          if (b.score === a.score) {
-            // if same score lower time = winner
-            return a.time - b.time;
-          } else if (currentGame === "Wordle") {
-            return a.score - b.score;
-          } else return b.score - a.score;
-        })
-      );
-    }
+    //   setLeaderboard(
+    //     newLeaderboard.sort((a, b) => {
+    //       if (b.score === a.score) {
+    //         // if same score lower time = winner
+    //         return a.time - b.time;
+    //       } else if (currentGame === "Wordle") {
+    //         return a.score - b.score;
+    //       } else return b.score - a.score;
+    //     })
+    //   );
+    // }
 
-    function handleColors() {
-      if (currentGame === "Snake") return setColors(["snake-background", "snake-controls"])
-      setColors(["bg-[#222]", "bg-[#333]"])
-    }
+    // function handleColors() {
+    //   if (currentGame === "Snake") return setColors(["snake-background", "snake-controls"])
+    //   setColors(["bg-[#222]", "bg-[#333]"])
+    // }
 
-    handleColors()
-    getAll();
+    // handleColors()
+    // getAll();
   }, [currentGame, updateLb]);
 
   return (

@@ -5,18 +5,13 @@ import GamesPage from "./pages/GamesPage";
 import { Routes, Route } from "react-router-dom";
 
 export default function App() {
-  const [user, setUser] = useState(getUser());
+  const [user, setUser] = useState({ name: "test", email: "test@test" });
 
   return (
     <main>
       {user ? (
         <div>
-          <Routes>
-            <Route
-              path="/"
-              element={<GamesPage user={user} setUser={setUser} />}
-            />
-          </Routes>
+          <GamesPage user={user} setUser={setUser} />
         </div>
       ) : (
         <AuthPage setUser={setUser} />

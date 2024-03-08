@@ -17,9 +17,6 @@ const gamesList = [
     {
         name: "Brick Breaker",
     },
-    {
-        name: "Sudoku",
-    },
 ]
 
 export default gamesList

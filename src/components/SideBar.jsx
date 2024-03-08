@@ -16,14 +16,14 @@ export default function SideBar({ user, setUser, setCurrentGame }) {
             <div key={idx} className="hover:bg-second p-2 hover:cursor-pointer" onClick={() => setCurrentGame(game.name)}>{game.name}</div>
         ))}
       </div>
-      <div>
+      {/* <div>
         <div>Welcome {user.name}</div>
         <div>
           <Link to="" onClick={handleLogOut}>
             Log Out
           </Link>
         </div>
-      </div>
+      </div> */}
     </nav>
   );
 }

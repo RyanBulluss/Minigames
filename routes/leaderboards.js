@@ -7,4 +7,6 @@ router.post('/', leaderboardsCtrl.createScore);
 
 router.get('/:game/', leaderboardsCtrl.getAllScores);
 
+router.post('/delete-all', leaderboardsCtrl.deleteAllScores);
+
 module.exports = router;

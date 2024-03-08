@@ -13,7 +13,7 @@ import { checkNextPosition, rng } from "./functions";
 import GameCell from "./GameCell";
 import { createScore } from "../../utilities/leaderboards";
 
-const Snake = ( {currentGame, user, setUpdateLb } ) => {
+const Snake = ({ currentGame, user, setUpdateLb }) => {
   const [state, setState] = useState(createState());
   const [snake, setSnake] = useState(snakeStartPosition);
   const [snakeLength, setSnakeLength] = useState(snakeStartLength);
@@ -48,7 +48,6 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
 
     return () => clearInterval(interval);
   }, [snake, direction, playing, alive]);
-
 
   function hittingFood(newPosition) {
     if (state[newPosition[0]][newPosition[1]].food) {
@@ -99,7 +98,7 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
   async function gameOver() {
     setAlive(false);
     await createScore(currentGame, user, score, timer);
-    setUpdateLb(lb => !lb);
+    setUpdateLb((lb) => !lb);
   }
 
   function restartGame() {
@@ -115,8 +114,6 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
   }
 
   useEffect(() => {
-    if (!playing) return;
-    if (!alive) return;
     const handleKeyPress = (e) => {
       e.preventDefault();
       switch (e.key) {
@@ -152,14 +149,14 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
           if (lastDirection === "LEFT") return;
           setDirection("RIGHT");
           break;
+        case " ":
+          if (alive) {
+            setPlaying(!playing);
+          } else restartGame();
+          break;
         default:
           return;
-          // commented to allow space for comments
-        // case " ":
-        //   if (alive) {
-        //     setPlaying(!playing);
-        //   } else restartGame();
-        //   break;
+        // commented to allow space for comments
       }
     };
     window.addEventListener("keydown", handleKeyPress);
@@ -168,8 +165,6 @@ const Snake = ( {currentGame, user, setUpdateLb } ) => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, [lastDirection, playing, alive]);
-
-
 
   useEffect(() => {
     if (!playing) return;

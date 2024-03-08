@@ -3,7 +3,6 @@ import Snake from '../games/snake/Snake'
 import Minesweeper from '../games/minesweeper/Minesweeper'
 import BrickBreaker from '../games/brick breaker/BrickBreaker'
 import Wordle from '../games/wordle/Wordle'
-import Sudoku from '../games/sudoku/Sudoku'
 import Juggler from '../games/juggler/Juggler'
 import Tetris from '../games/tetris/Tetris'
 
@@ -17,7 +16,6 @@ const GameArea = ( {currentGame, user, setUpdateLb} ) => {
         {currentGame === "Brick Breaker" && <BrickBreaker currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Juggler" && <Juggler currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Wordle" && <Wordle currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
-        {currentGame === "Sudoku" && <Sudoku currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }

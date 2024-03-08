@@ -3,34 +3,34 @@ import { useState } from "react";
 import { createComment, getAllComments } from "../utilities/comments";
 
 const Comments = ({ currentGame, user }) => {
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
+  // const [comment, setComment] = useState("");
+  // const [comments, setComments] = useState([]);
 
-  function handleChange(e) {
-    e.preventDefault();
-    setComment((c) => e.target.value);
-  }
+  // function handleChange(e) {
+  //   e.preventDefault();
+  //   setComment((c) => e.target.value);
+  // }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const newComment = await createComment(currentGame, user, comment);
-    getComments();
-    setComment("");
-  }
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+  //   const newComment = await createComment(currentGame, user, comment);
+  //   getComments();
+  //   setComment("");
+  // }
 
-  useEffect(() => {
-    getComments();
-  }, [currentGame]);
+  // useEffect(() => {
+  //   getComments();
+  // }, [currentGame]);
   
-  async function getComments() {
-    if (!currentGame) return;
-    const arr = await getAllComments(currentGame);
-    setComments(arr.reverse())
-  } 
+  // async function getComments() {
+  //   if (!currentGame) return;
+  //   const arr = await getAllComments(currentGame);
+  //   setComments(arr.reverse())
+  // } 
 
   return (
     <>
-      {currentGame && (
+      {/* {currentGame && (
         <div className="bg-first w-full my-4 p-2">
           <form onSubmit={(e) => handleSubmit(e)} className="flex gap-2">
             <input
@@ -52,7 +52,7 @@ const Comments = ({ currentGame, user }) => {
             <div key={idx}>{com.user.name} | {com.text} | {new Date(com.createdAt).toLocaleDateString()} {new Date(com.createdAt).toLocaleTimeString()}</div>
           ))}
         </div>
-      )}
+      )} */}
     </>
   );
 };
