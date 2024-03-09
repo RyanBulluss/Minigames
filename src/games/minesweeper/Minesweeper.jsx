@@ -9,6 +9,7 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(true);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
+  
 
   function handleCellClick(y, x) {
     if (!playing) return;

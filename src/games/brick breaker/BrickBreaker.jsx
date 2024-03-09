@@ -14,6 +14,8 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
   const [bricks, setBricks] = useState([]);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
+  const [firstGame, setFirstGame] = useState(true);
+
 
   async function gameOver() {
     setPlaying(false);
@@ -22,6 +24,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
   }
 
   function handleRestart() {
+    setFirstGame(false);
     setTimer(0);
     setScore(0);
     resizeBoard();
@@ -292,6 +295,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
         handleRestart={handleRestart}
         timer={timer}
         score={score}
+        firstGame={firstGame}
       />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
         <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>

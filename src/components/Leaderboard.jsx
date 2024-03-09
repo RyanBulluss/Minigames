@@ -9,7 +9,6 @@ const Leaderboard = ({ currentGame, updateLb }) => {
   useEffect(() => {
     // async function getAll() {
     //   const newLeaderboard = await getLeaderboard(currentGame);
-
     //   setLeaderboard(
     //     newLeaderboard.sort((a, b) => {
     //       if (b.score === a.score) {
@@ -21,18 +20,20 @@ const Leaderboard = ({ currentGame, updateLb }) => {
     //     })
     //   );
     // }
-
     // function handleColors() {
     //   if (currentGame === "Snake") return setColors(["snake-background", "snake-controls"])
     //   setColors(["bg-[#222]", "bg-[#333]"])
     // }
-
     // handleColors()
     // getAll();
   }, [currentGame, updateLb]);
 
   return (
     <div className="h-[90vmin] w-[45vmin] bg-first p-4 text-left">
+      <p>
+        Warning: The leaderboard has been disabled to allow for serverless
+        hosting
+      </p>
       <table className="w-full">
         <thead className={colors[1] + " border-b pb-2"}>
           <tr>
