@@ -4,9 +4,10 @@ import { createScore } from "../../utilities/leaderboards";
 
 const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(0);
+  const [firstGame, setFirstGame] = useState(true);
 
   const [lives, setLives] = useState(3);
 
@@ -21,12 +22,14 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   }
 
   function handleRestart() {
+    setPlaying(true);
+    setFirstGame(false);
+    createBall();
     setTimer(0);
     setScore(0);
     handleSizeChange();
     setBalls([]);
     setLives(3);
-    setPlaying(true); 
   }
 
   const handleMouseMove = (event) => {
@@ -208,6 +211,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   }, []);
 
   useEffect(() => {
+    if (balls.length === 0) createBall();
     const ballInterval = setInterval(() => {
       createBall();
     }, 5000);
@@ -246,7 +250,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
 
   return (
     <div className="h-full flex flex-col">
-      <JugglerControls score={score} timer={timer} lives={lives} handleRestart={handleRestart} />
+      <JugglerControls score={score} timer={timer} lives={lives} handleRestart={handleRestart} firstGame={firstGame} />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
         <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
           {balls.map((ball, idx) => (
