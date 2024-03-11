@@ -62,7 +62,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
       ...b,
       {
         y: 0,
-        x: rng(board.width - 10) + 5,
+        x: rng(board.width - 30) + 1,
         ySpeed: board.height / 500,
         xSpeed: rng(board.width / 50) - board.width / 100,
         width: board.width / 30,
