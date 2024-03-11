@@ -4,7 +4,7 @@ import { levels, bricksPerRow } from "./constants";
 import Brick from "./Brick";
 import { createScore } from "../../utilities/leaderboards";
 
-const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
+const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
 
   const [playing, setPlaying] = useState(false);
@@ -16,11 +16,11 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
   const [score, setScore] = useState(0);
   const [firstGame, setFirstGame] = useState(true);
 
-
   async function gameOver() {
+    setBricks([]);
     setPlaying(false);
     await createScore(currentGame, user, score, timer);
-    setUpdateLb(lb => !lb);
+    setUpdateLb((lb) => !lb);
   }
 
   function handleRestart() {
@@ -29,7 +29,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
     setScore(0);
     resizeBoard();
     setBricks([]);
-    setPlaying(true); 
+    setPlaying(true);
   }
 
   function checkBoundaries() {
@@ -192,7 +192,7 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
 
   useEffect(() => {
     const interval2 = setInterval(() => {
-      if (!playing) return
+      if (!playing) return;
       setTimer(timer + 1);
     }, 1000);
 
@@ -314,6 +314,19 @@ const BrickBreaker = ( {currentGame, user, setUpdateLb} ) => {
               borderRadius: "50%",
             }}
           ></div>
+          {!firstGame && !playing && (
+            <div
+              style={{
+                position: "absolute",
+                width: "100%",
+                textAlign: "center",
+                top: board.height / 2,
+              }}
+              className="text-2xl font-semibold"
+            >
+              Game Over
+            </div>
+          )}
           <div
             style={{
               position: "absolute",

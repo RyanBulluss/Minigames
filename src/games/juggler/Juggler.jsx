@@ -16,6 +16,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const [balls, setBalls] = useState([]);
 
   async function gameOver() {
+    setBalls([])
     setPlaying(false);
     await createScore(currentGame, user, score, timer);
     setUpdateLb(lb => !lb);
@@ -267,6 +268,9 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
               }}
             ></div>
           ))}
+          {!firstGame && !playing &&
+          <div style={{ position: "absolute", width: "100%", textAlign: "center", top: board.height / 2, }} className="text-2xl font-semibold">Game Over</div>
+          }
           <div
             style={{
               position: "absolute",
