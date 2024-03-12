@@ -1,9 +1,9 @@
 const board = {
-  height: 11,
-  width: 11,
+  height: 15,
+  width: 15,
 };
 
-const minesAmount = 20;
+const minesAmount = 30;
 
 const adjacents = [
   [1, 0],
