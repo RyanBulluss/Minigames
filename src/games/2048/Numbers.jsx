@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NumbersControls from "./NumbersControls";
 import GameCell from "./GameCell";
-import { board, createState } from "./constants";
+import { board, createState, spawnNewNumber } from "./constants";
 
 const Numbers = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(false);
@@ -10,7 +10,28 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
   const [state, setState] = useState(createState);
 
   function makeMove(direction) {
-    console.log(direction)
+    let newState = JSON.parse(JSON.stringify(state));
+    newState = moveDown(newState);
+    newState = moveDown(newState);
+    newState = moveDown(newState);
+    newState = spawnNewNumber(newState);
+    setState(newState);
+  }
+
+
+  function moveDown(newState) {
+    for (let j = 0; j < 3; j++) {
+      for (let i = 1; i < newState.length + 1; i++) {
+        const y = newState.length - i;
+        newState[y].forEach((num, x) => {
+          if (y + 1 < 4 && newState[y + 1][x] === 0) {
+            newState[y + 1][x] = num;
+            newState[y][x] = 0;
+          }
+        });
+      }
+    }
+    return newState
   }
 
   useEffect(() => {
@@ -38,7 +59,7 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, []);
+  }, [state]);
 
   return (
     <div className="h-full w-full flex flex-col">
@@ -51,9 +72,7 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
           }}
           className="h-[70vmin] w-[80vmin] grid p-[10vmin]"
         >
-          {state.map((arr) => arr.map(value =>
-            <GameCell value={value} />
-          ))}
+          {state.map((arr) => arr.map((value) => <GameCell value={value} />))}
         </div>
       </div>
     </div>
