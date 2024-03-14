@@ -4,16 +4,23 @@ import GameCell from "./GameCell";
 import { board, createState, spawnNewNumber } from "./constants";
 
 const Numbers = ({ currentGame, user, setUpdateLb }) => {
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [state, setState] = useState(createState);
 
   function makeMove(direction) {
     let newState = JSON.parse(JSON.stringify(state));
-    newState = moveDown(newState);
-    newState = moveDown(newState);
-    newState = moveDown(newState);
+    if (direction === "DOWN") {
+      newState = moveDown(newState);
+    } else if (direction === "UP") {
+      newState = moveUp(newState);
+    } else if (direction === "RIGHT") {
+      newState = moveRight(newState);
+    } else if (direction === "LEFT") {
+      newState = moveLeft(newState);
+    }
+
     newState = spawnNewNumber(newState);
     setState(newState);
   }
@@ -27,12 +34,71 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
           if (y + 1 < 4 && newState[y + 1][x] === 0) {
             newState[y + 1][x] = num;
             newState[y][x] = 0;
+          } else if (y + 1 < 4 && newState[y + 1][x] === num ) {
+            newState[y][x] = 0;
+            newState[y + 1][x] = num * 2;
           }
         });
       }
     }
     return newState
   }
+  
+  function moveUp(newState) {
+    for (let j = 0; j < 3; j++) {
+      for (let i = 1; i < newState.length; i++) {
+        const y = i;
+        newState[y].forEach((num, x) => {
+          if (y - 1 >= 0 && newState[y - 1][x] === 0) {
+            newState[y - 1][x] = num;
+            newState[y][x] = 0;
+          } else if (y - 1 >= 0 && newState[y - 1][x] === num ) {
+            newState[y][x] = 0;
+            newState[y - 1][x] = num * 2;
+          }
+        });
+      }
+    }
+    return newState
+  }
+  function moveLeft(newState) {
+    for (let j = 0; j < 3; j++) {
+      for (let i = 1; i < newState.length; i++) {
+        const x = i;
+        for (let y = 0; y < newState.length; y++) {
+          let num = newState[y][x]
+          if (x - 1 >= 0 && newState[y][x - 1] === 0) {
+            newState[y][x - 1] = num;
+            newState[y][x] = 0;
+          } else if (x - 1 >= 0 && newState[y][x - 1] === num ) {
+            newState[y][x] = 0;
+            newState[y][x - 1] = num * 2;
+          }
+        }
+      }
+    }
+    return newState
+  }
+  
+  function moveRight(newState) {
+    for (let j = 0; j < 3; j++) {
+      for (let i = 1; i < newState.length + 1; i++) {
+        const x = newState.length - i;
+        for (let y = 0; y < newState.length; y++) {
+          let num = newState[y][x]
+          if (x + 1 < 4 && newState[y][x + 1] === 0) {
+            newState[y][x + 1] = num;
+            newState[y][x] = 0;
+          } else if (x + 1 < 4 && newState[y][x + 1] === num ) {
+            newState[y][x] = 0;
+            newState[y][x + 1] = num * 2;
+          }
+        }
+      }
+    }
+    return newState
+  }
+
 
   useEffect(() => {
     const handleKeyPress = (e) => {
