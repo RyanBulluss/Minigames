@@ -4,7 +4,6 @@ const GameCell = ({ value }) => {
   return (
     <div
       style={{
-        border: "1px solid rgb(36, 35, 35)",
         color: value === 2 || value === 4 ? "black" : "",
         background:
           value === 2
@@ -27,7 +26,7 @@ const GameCell = ({ value }) => {
             ? "#edc950"
             : value === 1024
             ? "#edc53f"
-            : "",
+            : "#cdc1b4",
       }}
       className="flex justify-center items-center text-white font-bold text-2xl"
     >

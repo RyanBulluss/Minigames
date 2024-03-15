@@ -7,9 +7,10 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(true);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
-  const [state, setState] = useState(createState);
+  const [state, setState] = useState(createState());
 
   function makeMove(direction) {
+    if (!playing) return;
     let newState = JSON.parse(JSON.stringify(state));
     if (direction === "DOWN") {
       newState = moveDown(newState);
@@ -20,9 +21,31 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     } else if (direction === "LEFT") {
       newState = moveLeft(newState);
     }
-
-    newState = spawnNewNumber(newState);
+    if (checkLoss(newState)) {
+      gameOver();
+    } else {
+      newState = spawnNewNumber(newState);
+    }
     setState(newState);
+  }
+
+  function checkLoss(newState) {
+    let loss = true
+    newState.forEach(arr => arr.forEach(num => {
+      if (num === 0) loss = false;
+    }))
+    return loss
+  }
+
+  function gameOver() {
+    setPlaying(false);
+  }
+
+  function restartGame() {
+    setState(createState());
+    setPlaying(true);
+    setTimer(0);
+    setScore(0);
   }
 
 
@@ -129,14 +152,14 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <NumbersControls timer={timer} score={score} />
-      <div className="h-full flex justify-center items-center bg-gray-600">
+      <NumbersControls timer={timer} score={score} restartGame={restartGame} />
+      <div className="h-full flex justify-center items-center bg-[#bbada0]">
         <div
           style={{
             gridTemplateColumns: `repeat(${board.width}, minmax(0, 1fr))`,
             gridTemplateRows: `repeat(${board.height}, minmax(0, 1fr))`,
           }}
-          className="h-[70vmin] w-[80vmin] grid p-[10vmin]"
+          className="h-[70vmin] w-[70vmin] grid p-[10vmin] gap-4"
         >
           {state.map((arr) => arr.map((value) => <GameCell value={value} />))}
         </div>
