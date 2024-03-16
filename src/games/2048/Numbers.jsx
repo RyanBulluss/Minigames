@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NumbersControls from "./NumbersControls";
 import GameCell from "./GameCell";
-import { board, createState, spawnNewNumber } from "./constants";
+import { board, createState, spawnNewNumber, adjacents } from "./constants";
 
 const Numbers = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(true);
@@ -21,23 +21,52 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     } else if (direction === "LEFT") {
       newState = moveLeft(newState);
     }
-    if (checkLoss(newState)) {
-      gameOver();
-    } else {
-      newState = spawnNewNumber(newState);
-    }
+    newState = checkLoss(newState)
+
+
     setState(newState);
   }
 
   function checkLoss(newState) {
     let loss = true
-    newState.forEach(arr => arr.forEach(num => {
+    newState.forEach((arr, y) => arr.forEach((num, x) => {
       if (num === 0) loss = false;
+  
+      adjacents.forEach(adj => {
+        if (loss) {
+          const newY = y + adj[0];
+          const newX = x + adj[1];
+          if (newX >= 0 && newX < 4 && newY >= 0 && newY < 4 && newState[newY][newX] === num) {
+            loss = false
+          }
+        }
+      })
+      
     }))
-    return loss
+    if (loss) {
+      gameOver();
+    } else {
+      if (stateChanged(newState)) {
+        newState = spawnNewNumber(newState);
+        setScore(s => s + 1)
+      }
+    }
+
+    return newState
+  }
+
+  function stateChanged(newState) {
+    let changed = false;
+    newState.forEach((arr, y) => arr.forEach((num, x) => {
+      if (!changed && state[y][x] !== num) {
+        changed = true;
+      }
+    }))
+    return changed;
   }
 
   function gameOver() {
+    console.log("Game Over")
     setPlaying(false);
   }
 
@@ -121,6 +150,17 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     }
     return newState
   }
+
+  useEffect(() => {
+    if (!playing) return;
+    const timerInterval = setInterval(() => {
+      setTimer(t => t + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [playing]);
 
 
   useEffect(() => {

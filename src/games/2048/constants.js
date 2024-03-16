@@ -4,6 +4,13 @@ const board = {
     width: 4,
 }
 
+const adjacents = [
+    [1, 0],
+    [0, 1],
+    [-1, 0],
+    [0, -1],
+]
+
 function rng(num) {
     return Math.floor(Math.random() * num);
 }
@@ -43,4 +50,4 @@ function createState() {
 }
 
 
-export { board, createState, spawnNewNumber }
+export { board, createState, spawnNewNumber, adjacents }
