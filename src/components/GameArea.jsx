@@ -6,6 +6,7 @@ import Wordle from '../games/wordle/Wordle'
 import Juggler from '../games/juggler/Juggler'
 import Tetris from '../games/tetris/Tetris'
 import Numbers from '../games/2048/Numbers'
+import FlappyBird from '../games/flappy bird/FlappyBird'
 
 const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
@@ -18,6 +19,7 @@ const GameArea = ( {currentGame, user, setUpdateLb} ) => {
         {currentGame === "Juggler" && <Juggler currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Wordle" && <Wordle currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "2048" && <Numbers currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Flappy Bird" && <FlappyBird currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }

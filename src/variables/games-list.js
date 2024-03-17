@@ -20,6 +20,9 @@ const gamesList = [
     {
         name: "2048",
     },
+    {
+        name: "Flappy Bird",
+    },
 ]
 
 export default gamesList
