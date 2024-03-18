@@ -1,0 +1,17 @@
+.bird {
+  position: absolute;
+  background-image: url("./assets/bird.jpg"); /* Add your bird image */
+  background-size: 150%;
+  background-repeat: no-repeat; /* Prevent the background image from repeating */
+  background-position: center;
+  height: 100%;
+  width: 100%;
+}
+
+.fb-bg {
+  background-image: url("./assets/background.jpg"); /* Add your bird image */
+  background-size: 180%;
+  background-repeat: no-repeat; /* Prevent the background image from repeating */
+  background-position: center;
+  height: 100%;
+}

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import FlappyBirdControls from "./FlappyBirdControls";
+import "./FlappyBird.css";
 
 const FlappyBird = () => {
   const [playing, setPlaying] = useState(false);
@@ -17,8 +18,8 @@ const FlappyBird = () => {
       x: newBoard.x + newBoard.width / 5,
       y: newBoard.y + newBoard.height / 2,
       ySpeed: 0,
-      height: newBoard.height / 20,
-      width: newBoard.width / 20,
+      height: newBoard.height / 12,
+      width: newBoard.width / 10,
       color: "orange",
     });
     setPipes([]);
@@ -69,7 +70,7 @@ const FlappyBird = () => {
       setPlaying(false);
     } else {
       setPipes(newPipes);
-      setBird(newBird); 
+      setBird(newBird);
     }
   }
 
@@ -82,13 +83,13 @@ const FlappyBird = () => {
 
   function checkLoss(newBird, newPipes) {
     let loss = false;
-    if ( newBird.y < board.y ) {
+    if (newBird.y < board.y) {
       loss = true;
-      setBird({...bird, y: board.y})
+      setBird({ ...bird, y: board.y });
     }
-    if ( newBird.y + newBird.height > board.y + board.height ) {
+    if (newBird.y + newBird.height > board.y + board.height) {
       loss = true;
-      setBird({...bird, y: board.y + board.height - bird.height})
+      setBird({ ...bird, y: board.y + board.height - bird.height });
     }
 
     newPipes.forEach((pipe) => {
@@ -158,7 +159,8 @@ const FlappyBird = () => {
     <div className="h-full w-full flex flex-col">
       <FlappyBirdControls timer={timer} score={score} startGame={startGame} />
       <div className="h-full flex justify-center items-center bg-gray-600">
-        <div ref={canvas} className="h-[90%] w-[90%] bg-sky-500">
+        <div ref={canvas} className="h-[90%] w-[90%]">
+          <div className="fb-bg"></div>
           <div
             style={{
               position: "absolute",
@@ -166,22 +168,33 @@ const FlappyBird = () => {
               left: bird.x,
               height: bird.height,
               width: bird.width,
-              background: bird.color,
             }}
-            className=""
-          ></div>
+          >
+            <div className="bird"></div>
+          </div>
           {pipes.map((pipe, idx) => (
-            <div
-              style={{
-                position: "absolute",
-                top: pipe.y,
-                left: pipe.x,
-                height: pipe.height,
-                width: pipe.width,
-                background: pipe.color,
-              }}
-              className=""
-            ></div>
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  top: pipe.y,
+                  left: pipe.x,
+                  height: pipe.height,
+                  width: pipe.width,
+                  background: "#358138",
+                }}
+              ></div>
+              <div
+                style={{
+                  position: "absolute",
+                  top: idx % 2 === 0 ? pipe.y + pipe.height : pipe.y,
+                  left: pipe.x - pipe.width / 20,
+                  height: pipe.width / 10,
+                  width: pipe.width + pipe.width / 10,
+                  background: "#359138",
+                }}
+              ></div>
+            </>
           ))}
         </div>
       </div>
