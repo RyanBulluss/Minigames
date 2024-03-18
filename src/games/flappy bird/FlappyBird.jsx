@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import FlappyBirdControls from "./FlappyBirdControls";
 
 const FlappyBird = () => {
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [board, setBoard] = useState({});
@@ -28,8 +28,9 @@ const FlappyBird = () => {
 
   function createPipes() {
     if (pipes.length > 1) return [...pipes];
-    const gap = board.height / 2;
-    const pipeHeight = Math.floor(Math.random() * (board.height - gap));
+    const gap = board.height / 3;
+    const pipeHeight =
+      Math.floor(Math.random() * (board.height - gap * 2)) + gap / 3;
 
     const topPipe = {
       x: board.x + board.width - board.width / 10,
@@ -54,7 +55,7 @@ const FlappyBird = () => {
     let newPipes = oldPipes.map((pipe) => {
       return { ...pipe, x: pipe.x - board.width / 100 };
     });
-    newPipes = newPipes.filter(pipe => pipe.x > board.x);
+    newPipes = newPipes.filter((pipe) => pipe.x > board.x);
     return newPipes;
   }
 
@@ -64,9 +65,12 @@ const FlappyBird = () => {
     const newBird = moveBird();
     newPipes = movePipes(newPipes);
 
-    if (checkLoss(newBird)) setPlaying(false);
-    setPipes(newPipes);
-    setBird(newBird);
+    if (checkLoss(newBird, newPipes)) {
+      setPlaying(false);
+    } else {
+      setPipes(newPipes);
+      setBird(newBird); 
+    }
   }
 
   function moveBird() {
@@ -76,13 +80,28 @@ const FlappyBird = () => {
     return newBird;
   }
 
-  function checkLoss(newBird) {
-    if (
-      newBird.y < board.y ||
-      newBird.y + newBird.height > board.y + board.height
-    )
-      return true;
-    return false;
+  function checkLoss(newBird, newPipes) {
+    let loss = false;
+    if ( newBird.y < board.y ) {
+      loss = true;
+      setBird({...bird, y: board.y})
+    }
+    if ( newBird.y + newBird.height > board.y + board.height ) {
+      loss = true;
+      setBird({...bird, y: board.y + board.height - bird.height})
+    }
+
+    newPipes.forEach((pipe) => {
+      if (
+        pipe.x < bird.x + bird.width &&
+        pipe.x + pipe.width > bird.x &&
+        pipe.y < bird.y + bird.height &&
+        pipe.y + pipe.height > bird.y
+      ) {
+        loss = true;
+      }
+    });
+    return loss;
   }
 
   function flap() {
@@ -116,10 +135,8 @@ const FlappyBird = () => {
       e.preventDefault();
       switch (e.key) {
         case " ":
+          if (!playing) startGame();
           flap();
-          break;
-        case "M":
-          createPipes();
           break;
         default:
           return;
@@ -132,9 +149,14 @@ const FlappyBird = () => {
     };
   }, [board, playing, bird]);
 
+  function startGame() {
+    resizeBoard();
+    setPlaying(true);
+  }
+
   return (
     <div className="h-full w-full flex flex-col">
-      <FlappyBirdControls timer={timer} score={score} />
+      <FlappyBirdControls timer={timer} score={score} startGame={startGame} />
       <div className="h-full flex justify-center items-center bg-gray-600">
         <div ref={canvas} className="h-[90%] w-[90%] bg-sky-500">
           <div
@@ -146,7 +168,7 @@ const FlappyBird = () => {
               width: bird.width,
               background: bird.color,
             }}
-            className="rounded-full"
+            className=""
           ></div>
           {pipes.map((pipe, idx) => (
             <div
