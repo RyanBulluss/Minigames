@@ -7,6 +7,7 @@ const FlappyBird = () => {
   const [score, setScore] = useState(0);
   const [board, setBoard] = useState({});
   const [bird, setBird] = useState({});
+  const [pipes, setPipes] = useState([]);
 
   const canvas = useRef();
 
@@ -20,17 +21,59 @@ const FlappyBird = () => {
       width: newBoard.width / 20,
       color: "orange",
     });
+    setPipes([]);
     console.log(newBoard);
     setBoard(newBoard);
   }
 
+  function createPipes() {
+    if (pipes.length > 1) return [...pipes];
+    const gap = board.height / 2;
+    const pipeHeight = Math.floor(Math.random() * (board.height - gap));
+
+    const topPipe = {
+      x: board.x + board.width - board.width / 10,
+      y: board.y,
+      height: pipeHeight,
+      width: board.width / 10,
+      color: "green",
+    };
+    const bottomPipe = {
+      x: board.x + board.width - board.width / 10,
+      y: board.y + topPipe.height + gap,
+      height: board.height - topPipe.height - gap,
+      width: board.width / 10,
+      color: "green",
+    };
+
+    setPipes([...pipes, topPipe, bottomPipe]);
+    return [...pipes, topPipe, bottomPipe];
+  }
+
+  function movePipes(oldPipes) {
+    let newPipes = oldPipes.map((pipe) => {
+      return { ...pipe, x: pipe.x - board.width / 100 };
+    });
+    newPipes = newPipes.filter(pipe => pipe.x > board.x);
+    return newPipes;
+  }
+
   function gameLoop() {
     if (!playing) return;
+    let newPipes = createPipes();
+    const newBird = moveBird();
+    newPipes = movePipes(newPipes);
+
+    if (checkLoss(newBird)) setPlaying(false);
+    setPipes(newPipes);
+    setBird(newBird);
+  }
+
+  function moveBird() {
     const newBird = { ...bird };
     newBird.y += bird.ySpeed;
     newBird.ySpeed += board.height / 1000;
-    if (checkLoss(newBird)) setPlaying(false);
-    setBird(newBird);
+    return newBird;
   }
 
   function checkLoss(newBird) {
@@ -75,6 +118,9 @@ const FlappyBird = () => {
         case " ":
           flap();
           break;
+        case "M":
+          createPipes();
+          break;
         default:
           return;
       }
@@ -102,6 +148,19 @@ const FlappyBird = () => {
             }}
             className="rounded-full"
           ></div>
+          {pipes.map((pipe, idx) => (
+            <div
+              style={{
+                position: "absolute",
+                top: pipe.y,
+                left: pipe.x,
+                height: pipe.height,
+                width: pipe.width,
+                background: pipe.color,
+              }}
+              className=""
+            ></div>
+          ))}
         </div>
       </div>
     </div>
