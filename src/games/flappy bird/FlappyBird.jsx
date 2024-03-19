@@ -1,17 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import FlappyBirdControls from "./FlappyBirdControls";
 import "./FlappyBird.css";
-import flapAudio from "./assets/flap.MP3";
-import hitAudio from "./assets/hit.MP3";
-import pointAudio from "./assets/point.MP3";
+import { hitSound, flapSound, pointSound } from "../../variables/audio";
 
-const flapSound = new Audio(flapAudio);
-const hitSound = new Audio(hitAudio);
-const pointSound = new Audio(pointAudio);
 
-flapSound.volume = 0.1;
-hitSound.volume = 0.1;
-pointSound.volume = 0.1;
+
 
 const FlappyBird = () => {
   const [playing, setPlaying] = useState(false);
@@ -70,7 +63,7 @@ const FlappyBird = () => {
     newPipes = newPipes.filter((pipe) => pipe.x > board.x);
     if (oldPipes.length !== newPipes.length) {
       setScore((s) => s + 1);
-      pointSound.play();
+      pointSound();
     }
     return newPipes;
   }
@@ -84,7 +77,7 @@ const FlappyBird = () => {
     if (checkLoss(newBird, newPipes)) {
       setPlaying(false);
       setFirstGame(false);
-      hitSound.play();
+      hitSound()
     } else {
       setPipes(newPipes);
       setBird(newBird);
@@ -128,9 +121,7 @@ const FlappyBird = () => {
       newBird.ySpeed = -board.height / 50;
       return newBird;
     });
-    flapSound.pause();
-    flapSound.currentTime = 0;
-    flapSound.play();
+    flapSound();
   }
 
   useEffect(() => {

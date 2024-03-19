@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import NumbersControls from "./NumbersControls";
 import GameCell from "./GameCell";
 import { board, createState, spawnNewNumber, adjacents } from "./constants";
+import { swipeSound, combineSound } from "../../variables/audio";
+
 
 const Numbers = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(true);
@@ -21,52 +23,60 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     } else if (direction === "LEFT") {
       newState = moveLeft(newState);
     }
-    newState = checkLoss(newState)
-
-
+    newState = checkLoss(newState);
     setState(newState);
   }
 
   function checkLoss(newState) {
-    let loss = true
-    newState.forEach((arr, y) => arr.forEach((num, x) => {
-      if (num === 0) loss = false;
-  
-      adjacents.forEach(adj => {
-        if (loss) {
-          const newY = y + adj[0];
-          const newX = x + adj[1];
-          if (newX >= 0 && newX < 4 && newY >= 0 && newY < 4 && newState[newY][newX] === num) {
-            loss = false
+    let loss = true;
+    newState.forEach((arr, y) =>
+      arr.forEach((num, x) => {
+        if (num === 0) loss = false;
+
+        adjacents.forEach((adj) => {
+          if (loss) {
+            const newY = y + adj[0];
+            const newX = x + adj[1];
+            if (
+              newX >= 0 &&
+              newX < 4 &&
+              newY >= 0 &&
+              newY < 4 &&
+              newState[newY][newX] === num
+            ) {
+              loss = false;
+            }
           }
-        }
+        });
       })
-      
-    }))
+    );
     if (loss) {
       gameOver();
     } else {
       if (stateChanged(newState)) {
         newState = spawnNewNumber(newState);
-        setScore(s => s + 1)
+        setScore((s) => s + 1);
+        swipeSound();
       }
     }
 
-    return newState
+    return newState;
   }
 
   function stateChanged(newState) {
     let changed = false;
-    newState.forEach((arr, y) => arr.forEach((num, x) => {
-      if (!changed && state[y][x] !== num) {
-        changed = true;
-      }
-    }))
+    newState.forEach((arr, y) =>
+      arr.forEach((num, x) => {
+        if (!changed && state[y][x] !== num) {
+          changed = true;
+        }
+      })
+    );
     return changed;
   }
 
   function gameOver() {
-    console.log("Game Over")
+    console.log("Game Over");
     setPlaying(false);
   }
 
@@ -77,7 +87,6 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     setScore(0);
   }
 
-
   function moveDown(newState) {
     for (let j = 0; j < 3; j++) {
       for (let i = 1; i < newState.length + 1; i++) {
@@ -86,16 +95,17 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
           if (y + 1 < 4 && newState[y + 1][x] === 0) {
             newState[y + 1][x] = num;
             newState[y][x] = 0;
-          } else if (y + 1 < 4 && newState[y + 1][x] === num ) {
+          } else if (y + 1 < 4 && newState[y + 1][x] === num) {
             newState[y][x] = 0;
             newState[y + 1][x] = num * 2;
+            combineSound();
           }
         });
       }
     }
-    return newState
+    return newState;
   }
-  
+
   function moveUp(newState) {
     for (let j = 0; j < 3; j++) {
       for (let i = 1; i < newState.length; i++) {
@@ -104,64 +114,66 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
           if (y - 1 >= 0 && newState[y - 1][x] === 0) {
             newState[y - 1][x] = num;
             newState[y][x] = 0;
-          } else if (y - 1 >= 0 && newState[y - 1][x] === num ) {
+          } else if (y - 1 >= 0 && newState[y - 1][x] === num) {
             newState[y][x] = 0;
             newState[y - 1][x] = num * 2;
+            combineSound();
           }
         });
       }
     }
-    return newState
+    return newState;
   }
   function moveLeft(newState) {
     for (let j = 0; j < 3; j++) {
       for (let i = 1; i < newState.length; i++) {
         const x = i;
         for (let y = 0; y < newState.length; y++) {
-          let num = newState[y][x]
+          let num = newState[y][x];
           if (x - 1 >= 0 && newState[y][x - 1] === 0) {
             newState[y][x - 1] = num;
             newState[y][x] = 0;
-          } else if (x - 1 >= 0 && newState[y][x - 1] === num ) {
+          } else if (x - 1 >= 0 && newState[y][x - 1] === num) {
             newState[y][x] = 0;
             newState[y][x - 1] = num * 2;
+            combineSound();
           }
         }
       }
     }
-    return newState
+    return newState;
   }
-  
+
   function moveRight(newState) {
     for (let j = 0; j < 3; j++) {
       for (let i = 1; i < newState.length + 1; i++) {
         const x = newState.length - i;
         for (let y = 0; y < newState.length; y++) {
-          let num = newState[y][x]
+          let num = newState[y][x];
           if (x + 1 < 4 && newState[y][x + 1] === 0) {
             newState[y][x + 1] = num;
             newState[y][x] = 0;
-          } else if (x + 1 < 4 && newState[y][x + 1] === num ) {
+          } else if (x + 1 < 4 && newState[y][x + 1] === num) {
             newState[y][x] = 0;
             newState[y][x + 1] = num * 2;
+            combineSound();
           }
         }
       }
     }
-    return newState
+    return newState;
   }
 
   useEffect(() => {
     if (!playing) return;
     const timerInterval = setInterval(() => {
-      setTimer(t => t + 1);
+      setTimer((t) => t + 1);
     }, 1000);
 
     return () => {
       clearInterval(timerInterval);
     };
   }, [playing]);
-
 
   useEffect(() => {
     const handleKeyPress = (e) => {
