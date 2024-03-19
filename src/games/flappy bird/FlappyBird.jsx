@@ -196,7 +196,11 @@ const FlappyBird = () => {
               width: bird.width,
             }}
           >
-            <div className="bird"></div>
+            <div
+              className={bird.ySpeed > 20 ? "bird-plummet bird" :
+              bird.ySpeed > 10 ? "bird-down bird"
+              : "bird bird-up"}
+            ></div>
           </div>
           {pipes.map((pipe, idx) => (
             <>

@@ -8,9 +8,19 @@
   width: 100%;
 }
 
+.bird-up {
+    transform: rotate(-20deg);
+}
+.bird-down {
+    transform: rotate(45deg);
+}
+.bird-plummet {
+    transform: rotate(80deg);
+}
+
 .fb-bg {
   background-image: url("./assets/background.jpg"); /* Add your bird image */
-  background-size: 180%;
+  background-size:160%;
   background-repeat: no-repeat; /* Prevent the background image from repeating */
   background-position: center;
   height: 100%;
