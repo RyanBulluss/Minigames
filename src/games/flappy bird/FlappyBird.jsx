@@ -1,6 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import FlappyBirdControls from "./FlappyBirdControls";
 import "./FlappyBird.css";
+import flapAudio from "./assets/flap.MP3";
+import hitAudio from "./assets/hit.MP3";
+
+const flapSound = new Audio(flapAudio);
+const hitSound = new Audio(hitAudio);
+
+flapSound.volume = 0.1;
+hitSound.volume = 0.1;
 
 const FlappyBird = () => {
   const [playing, setPlaying] = useState(false);
@@ -9,6 +17,7 @@ const FlappyBird = () => {
   const [board, setBoard] = useState({});
   const [bird, setBird] = useState({});
   const [pipes, setPipes] = useState([]);
+  const [firstGame, setFirstGame] = useState(true);
 
   const canvas = useRef();
 
@@ -37,14 +46,14 @@ const FlappyBird = () => {
       x: board.x + board.width - board.width / 10,
       y: board.y,
       height: pipeHeight,
-      width: board.width / 10,
+      width: board.width / 8,
       color: "green",
     };
     const bottomPipe = {
       x: board.x + board.width - board.width / 10,
       y: board.y + topPipe.height + gap,
       height: board.height - topPipe.height - gap,
-      width: board.width / 10,
+      width: board.width / 8,
       color: "green",
     };
 
@@ -54,7 +63,7 @@ const FlappyBird = () => {
 
   function movePipes(oldPipes) {
     let newPipes = oldPipes.map((pipe) => {
-      return { ...pipe, x: pipe.x - board.width / 100 };
+      return { ...pipe, x: pipe.x - board.width / 150 };
     });
     newPipes = newPipes.filter((pipe) => pipe.x > board.x);
     return newPipes;
@@ -68,6 +77,8 @@ const FlappyBird = () => {
 
     if (checkLoss(newBird, newPipes)) {
       setPlaying(false);
+      setFirstGame(false);
+      hitSound.play();
     } else {
       setPipes(newPipes);
       setBird(newBird);
@@ -111,7 +122,9 @@ const FlappyBird = () => {
       newBird.ySpeed = -board.height / 50;
       return newBird;
     });
-    console.log(board);
+    flapSound.pause();
+    flapSound.currentTime = 0;
+    flapSound.play();
   }
 
   useEffect(() => {
@@ -158,9 +171,22 @@ const FlappyBird = () => {
   return (
     <div className="h-full w-full flex flex-col">
       <FlappyBirdControls timer={timer} score={score} startGame={startGame} />
-      <div className="h-full flex justify-center items-center bg-gray-600">
+      <div className="h-full flex justify-center items-center bg-gray-600 overflow-hidden">
         <div ref={canvas} className="h-[90%] w-[90%]">
           <div className="fb-bg"></div>
+          {!firstGame && !playing && (
+            <div
+              className="absolute h-full w-full bg-[#333]/50 z-30 flex justify-center items-center text-2xl"
+              style={{
+                left: board.x,
+                top: board.y,
+                height: board.height,
+                width: board.width,
+              }}
+            >
+              Game Over
+            </div>
+          )}
           <div
             style={{
               position: "absolute",
@@ -181,7 +207,7 @@ const FlappyBird = () => {
                   left: pipe.x,
                   height: pipe.height,
                   width: pipe.width,
-                  background: "#358138",
+                  background: "linear-gradient(to right, #35a138, #357138)",
                 }}
               ></div>
               <div
@@ -191,7 +217,7 @@ const FlappyBird = () => {
                   left: pipe.x - pipe.width / 20,
                   height: pipe.width / 10,
                   width: pipe.width + pipe.width / 10,
-                  background: "#359138",
+                  background: "linear-gradient(to right, #35b138, #358138)",
                 }}
               ></div>
             </>
