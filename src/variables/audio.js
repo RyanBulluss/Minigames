@@ -3,6 +3,11 @@ import hit from "../assets/hit.mp3";
 import point from "../assets/point.mp3";
 import swipe from "../assets/swipe.mp3";
 import combine from "../assets/combine.mp3";
+import pop from "../assets/pop.mp3";
+import pop2 from "../assets/pop2.mp3";
+import gameOver from "../assets/game-over.mp3";
+import bomb from "../assets/bomb.mp3";
+import win from "../assets/win.mp3";
 
 const volume = 0.1;
 
@@ -19,11 +24,32 @@ const hitAudio = new Audio(hit);
 const pointAudio = new Audio(point);
 const swipeAudio = new Audio(swipe);
 const combineAudio = new Audio(combine);
+const popAudio = new Audio(pop);
+const pop2Audio = new Audio(pop2);
+const gameOverAudio = new Audio(gameOver);
+const bombAudio = new Audio(bomb);
+const winAudio = new Audio(win);
 
 const flapSound = playAudio(flapAudio);
 const hitSound = playAudio(hitAudio);
 const pointSound = playAudio(pointAudio);
 const swipeSound = playAudio(swipeAudio);
 const combineSound = playAudio(combineAudio);
+const popSound = playAudio(popAudio);
+const pop2Sound = playAudio(pop2Audio);
+const gameOverSound = playAudio(gameOverAudio);
+const bombSound = playAudio(bombAudio);
+const winSound = playAudio(winAudio);
 
-export { flapSound, hitSound, pointSound, swipeSound, combineSound };
+export {
+  flapSound,
+  hitSound,
+  pointSound,
+  swipeSound,
+  combineSound,
+  popSound,
+  pop2Sound,
+  gameOverSound,
+  bombSound,
+  winSound
+};

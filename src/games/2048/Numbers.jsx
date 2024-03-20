@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import NumbersControls from "./NumbersControls";
 import GameCell from "./GameCell";
 import { board, createState, spawnNewNumber, adjacents } from "./constants";
-import { swipeSound, combineSound } from "../../variables/audio";
+import { swipeSound, combineSound, gameOverSound } from "../../variables/audio";
 
 
 const Numbers = ({ currentGame, user, setUpdateLb }) => {
@@ -76,7 +76,7 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
   }
 
   function gameOver() {
-    console.log("Game Over");
+    gameOverSound();
     setPlaying(false);
   }
 

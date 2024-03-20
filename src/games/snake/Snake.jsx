@@ -12,6 +12,7 @@ import {
 import { checkNextPosition, rng } from "./functions";
 import GameCell from "./GameCell";
 import { createScore } from "../../utilities/leaderboards";
+import { swipeSound, combineSound, gameOverSound } from "../../variables/audio";
 
 const Snake = ({ currentGame, user, setUpdateLb }) => {
   const [state, setState] = useState(createState());
@@ -59,6 +60,7 @@ const Snake = ({ currentGame, user, setUpdateLb }) => {
         return newState;
       });
       spawnFood();
+      combineSound();
     }
   }
 
@@ -97,6 +99,7 @@ const Snake = ({ currentGame, user, setUpdateLb }) => {
 
   async function gameOver() {
     setAlive(false);
+    gameOverSound();
     await createScore(currentGame, user, score, timer);
     setUpdateLb((lb) => !lb);
   }
@@ -118,36 +121,44 @@ const Snake = ({ currentGame, user, setUpdateLb }) => {
       e.preventDefault();
       switch (e.key) {
         case "ArrowUp":
-          if (lastDirection === "DOWN") return;
+          if (lastDirection === "DOWN" || lastDirection === "UP") return;
           setDirection("UP");
+          swipeSound();
           break;
         case "ArrowDown":
-          if (lastDirection === "UP") return;
+          if (lastDirection === "UP" || lastDirection === "DOWN") return;
           setDirection("DOWN");
+          swipeSound();
           break;
         case "ArrowRight":
-          if (lastDirection === "LEFT") return;
+          if (lastDirection === "LEFT" || lastDirection === "RIGHT") return;
           setDirection("RIGHT");
+          swipeSound();
           break;
         case "ArrowLeft":
-          if (lastDirection === "RIGHT") return;
+          if (lastDirection === "RIGHT" || lastDirection === "LEFT") return;
           setDirection("LEFT");
+          swipeSound();
           break;
         case "w":
-          if (lastDirection === "DOWN") return;
+          if (lastDirection === "DOWN" || lastDirection === "UP") return;
           setDirection("UP");
+          swipeSound();
           break;
         case "s":
-          if (lastDirection === "UP") return;
+          if (lastDirection === "UP" || lastDirection === "DOWN") return;
           setDirection("DOWN");
+          swipeSound();
           break;
         case "a":
-          if (lastDirection === "RIGHT") return;
+          if (lastDirection === "RIGHT" || lastDirection === "LEFT") return;
           setDirection("LEFT");
+          swipeSound();
           break;
         case "d":
-          if (lastDirection === "LEFT") return;
+          if (lastDirection === "LEFT" || lastDirection === "RIGHT") return;
           setDirection("RIGHT");
+          swipeSound();
           break;
         case " ":
           if (alive) {

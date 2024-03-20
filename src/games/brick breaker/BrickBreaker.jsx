@@ -3,6 +3,7 @@ import BrickBreakerControls from "./BrickBreakerControls";
 import { levels, bricksPerRow } from "./constants";
 import Brick from "./Brick";
 import { createScore } from "../../utilities/leaderboards";
+import { popSound, pop2Sound, gameOverSound } from "../../variables/audio";
 
 const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
@@ -19,6 +20,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
   async function gameOver() {
     setBricks([]);
     setPlaying(false);
+    gameOverSound();
     await createScore(currentGame, user, score, timer);
     setUpdateLb((lb) => !lb);
   }
@@ -80,6 +82,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
       newY + ball.height > paddle.y
     ) {
       if (ball.ySpeed < 0) return;
+      pop2Sound();
       const angle = checkAngle();
       setBall((b) => {
         const newBall = { ...b };
@@ -248,7 +251,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
         const distBottom = ballTop - brickBottom;
         const distRight = ballLeft - brickRight;
         const disLeft = brickLeft - ballRight;
-
+        popSound();
         setScore(score + 100);
         if (distTop >= distBottom && distTop >= distRight && distTop >= disLeft)
           setBall({

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import JugglerControls from "./JugglerControls";
 import { createScore } from "../../utilities/leaderboards";
+import { gameOverSound, pop2Sound } from "../../variables/audio";
 
 const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
@@ -16,10 +17,11 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const [balls, setBalls] = useState([]);
 
   async function gameOver() {
-    setBalls([])
+    setBalls([]);
     setPlaying(false);
+    gameOverSound();
     await createScore(currentGame, user, score, timer);
-    setUpdateLb(lb => !lb);
+    setUpdateLb((lb) => !lb);
   }
 
   function handleRestart() {
@@ -178,6 +180,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
         newY + ball.height > paddle.y
       ) {
         if (ball.ySpeed < 0) return;
+        pop2Sound();
         const angle = checkAngle(idx);
         setBalls((b) => {
           const newBalls = [...b];
@@ -251,7 +254,13 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
 
   return (
     <div className="h-full flex flex-col">
-      <JugglerControls score={score} timer={timer} lives={lives} handleRestart={handleRestart} firstGame={firstGame} />
+      <JugglerControls
+        score={score}
+        timer={timer}
+        lives={lives}
+        handleRestart={handleRestart}
+        firstGame={firstGame}
+      />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
         <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
           {balls.map((ball, idx) => (
@@ -268,9 +277,19 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
               }}
             ></div>
           ))}
-          {!firstGame && !playing &&
-          <div style={{ position: "absolute", width: "100%", textAlign: "center", top: board.height / 2, }} className="text-2xl font-semibold">Game Over</div>
-          }
+          {!firstGame && !playing && (
+            <div
+              style={{
+                position: "absolute",
+                width: "100%",
+                textAlign: "center",
+                top: board.height / 2,
+              }}
+              className="text-2xl font-semibold"
+            >
+              Game Over
+            </div>
+          )}
           <div
             style={{
               position: "absolute",

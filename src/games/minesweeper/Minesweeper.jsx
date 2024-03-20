@@ -3,6 +3,7 @@ import MinesweeperControls from "./MinesweeperControls";
 import GameCell from "./GameCell";
 import { createState, board, adjacents } from "./constants";
 import { createScore } from "../../utilities/leaderboards";
+import { bombSound, pop2Sound, popSound, winSound } from "../../variables/audio";
 
 const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
   const [state, setState] = useState(createState);
@@ -20,6 +21,11 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
       floodCells(y, x, newState);
     } else if (!newState[y][x].isMine) setScore(s => s + 1);
     setState(newState);
+    if (newState[y][x].isMine) {
+      bombSound();
+    } else {
+      popSound();
+    }
     if (newState[y][x].isMine || checkWin(newState)) gameOver();
   }
 
@@ -57,6 +63,7 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
         win = false
       }
     }));
+    if (win) winSound();
     return win;
   }
 
@@ -83,6 +90,7 @@ const Minesweeper = ({ currentGame, user, setUpdateLb }) => {
     if (newState[y][x].isMine) return newState;
     newState[y][x].isRevealed = true;
     setScore(s => s + 1);
+    pop2Sound();
     adjacents.forEach((adj) => {
       const newY = y + adj[0];
       const newX = x + adj[1];
