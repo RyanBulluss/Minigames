@@ -1,16 +1,24 @@
 {
   "files": {
-    "main.css": "/Minigames/static/css/main.5c190403.css",
-    "main.js": "/Minigames/static/js/main.cb420c70.js",
-    "static/media/hit.MP3": "/Minigames/static/media/hit.28ca25f8dda47bd07084.MP3",
-    "static/media/flap.MP3": "/Minigames/static/media/flap.a847b7e88396837421b7.MP3",
+    "main.css": "/Minigames/static/css/main.be348f0e.css",
+    "main.js": "/Minigames/static/js/main.e57ab3bd.js",
+    "static/media/point.mp3": "/Minigames/static/media/point.310d99cfa684a7e78529.mp3",
+    "static/media/hit.mp3": "/Minigames/static/media/hit.28ca25f8dda47bd07084.mp3",
+    "static/media/bomb.mp3": "/Minigames/static/media/bomb.487767dafc5bab0c3275.mp3",
+    "static/media/pop2.mp3": "/Minigames/static/media/pop2.680c2c656bac5d225981.mp3",
+    "static/media/flap.mp3": "/Minigames/static/media/flap.a847b7e88396837421b7.mp3",
     "static/media/background.jpg": "/Minigames/static/media/background.0aee3325af846025bc1b.jpg",
+    "static/media/game-over.mp3": "/Minigames/static/media/game-over.70bcf1d61a0acab0d320.mp3",
+    "static/media/pop.mp3": "/Minigames/static/media/pop.d140e054666280a61ad6.mp3",
+    "static/media/win.mp3": "/Minigames/static/media/win.5d8f13c5e3c46a5f36e0.mp3",
+    "static/media/combine.mp3": "/Minigames/static/media/combine.dda04884c99aed765f08.mp3",
+    "static/media/swipe.mp3": "/Minigames/static/media/swipe.96966333aa989c794362.mp3",
     "index.html": "/Minigames/index.html",
-    "main.5c190403.css.map": "/Minigames/static/css/main.5c190403.css.map",
-    "main.cb420c70.js.map": "/Minigames/static/js/main.cb420c70.js.map"
+    "main.be348f0e.css.map": "/Minigames/static/css/main.be348f0e.css.map",
+    "main.e57ab3bd.js.map": "/Minigames/static/js/main.e57ab3bd.js.map"
   },
   "entrypoints": [
-    "static/css/main.5c190403.css",
-    "static/js/main.cb420c70.js"
+    "static/css/main.be348f0e.css",
+    "static/js/main.e57ab3bd.js"
   ]
 }
