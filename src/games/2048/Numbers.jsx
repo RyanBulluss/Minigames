@@ -10,6 +10,8 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [state, setState] = useState(createState());
+  const [firstGame, setFirstGame] = useState(true);
+  
 
   function makeMove(direction) {
     if (!playing) return;
@@ -206,13 +208,20 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
     <div className="h-full w-full flex flex-col">
       <NumbersControls timer={timer} score={score} restartGame={restartGame} />
       <div className="h-full flex justify-center items-center bg-[#bbada0]">
+        {!firstGame && !playing && 
+        <div className="bg-black/50 absolute h-[70vmin] w-[80vmin] z-20 text-2xl flex flex-col justify-center items-center">
+        <h3 className="py-4">Game Over</h3>
+        <h3>Score</h3>
+        <h3 className="font-bold">{score}</h3>
+      </div>
+        }
         <div
           style={{
             gridTemplateColumns: `repeat(${board.width}, minmax(0, 1fr))`,
             gridTemplateRows: `repeat(${board.height}, minmax(0, 1fr))`,
           }}
           className="h-[70vmin] w-[70vmin] grid p-[10vmin] gap-4"
-        >
+          >
           {state.map((arr) => arr.map((value) => <GameCell value={value} />))}
         </div>
       </div>
