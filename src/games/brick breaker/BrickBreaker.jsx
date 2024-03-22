@@ -154,11 +154,11 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
     const newBoard = boardRef.current.getBoundingClientRect();
     setBoard(newBoard);
     setPaddle({
-      y: newBoard.height - newBoard.height / 20,
+      y: newBoard.height - newBoard.height / 25,
       x: 0,
       width: newBoard.width / 5,
-      height: newBoard.height / 20,
-      color: "#222",
+      height: newBoard.height / 25,
+      color: "linear-gradient(to top, #fbf8f7, #aba8a7)",
     });
     setBall({
       y: 0,
@@ -167,7 +167,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
       xSpeed: newBoard.width / 100,
       width: newBoard.width / 30,
       height: newBoard.height / 30,
-      color: "#ddd",
+      color: "linear-gradient(to top, #fbf8f7, #ebe8e7)",
     });
   }
 
@@ -301,7 +301,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
         firstGame={firstGame}
       />
       <div className="bg-[#333] h-[80vmin] flex justify-center items-center cursor-none">
-        <div className="relative bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
+        <div className="relative bg-[#555] h-[90%] w-[90%]" ref={boardRef}>
           {bricks.map((brick, idx) => (
             <Brick key={idx} brick={brick} />
           ))}
@@ -317,7 +317,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
               borderRadius: "50%",
             }}
           ></div>
-          {!firstGame && !playing && (
+          {!playing && (
             <div
               style={{
                 position: "absolute",
@@ -327,7 +327,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
               }}
               className="text-2xl font-semibold"
             >
-              Game Over
+              {firstGame ? "Press Play To Start" : "Game Over"}
             </div>
           )}
           <div
@@ -338,6 +338,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
               top: paddle.y,
               left: paddle.x,
               background: paddle.color,
+              borderRadius: "100% 100% 0 0",
             }}
           ></div>
         </div>

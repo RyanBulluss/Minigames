@@ -79,6 +79,7 @@ const Numbers = ({ currentGame, user, setUpdateLb }) => {
 
   function gameOver() {
     gameOverSound();
+    setFirstGame(false);
     setPlaying(false);
   }
 

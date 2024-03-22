@@ -83,7 +83,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
       x: 0,
       width: newBoard.width / 3,
       height: newBoard.height / 20,
-      color: "#222",
+      color: "linear-gradient(to top, #fbf8f7, #aba8a7)",
     });
     // setBalls([
     //   {
@@ -277,7 +277,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
               }}
             ></div>
           ))}
-          {!firstGame && !playing && (
+          {!playing && (
             <div
               style={{
                 position: "absolute",
@@ -287,7 +287,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
               }}
               className="text-2xl font-semibold"
             >
-              Game Over
+              {firstGame ? "Press Play To Start" : "Game Over"}
             </div>
           )}
           <div
@@ -298,6 +298,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
               top: paddle.y,
               left: paddle.x,
               background: paddle.color,
+              borderRadius: "100% 100% 0 0",
             }}
           ></div>
         </div>
