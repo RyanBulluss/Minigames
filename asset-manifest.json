@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Minigames/static/css/main.be348f0e.css",
-    "main.js": "/Minigames/static/js/main.e57ab3bd.js",
+    "main.css": "/Minigames/static/css/main.c923f1de.css",
+    "main.js": "/Minigames/static/js/main.b9efb571.js",
     "static/media/point.mp3": "/Minigames/static/media/point.310d99cfa684a7e78529.mp3",
     "static/media/hit.mp3": "/Minigames/static/media/hit.28ca25f8dda47bd07084.mp3",
     "static/media/bomb.mp3": "/Minigames/static/media/bomb.487767dafc5bab0c3275.mp3",
@@ -14,11 +14,11 @@
     "static/media/combine.mp3": "/Minigames/static/media/combine.dda04884c99aed765f08.mp3",
     "static/media/swipe.mp3": "/Minigames/static/media/swipe.96966333aa989c794362.mp3",
     "index.html": "/Minigames/index.html",
-    "main.be348f0e.css.map": "/Minigames/static/css/main.be348f0e.css.map",
-    "main.e57ab3bd.js.map": "/Minigames/static/js/main.e57ab3bd.js.map"
+    "main.c923f1de.css.map": "/Minigames/static/css/main.c923f1de.css.map",
+    "main.b9efb571.js.map": "/Minigames/static/js/main.b9efb571.js.map"
   },
   "entrypoints": [
-    "static/css/main.be348f0e.css",
-    "static/js/main.e57ab3bd.js"
+    "static/css/main.c923f1de.css",
+    "static/js/main.b9efb571.js"
   ]
 }
