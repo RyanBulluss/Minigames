@@ -23,6 +23,9 @@ const gamesList = [
     {
         name: "Flappy Bird",
     },
+    {
+        name: "Doodle Jump",
+    },
 ]
 
 export default gamesList
