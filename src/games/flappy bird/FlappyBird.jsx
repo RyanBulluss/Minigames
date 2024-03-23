@@ -19,6 +19,7 @@ const FlappyBird = () => {
 
   function resizeBoard() {
     const newBoard = canvas.current.getBoundingClientRect();
+    console.log(canvas.current);
     setBird({
       x: newBoard.x + newBoard.width / 5,
       y: newBoard.y + newBoard.height / 2,
