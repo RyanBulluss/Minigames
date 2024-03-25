@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import DoodleJumpControls from "./DoodleJumpControls";
+import "./DoodleJump.css"
 
 const DoodleJump = () => {
   const boardRef = useRef();
@@ -7,10 +8,19 @@ const DoodleJump = () => {
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [board, setBoard] = useState({});
+  const [player, setPlayer] = useState({});
 
   function handleSizeChange() {
     const newBoard = boardRef.current.getBoundingClientRect();
     setBoard(newBoard);
+    setPlayer({
+      x: newBoard.x + newBoard.width / 2 - newBoard.width / 20,
+      y: newBoard.y + newBoard.height / 1.5,
+      ySpeed: 0,
+      xSpeed: 0,
+      width: newBoard.width / 10,
+      height: newBoard.height / 10,
+    })
     startGame();
   }
 
@@ -42,6 +52,16 @@ const DoodleJump = () => {
             <button className="bg-gray-600 p-3 rounded-xl" onClick={startGame}>Start Game</button>
           </div>
           }
+          <div
+          style={{
+            position: "absolute",
+            height: player.height,
+            width: player.width,
+            left: player.x,
+            top: player.y,
+          }}
+          className="player"
+          ></div>
         </div>
       </div>
     </div>
