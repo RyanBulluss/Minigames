@@ -5,6 +5,7 @@ import "./DoodleJump.css";
 const DoodleJump = () => {
   const boardRef = useRef();
   const [playing, setPlaying] = useState(false);
+  const [direction, setDirection] = useState(null);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [board, setBoard] = useState({});
@@ -33,19 +34,28 @@ const DoodleJump = () => {
   function gameLoop() {
     const newPlayer = { ...player };
     newPlayer.x += newPlayer.xSpeed;
-    newPlayer.xSpeed *= 0.95;
-    if (newPlayer.x < board.x) newPlayer.x = board.x + board.width - player.width;
-    if (newPlayer.x + newPlayer.width > board.x + board.width) newPlayer.x = board.x;
+    if (!direction) {
+      newPlayer.xSpeed *= 0.95;
+    } else if (direction === "right") {
+      newPlayer.xSpeed = board.width / 75;
+    } else {
+      newPlayer.xSpeed = -board.width / 75;
+    }
+    if (newPlayer.x < board.x)
+      newPlayer.x = board.x + board.width - player.width;
+    if (newPlayer.x + newPlayer.width > board.x + board.width)
+      newPlayer.x = board.x;
     setPlayer(newPlayer);
   }
 
-  function movePlayer(dir) {
-    if (dir === "left") {
-      setPlayer({ ...player, xSpeed: -board.width / 100 });
-    } else if (dir === "right") {
-      setPlayer({ ...player, xSpeed: board.width / 100 });
-    }
-  }
+  // function movePlayer(dir) {
+  //   if (direction === dir) return;
+  //   console.log(dir);
+  //   setDirection(dir);
+  //   if (dir === "left") {
+  //   } else if (dir === "right") {
+  //   }
+  // }
 
   useEffect(() => {
     handleSizeChange();
@@ -69,21 +79,30 @@ const DoodleJump = () => {
       e.preventDefault();
       switch (e.key) {
         case "ArrowLeft":
-          movePlayer("left");
+          if (direction === "left") return;
+          setDirection("left");
           break;
         case "ArrowRight":
-          movePlayer("right");
+          if (direction === "right") return;
+          setDirection("right");
           break;
         default:
           return;
       }
     };
+
+    const handleKeyUp = (e) => {
+      setDirection(null);
+    };
+
     window.addEventListener("keydown", handleKeyPress);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [board, playing, player]);
+  }, [board, playing, player, direction]);
 
   return (
     <div className="h-full w-full flex flex-col">
