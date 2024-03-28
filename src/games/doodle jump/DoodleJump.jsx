@@ -10,6 +10,7 @@ const DoodleJump = () => {
   const [score, setScore] = useState(0);
   const [board, setBoard] = useState({});
   const [player, setPlayer] = useState({});
+  const [platforms, setPlatforms] = useState([]);
 
   function handleSizeChange() {
     const newBoard = boardRef.current.getBoundingClientRect();
@@ -17,11 +18,12 @@ const DoodleJump = () => {
     setPlayer({
       x: newBoard.x + newBoard.width / 2 - newBoard.width / 20,
       y: newBoard.y + newBoard.height / 1.5,
-      ySpeed: 0,
+      ySpeed: -newBoard.height / 100,
       xSpeed: 0,
       width: newBoard.width / 8,
       height: newBoard.height / 8,
     });
+    setPlatforms(createStartingPlatforms(newBoard));
     startGame();
   }
 
@@ -29,6 +31,26 @@ const DoodleJump = () => {
     setPlaying(true);
     setTimer(0);
     setScore(0);
+  }
+
+  function rng(n) {
+    return Math.floor(Math.random() * n);
+  }
+
+  function createStartingPlatforms(newBoard) {
+    const arr = [];
+    const heightFr = newBoard.height / 6;
+    for (let i = 0; i < 6; i++) {
+      arr.push({
+        height: newBoard.height / 30,
+        width: newBoard.width / 5,
+        x: newBoard.x + rng(newBoard.width - newBoard.width / 5),
+        y: newBoard.y + i * heightFr + rng(heightFr),
+        xSpeed: 0,
+      });
+    }
+
+    return arr;
   }
 
   function gameLoop() {
@@ -41,21 +63,34 @@ const DoodleJump = () => {
     } else {
       newPlayer.xSpeed = -board.width / 75;
     }
+
+    if (player.y < board.y + board.height / 2 && player.ySpeed < 0) {
+      const oldPlatforms = [...platforms];
+      const newPlatforms = oldPlatforms.map((platform) => {
+        if (platform.y + player.ySpeed > board.y + board.height)
+          return {
+            height: board.height / 30,
+            width: board.width / 5,
+            x: board.x + rng(board.width - board.width / 5),
+            y: board.y + board.height / 30,
+            xSpeed: 0,
+          };
+        return {
+          ...platform,
+          y: platform.y - player.ySpeed,
+        };
+      });
+      setPlatforms(newPlatforms);
+    } else {
+      newPlayer.y = player.y + player.ySpeed
+    }
+    
     if (newPlayer.x < board.x)
       newPlayer.x = board.x + board.width - player.width;
     if (newPlayer.x + newPlayer.width > board.x + board.width)
       newPlayer.x = board.x;
     setPlayer(newPlayer);
   }
-
-  // function movePlayer(dir) {
-  //   if (direction === dir) return;
-  //   console.log(dir);
-  //   setDirection(dir);
-  //   if (dir === "left") {
-  //   } else if (dir === "right") {
-  //   }
-  // }
 
   useEffect(() => {
     handleSizeChange();
@@ -72,7 +107,7 @@ const DoodleJump = () => {
       window.removeEventListener("resize", handleSizeChange);
       clearInterval(interval);
     };
-  }, [board, playing, player]);
+  }, [board, playing, player, platforms]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -129,6 +164,19 @@ const DoodleJump = () => {
             }}
             className={player.xSpeed > 0 ? "player flip-player" : "player"}
           ></div>
+          {platforms.map((platform, idx) => (
+            <div
+              style={{
+                position: "absolute",
+                height: platform.height,
+                width: platform.width,
+                left: platform.x,
+                top: platform.y,
+                backgroundColor: "lightgreen",
+              }}
+              className="rounded-xl"
+            ></div>
+          ))}
         </div>
       </div>
     </div>
