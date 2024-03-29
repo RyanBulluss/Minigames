@@ -12,7 +12,7 @@ const DoodleJump = () => {
   const [player, setPlayer] = useState({});
   const [platforms, setPlatforms] = useState([]);
 
-  function handleSizeChange() {
+  function startGame() {
     const newBoard = boardRef.current.getBoundingClientRect();
     setBoard(newBoard);
     setPlayer({
@@ -24,10 +24,6 @@ const DoodleJump = () => {
       height: newBoard.height / 8,
     });
     setPlatforms(createStartingPlatforms(newBoard));
-    startGame();
-  }
-
-  function startGame() {
     setPlaying(true);
     setTimer(0);
     setScore(0);
@@ -43,13 +39,13 @@ const DoodleJump = () => {
 
   function createStartingPlatforms(newBoard) {
     const arr = [];
-    const heightFr = newBoard.height / 6;
+    const heightFr = newBoard.height / 12;
     for (let i = 0; i < 6; i++) {
       arr.push({
         height: newBoard.height / 30,
         width: newBoard.width / 5,
         x: newBoard.x + rng(newBoard.width - newBoard.width / 5),
-        y: newBoard.y + i * heightFr + rng(heightFr),
+        y: newBoard.y + i * 2 * heightFr + rng(heightFr),
         xSpeed: 0,
       });
     }
@@ -75,7 +71,7 @@ const DoodleJump = () => {
         if (
           platform.y + platform.height - player.ySpeed >
           board.y + board.height
-        )
+        ) {
           return {
             height: board.height / 30,
             width: board.width / 5,
@@ -83,6 +79,8 @@ const DoodleJump = () => {
             y: board.y + rng(board.height / 20),
             xSpeed: 0,
           };
+        }
+        setScore(score + 10);
         return {
           ...platform,
           y: platform.y - player.ySpeed,
@@ -121,18 +119,18 @@ const DoodleJump = () => {
   }
 
   useEffect(() => {
-    handleSizeChange();
+    startGame();
   }, []);
 
   useEffect(() => {
-    window.addEventListener("resize", handleSizeChange);
+    window.addEventListener("resize", startGame);
 
     const interval = setInterval(() => {
       gameLoop();
     }, 16);
 
     return () => {
-      window.removeEventListener("resize", handleSizeChange);
+      window.removeEventListener("resize", startGame);
       clearInterval(interval);
     };
   }, [board, playing, player, platforms]);
@@ -171,7 +169,18 @@ const DoodleJump = () => {
     <div className="h-full w-full flex flex-col">
       <DoodleJumpControls />
       <div className="h-full flex justify-center items-center snake-background">
-        <div className="bg-[#666] h-[90%] w-[90%]" ref={boardRef}>
+        <div className="h-[90%] w-[90%]" ref={boardRef}>
+          <div
+            className="background"
+            style={{
+              position: "absolute",
+              height: board.height,
+              width: board.width,
+              left: board.x,
+              top: board.y,
+              transform: `translate(${score}px 0)`,
+            }}
+          ></div>
           {!playing && (
             <div className="h-full w-full bg-gray-800 flex flex-col gap-4 justify-center items-center">
               <button
@@ -182,29 +191,33 @@ const DoodleJump = () => {
               </button>
             </div>
           )}
-          <div
-            style={{
-              position: "absolute",
-              height: player.height,
-              width: player.width,
-              left: player.x,
-              top: player.y,
-            }}
-            className={player.xSpeed > 0 ? "player flip-player" : "player"}
-          ></div>
-          {platforms.map((platform, idx) => (
-            <div
-              style={{
-                position: "absolute",
-                height: platform.height,
-                width: platform.width,
-                left: platform.x,
-                top: platform.y,
-                backgroundColor: "lightgreen",
-              }}
-              className="rounded-xl"
-            ></div>
-          ))}
+          {playing && (
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  height: player.height,
+                  width: player.width,
+                  left: player.x,
+                  top: player.y,
+                }}
+                className={player.xSpeed > 0 ? "player" : "player flip-player"}
+              ></div>
+              {platforms.map((platform, idx) => (
+                <div
+                  style={{
+                    position: "absolute",
+                    height: platform.height,
+                    width: platform.width,
+                    left: platform.x,
+                    top: platform.y,
+                    backgroundColor: "#69b517",
+                    borderRadius: "100px 30px 100px 30px",
+                  }}
+                ></div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>

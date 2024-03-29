@@ -1,13 +1,20 @@
 .player {
-    position: absolute;
-    background-image: url("./assets/player.jpg");
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 100%;
-    width: 100%;
-  }
-  
+  position: absolute;
+  background-image: url("./assets/player.jpg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+}
+
+.background {
+  position: absolute;
+  background-image: url("./assets/background.jpg");
+  background-size: 100%;
+  background-position: center;
+}
+
 .flip-player {
   transform: scaleX(-1);
 }
