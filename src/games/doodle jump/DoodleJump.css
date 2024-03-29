@@ -15,6 +15,14 @@
   background-position: center;
 }
 
+.jetpack {
+  position: absolute;
+  background-image: url("./assets/jetpack.jpg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+}
+
 .flip-player {
   transform: scaleX(-1);
 }

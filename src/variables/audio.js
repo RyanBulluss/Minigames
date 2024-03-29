@@ -8,6 +8,8 @@ import pop2 from "../assets/pop2.mp3";
 import gameOver from "../assets/game-over.mp3";
 import bomb from "../assets/bomb.mp3";
 import win from "../assets/win.mp3";
+import jetpack from "../assets/jetpack.mp3";
+import spring from "../assets/spring.mp3";
 
 const volume = 0.1;
 
@@ -29,6 +31,8 @@ const pop2Audio = new Audio(pop2);
 const gameOverAudio = new Audio(gameOver);
 const bombAudio = new Audio(bomb);
 const winAudio = new Audio(win);
+const jetpackAudio = new Audio(jetpack);
+const springAudio = new Audio(spring);
 
 const flapSound = playAudio(flapAudio);
 const hitSound = playAudio(hitAudio);
@@ -40,6 +44,8 @@ const pop2Sound = playAudio(pop2Audio);
 const gameOverSound = playAudio(gameOverAudio);
 const bombSound = playAudio(bombAudio);
 const winSound = playAudio(winAudio);
+const springSound = playAudio(springAudio);
+const jetpackSound = playAudio(jetpackAudio);
 
 export {
   flapSound,
@@ -51,5 +57,7 @@ export {
   pop2Sound,
   gameOverSound,
   bombSound,
-  winSound
+  winSound,
+  springSound,
+  jetpackSound,
 };

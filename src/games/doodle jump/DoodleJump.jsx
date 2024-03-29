@@ -1,6 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import DoodleJumpControls from "./DoodleJumpControls";
 import "./DoodleJump.css";
+import {
+  gameOverSound,
+  jetpackSound,
+  popSound,
+  springSound,
+} from "../../variables/audio";
 
 const DoodleJump = () => {
   const boardRef = useRef();
@@ -30,6 +36,7 @@ const DoodleJump = () => {
   }
 
   function gameOver() {
+    gameOverSound();
     setPlaying(false);
   }
 
@@ -56,6 +63,7 @@ const DoodleJump = () => {
   function gameLoop() {
     if (!playing) return;
     let newPlayer = { ...player };
+    let newPlatforms = [...platforms];
     newPlayer.x += newPlayer.xSpeed;
     if (!direction) {
       newPlayer.xSpeed *= 0.9;
@@ -66,33 +74,41 @@ const DoodleJump = () => {
     }
 
     if (player.y < board.y + board.height / 2 && player.ySpeed < 0) {
-      const oldPlatforms = [...platforms];
-      const newPlatforms = oldPlatforms.map((platform) => {
+      newPlatforms = newPlatforms.map((platform) => {
         if (
           platform.y + platform.height - player.ySpeed >
           board.y + board.height
         ) {
-          return {
+          const num = rng(3);
+          const newPlatform = {
             height: board.height / 30,
             width: board.width / 5,
             x: board.x + rng(board.width - board.width / 5),
-            y: board.y + rng(board.height / 20),
-            xSpeed: 0,
+            y: board.y,
+            xSpeed: num === 0 ? board.width / 200 : 0,
+            spring: num === 1 ? true : false,
+            jetpack: num === 2 ? true : false,
           };
+          return newPlatform;
         }
-        setScore(score + 10);
+        setScore(score + 1);
         return {
           ...platform,
           y: platform.y - player.ySpeed,
         };
       });
-      setPlatforms(newPlatforms);
     } else {
       newPlayer.y = player.y + player.ySpeed;
       newPlayer = checkJump(newPlayer);
       if (newPlayer.y + player.height > board.y + board.height) gameOver();
     }
-
+    newPlatforms = newPlatforms.map((platform) => {
+      const newX = platform.x + platform.xSpeed;
+      if (newX < board.x || newX + platform.width > board.x + board.width)
+        platform.xSpeed *= -1;
+      return { ...platform, x: newX };
+    });
+    setPlatforms(newPlatforms);
     newPlayer.ySpeed = newPlayer.ySpeed + board.height / 2500;
 
     if (newPlayer.x < board.x)
@@ -112,7 +128,16 @@ const DoodleJump = () => {
         oldPlayer.x < platform.x + platform.width &&
         oldPlayer.x + oldPlayer.width > platform.x
       ) {
-        newPlayer.ySpeed = -board.height / 50;
+        if (platform.spring) {
+          newPlayer.ySpeed = -board.height / 25;
+          springSound();
+        } else if (platform.jetpack) {
+          newPlayer.ySpeed = -board.height / 10;
+          jetpackSound();
+        } else {
+          newPlayer.ySpeed = -board.height / 50;
+          popSound();
+        }
       }
     });
     return newPlayer;
@@ -167,7 +192,7 @@ const DoodleJump = () => {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <DoodleJumpControls />
+      <DoodleJumpControls startGame={startGame} score={score} timer={timer} />
       <div className="h-full flex justify-center items-center snake-background">
         <div className="h-[90%] w-[90%]" ref={boardRef}>
           <div
@@ -178,13 +203,12 @@ const DoodleJump = () => {
               width: board.width,
               left: board.x,
               top: board.y,
-              transform: `translate(${score}px 0)`,
             }}
           ></div>
           {!playing && (
-            <div className="h-full w-full bg-gray-800 flex flex-col gap-4 justify-center items-center">
+            <div className="h-full w-full flex flex-col gap-4 justify-center items-center">
               <button
-                className="bg-gray-600 p-3 rounded-xl"
+                className="bg-gray-600 p-3 rounded-xl z-30"
                 onClick={startGame}
               >
                 Start Game
@@ -204,17 +228,45 @@ const DoodleJump = () => {
                 className={player.xSpeed > 0 ? "player" : "player flip-player"}
               ></div>
               {platforms.map((platform, idx) => (
-                <div
-                  style={{
-                    position: "absolute",
-                    height: platform.height,
-                    width: platform.width,
-                    left: platform.x,
-                    top: platform.y,
-                    backgroundColor: "#69b517",
-                    borderRadius: "100px 30px 100px 30px",
-                  }}
-                ></div>
+                <>
+                  <div
+                    style={{
+                      position: "absolute",
+                      height: platform.height,
+                      width: platform.width,
+                      left: platform.x,
+                      top: platform.y,
+                      backgroundColor:
+                        platform.xSpeed === 0 ? "#69b517" : "#2e9fc7",
+                      borderRadius: "100px 30px 100px 30px",
+                      border: "solid black",
+                    }}
+                  ></div>
+                  {platform.spring && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        height: platform.height / 2,
+                        width: platform.width / 6,
+                        left: platform.x + platform.width / 2,
+                        top: platform.y - platform.height / 2,
+                        backgroundColor: "#555",
+                      }}
+                    ></div>
+                  )}
+                  {platform.jetpack && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        height: platform.height * 3,
+                        width: platform.width / 3,
+                        left: platform.x + platform.width / 2,
+                        top: platform.y - platform.height * 2,
+                      }}
+                      className="jetpack"
+                    ></div>
+                  )}
+                </>
               ))}
             </>
           )}
