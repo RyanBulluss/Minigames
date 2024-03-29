@@ -18,7 +18,7 @@ const DoodleJump = () => {
     setPlayer({
       x: newBoard.x + newBoard.width / 2 - newBoard.width / 20,
       y: newBoard.y + newBoard.height / 1.5,
-      ySpeed: -newBoard.height / 100,
+      ySpeed: -newBoard.height / 50,
       xSpeed: 0,
       width: newBoard.width / 8,
       height: newBoard.height / 8,
@@ -31,6 +31,10 @@ const DoodleJump = () => {
     setPlaying(true);
     setTimer(0);
     setScore(0);
+  }
+
+  function gameOver() {
+    setPlaying(false);
   }
 
   function rng(n) {
@@ -54,25 +58,29 @@ const DoodleJump = () => {
   }
 
   function gameLoop() {
-    const newPlayer = { ...player };
+    if (!playing) return;
+    let newPlayer = { ...player };
     newPlayer.x += newPlayer.xSpeed;
     if (!direction) {
-      newPlayer.xSpeed *= 0.95;
+      newPlayer.xSpeed *= 0.9;
     } else if (direction === "right") {
-      newPlayer.xSpeed = board.width / 75;
+      newPlayer.xSpeed = board.width / 100;
     } else {
-      newPlayer.xSpeed = -board.width / 75;
+      newPlayer.xSpeed = -board.width / 100;
     }
 
     if (player.y < board.y + board.height / 2 && player.ySpeed < 0) {
       const oldPlatforms = [...platforms];
       const newPlatforms = oldPlatforms.map((platform) => {
-        if (platform.y + player.ySpeed > board.y + board.height)
+        if (
+          platform.y + platform.height - player.ySpeed >
+          board.y + board.height
+        )
           return {
             height: board.height / 30,
             width: board.width / 5,
             x: board.x + rng(board.width - board.width / 5),
-            y: board.y + board.height / 30,
+            y: board.y + rng(board.height / 20),
             xSpeed: 0,
           };
         return {
@@ -82,14 +90,34 @@ const DoodleJump = () => {
       });
       setPlatforms(newPlatforms);
     } else {
-      newPlayer.y = player.y + player.ySpeed
+      newPlayer.y = player.y + player.ySpeed;
+      newPlayer = checkJump(newPlayer);
+      if (newPlayer.y + player.height > board.y + board.height) gameOver();
     }
-    
+
+    newPlayer.ySpeed = newPlayer.ySpeed + board.height / 2500;
+
     if (newPlayer.x < board.x)
       newPlayer.x = board.x + board.width - player.width;
     if (newPlayer.x + newPlayer.width > board.x + board.width)
       newPlayer.x = board.x;
     setPlayer(newPlayer);
+  }
+
+  function checkJump(oldPlayer) {
+    const newPlayer = oldPlayer;
+    const playerY = oldPlayer.y + oldPlayer.height;
+    platforms.forEach((platform) => {
+      if (
+        playerY > platform.y &&
+        playerY < platform.y + platform.height / 2 &&
+        oldPlayer.x < platform.x + platform.width &&
+        oldPlayer.x + oldPlayer.width > platform.x
+      ) {
+        newPlayer.ySpeed = -board.height / 50;
+      }
+    });
+    return newPlayer;
   }
 
   useEffect(() => {
