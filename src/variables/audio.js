@@ -10,6 +10,7 @@ import bomb from "../assets/bomb.mp3";
 import win from "../assets/win.mp3";
 import jetpack from "../assets/jetpack.mp3";
 import spring from "../assets/spring.mp3";
+import snap from "../assets/snap.mp3";
 
 const volume = 0.1;
 
@@ -33,6 +34,7 @@ const bombAudio = new Audio(bomb);
 const winAudio = new Audio(win);
 const jetpackAudio = new Audio(jetpack);
 const springAudio = new Audio(spring);
+const snapAudio = new Audio(snap);
 
 const flapSound = playAudio(flapAudio);
 const hitSound = playAudio(hitAudio);
@@ -46,6 +48,7 @@ const bombSound = playAudio(bombAudio);
 const winSound = playAudio(winAudio);
 const springSound = playAudio(springAudio);
 const jetpackSound = playAudio(jetpackAudio);
+const snapSound = playAudio(snapAudio);
 
 export {
   flapSound,
@@ -60,4 +63,5 @@ export {
   winSound,
   springSound,
   jetpackSound,
+  snapSound,
 };

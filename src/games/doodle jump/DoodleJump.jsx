@@ -5,6 +5,7 @@ import {
   gameOverSound,
   jetpackSound,
   popSound,
+  snapSound,
   springSound,
 } from "../../variables/audio";
 
@@ -79,15 +80,16 @@ const DoodleJump = () => {
           platform.y + platform.height - player.ySpeed >
           board.y + board.height
         ) {
-          const num = rng(3);
+          const num = rng(100);
           const newPlatform = {
             height: board.height / 30,
             width: board.width / 5,
             x: board.x + rng(board.width - board.width / 5),
             y: board.y,
-            xSpeed: num === 0 ? board.width / 200 : 0,
-            spring: num === 1 ? true : false,
-            jetpack: num === 2 ? true : false,
+            xSpeed: num < 20 ? board.width / 200 : 0,
+            spring: num > 21 && num < 30 ? true : false,
+            jetpack: num > 31 && num < 35 ? true : false,
+            breakable: num > 36 && num < 42 ? true : false,
           };
           return newPlatform;
         }
@@ -99,7 +101,7 @@ const DoodleJump = () => {
       });
     } else {
       newPlayer.y = player.y + player.ySpeed;
-      newPlayer = checkJump(newPlayer);
+      [newPlayer, newPlatforms] = checkJump(newPlayer, newPlatforms);
       if (newPlayer.y + player.height > board.y + board.height) gameOver();
     }
     newPlatforms = newPlatforms.map((platform) => {
@@ -118,10 +120,11 @@ const DoodleJump = () => {
     setPlayer(newPlayer);
   }
 
-  function checkJump(oldPlayer) {
+  function checkJump(oldPlayer, oldPlatforms) {
     const newPlayer = oldPlayer;
+    const newPlatforms = oldPlatforms;
     const playerY = oldPlayer.y + oldPlayer.height;
-    platforms.forEach((platform) => {
+    platforms.forEach((platform, idx) => {
       if (
         playerY > platform.y &&
         playerY < platform.y + platform.height / 2 &&
@@ -134,13 +137,17 @@ const DoodleJump = () => {
         } else if (platform.jetpack) {
           newPlayer.ySpeed = -board.height / 10;
           jetpackSound();
+        } else if (platform.broken) {
+        } else if (platform.breakable) {
+          newPlatforms[idx].broken = true;
+          snapSound();
         } else {
           newPlayer.ySpeed = -board.height / 50;
           popSound();
         }
       }
     });
-    return newPlayer;
+    return [newPlayer, newPlatforms];
   }
 
   useEffect(() => {
@@ -224,6 +231,7 @@ const DoodleJump = () => {
                   width: player.width,
                   left: player.x,
                   top: player.y,
+                  zIndex: 300
                 }}
                 className={player.xSpeed > 0 ? "player" : "player flip-player"}
               ></div>
@@ -236,10 +244,15 @@ const DoodleJump = () => {
                       width: platform.width,
                       left: platform.x,
                       top: platform.y,
-                      backgroundColor:
-                        platform.xSpeed === 0 ? "#69b517" : "#2e9fc7",
+                      backgroundColor: platform.broken
+                        ? ""
+                        : platform.breakable
+                        ? "brown"
+                        : platform.xSpeed === 0
+                        ? "#69b517"
+                        : "#2e9fc7",
                       borderRadius: "100px 30px 100px 30px",
-                      border: "solid black",
+                      border: platform.broken ? "" : "solid black",
                     }}
                   ></div>
                   {platform.spring && (
