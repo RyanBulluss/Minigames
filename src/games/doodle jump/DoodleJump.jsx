@@ -47,8 +47,8 @@ const DoodleJump = () => {
 
   function createStartingPlatforms(newBoard) {
     const arr = [];
-    const heightFr = newBoard.height / 12;
-    for (let i = 0; i < 6; i++) {
+    const heightFr = newBoard.height / 16;
+    for (let i = 0; i < 8; i++) {
       arr.push({
         height: newBoard.height / 30,
         width: newBoard.width / 5,
@@ -85,11 +85,11 @@ const DoodleJump = () => {
             height: board.height / 30,
             width: board.width / 5,
             x: board.x + rng(board.width - board.width / 5),
-            y: board.y,
+            y: board.y +  board.y + board.height - platform.y,
             xSpeed: num < 20 ? board.width / 200 : 0,
             spring: num > 21 && num < 30 ? true : false,
             jetpack: num > 31 && num < 35 ? true : false,
-            breakable: num > 36 && num < 42 ? true : false,
+            breakable: num > 36 && num < 50 ? true : false,
           };
           return newPlatform;
         }
@@ -104,6 +104,7 @@ const DoodleJump = () => {
       [newPlayer, newPlatforms] = checkJump(newPlayer, newPlatforms);
       if (newPlayer.y + player.height > board.y + board.height) gameOver();
     }
+    
     newPlatforms = newPlatforms.map((platform) => {
       const newX = platform.x + platform.xSpeed;
       if (newX < board.x || newX + platform.width > board.x + board.width)
@@ -135,7 +136,7 @@ const DoodleJump = () => {
           newPlayer.ySpeed = -board.height / 25;
           springSound();
         } else if (platform.jetpack) {
-          newPlayer.ySpeed = -board.height / 10;
+          newPlayer.ySpeed = -board.height / 15;
           jetpackSound();
         } else if (platform.broken) {
         } else if (platform.breakable) {
@@ -155,17 +156,29 @@ const DoodleJump = () => {
   }, []);
 
   useEffect(() => {
+    if (!playing) return;
+    const interval2 = setInterval(() => {
+      setTimer(timer + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval2);
+    };
+  }, [playing, timer]);
+
+  useEffect(() => {
     window.addEventListener("resize", startGame);
 
     const interval = setInterval(() => {
       gameLoop();
     }, 16);
 
+
     return () => {
       window.removeEventListener("resize", startGame);
       clearInterval(interval);
     };
-  }, [board, playing, player, platforms]);
+  }, [board, playing, player, platforms, timer]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -231,7 +244,7 @@ const DoodleJump = () => {
                   width: player.width,
                   left: player.x,
                   top: player.y,
-                  zIndex: 300
+                  zIndex: 300,
                 }}
                 className={player.xSpeed > 0 ? "player" : "player flip-player"}
               ></div>
