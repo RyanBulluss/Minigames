@@ -26,6 +26,9 @@ const gamesList = [
     {
         name: "Doodle Jump",
     },
+    {
+        name: "Zombies",
+    },
 ]
 
 export default gamesList
