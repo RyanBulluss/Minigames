@@ -79,7 +79,7 @@ const DoodleJump = () => {
   }
 
   function movePlayerAndPlatformsY(oldPlayer, oldPlatforms) {
-    let [newPlayer, newPlatforms] = [{...oldPlayer}, [...oldPlatforms]]
+    let [newPlayer, newPlatforms] = [{ ...oldPlayer }, [...oldPlatforms]];
 
     if (player.y < board.y + board.height / 2 && player.ySpeed < 0) {
       newPlatforms = newPlatforms.map((platform) => {
@@ -96,7 +96,7 @@ const DoodleJump = () => {
             xSpeed: num < 20 ? board.width / 200 : 0,
             spring: num > 21 && num < 30 ? true : false,
             jetpack: num > 31 && num < 35 ? true : false,
-            breakable: num > 36 && num < 50 ? true : false,
+            breakable: num > 36 && num < 45 ? true : false,
           };
           return newPlatform;
         }
@@ -112,7 +112,7 @@ const DoodleJump = () => {
       if (newPlayer.y + player.height > board.y + board.height) gameOver();
     }
     newPlayer.ySpeed = newPlayer.ySpeed + board.height / 2500;
-    return [newPlayer, newPlatforms]
+    return [newPlayer, newPlatforms];
   }
 
   function movePlatformsX(oldPlatforms) {
@@ -131,10 +131,13 @@ const DoodleJump = () => {
     let newPlatforms = [...platforms];
 
     newPlayer = movePlayerX(newPlayer);
-    [newPlayer, newPlatforms] = movePlayerAndPlatformsY(newPlayer, newPlatforms);
+    [newPlayer, newPlatforms] = movePlayerAndPlatformsY(
+      newPlayer,
+      newPlatforms
+    );
     newPlatforms = movePlatformsX(newPlatforms);
 
-    setPlatforms(newPlatforms); 
+    setPlatforms(newPlatforms);
     setPlayer(newPlayer);
   }
 
@@ -142,7 +145,9 @@ const DoodleJump = () => {
     const newPlayer = oldPlayer;
     const newPlatforms = oldPlatforms;
     const playerY = oldPlayer.y + oldPlayer.height;
-    platforms.forEach((platform, idx) => {
+    const platLength = newPlatforms.length;
+    for (let idx = 0; idx < platLength; idx++) {
+      const platform = newPlatforms[idx];
       if (
         playerY > platform.y &&
         playerY < platform.y + platform.height / 2 &&
@@ -151,20 +156,24 @@ const DoodleJump = () => {
       ) {
         if (platform.spring) {
           newPlayer.ySpeed = -board.height / 25;
+          idx = platLength;
           springSound();
         } else if (platform.jetpack) {
           newPlayer.ySpeed = -board.height / 15;
+          idx = platLength;
           jetpackSound();
         } else if (platform.broken) {
         } else if (platform.breakable) {
           newPlatforms[idx].broken = true;
+          idx = platLength;
           snapSound();
         } else {
           newPlayer.ySpeed = -board.height / 50;
+          idx = platLength;
           popSound();
         }
       }
-    });
+    }
     return [newPlayer, newPlatforms];
   }
 
@@ -242,12 +251,14 @@ const DoodleJump = () => {
             }}
           ></div>
           {!playing && (
-            <div className="h-full w-full flex flex-col gap-4 justify-center items-center">
+            <div className="h-full w-full flex flex-col gap-8 justify-center items-center font-semibold">
+              <h2 className="z-30 text-2xl text-black">Game Over</h2>
+              <h3 className="z-30 text-xl text-black">Your Score: {score}</h3>
               <button
-                className="bg-gray-600 p-3 rounded-xl z-30"
+                className="bg-gray-600 p-3 rounded-full z-30"
                 onClick={startGame}
               >
-                Start Game
+                Play Again
               </button>
             </div>
           )}
