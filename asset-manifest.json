@@ -1,25 +1,28 @@
 {
   "files": {
-    "main.css": "/Minigames/static/css/main.c4410f61.css",
-    "main.js": "/Minigames/static/js/main.f23bb2f6.js",
+    "main.css": "/Minigames/static/css/main.758a610b.css",
+    "main.js": "/Minigames/static/js/main.c2d027a4.js",
+    "static/media/background.jpg": "/Minigames/static/media/background.0aee3325af846025bc1b.jpg",
     "static/media/point.mp3": "/Minigames/static/media/point.310d99cfa684a7e78529.mp3",
+    "static/media/jetpack.mp3": "/Minigames/static/media/jetpack.9bc5eca2456efd92f08f.mp3",
     "static/media/hit.mp3": "/Minigames/static/media/hit.28ca25f8dda47bd07084.mp3",
-    "static/media/player.jpg": "/Minigames/static/media/player.5d7841ab82d95d36dcb5.jpg",
+    "static/media/spring.mp3": "/Minigames/static/media/spring.2eff2fac550b8bdb3e61.mp3",
     "static/media/bomb.mp3": "/Minigames/static/media/bomb.487767dafc5bab0c3275.mp3",
     "static/media/pop2.mp3": "/Minigames/static/media/pop2.680c2c656bac5d225981.mp3",
     "static/media/flap.mp3": "/Minigames/static/media/flap.a847b7e88396837421b7.mp3",
-    "static/media/background.jpg": "/Minigames/static/media/background.0aee3325af846025bc1b.jpg",
     "static/media/game-over.mp3": "/Minigames/static/media/game-over.70bcf1d61a0acab0d320.mp3",
+    "static/media/jetpack.jpg": "/Minigames/static/media/jetpack.a60d322245a35a61c034.jpg",
+    "static/media/snap.mp3": "/Minigames/static/media/snap.1a092774b64749be6dbb.mp3",
     "static/media/pop.mp3": "/Minigames/static/media/pop.d140e054666280a61ad6.mp3",
     "static/media/win.mp3": "/Minigames/static/media/win.5d8f13c5e3c46a5f36e0.mp3",
     "static/media/combine.mp3": "/Minigames/static/media/combine.dda04884c99aed765f08.mp3",
     "static/media/swipe.mp3": "/Minigames/static/media/swipe.96966333aa989c794362.mp3",
     "index.html": "/Minigames/index.html",
-    "main.c4410f61.css.map": "/Minigames/static/css/main.c4410f61.css.map",
-    "main.f23bb2f6.js.map": "/Minigames/static/js/main.f23bb2f6.js.map"
+    "main.758a610b.css.map": "/Minigames/static/css/main.758a610b.css.map",
+    "main.c2d027a4.js.map": "/Minigames/static/js/main.c2d027a4.js.map"
   },
   "entrypoints": [
-    "static/css/main.c4410f61.css",
-    "static/js/main.f23bb2f6.js"
+    "static/css/main.758a610b.css",
+    "static/js/main.c2d027a4.js"
   ]
 }
