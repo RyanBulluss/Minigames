@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import {
   startingHealth,
   startingAngle,
+  startingZombieSpeed,
   playerSize,
   zombieSize,
 } from "./constants";
@@ -45,13 +46,26 @@ const Zombies = () => {
     });
   }
 
+  function rng(n) {
+    return Math.floor(Math.random() * n);
+  }
+
   function moveZombies() {
     setZombies((z) => {
       return z.map((zombie) => {
+        const dy = player.y - zombie.y;
+        const dx = player.x - zombie.x;
+        const angleRadians = Math.atan2(dy, dx);
+
+        const angleDegrees = angleRadians * (180 / Math.PI) + 135;
+
         return {
           ...zombie,
+          xSpeed: (board.height / zombie.speed) * Math.cos(angleRadians),
+          ySpeed: (board.height / zombie.speed) * Math.sin(angleRadians),
           x: zombie.x + zombie.xSpeed,
           y: zombie.y + zombie.ySpeed,
+          angle: angleDegrees,
         };
       });
     });
@@ -159,14 +173,39 @@ const Zombies = () => {
   function spawnZombie(e) {
     e.preventDefault();
     const newZ = {
-      x: board.x,
-      y: board.y,
-      xSpeed: 1,
-      ySpeed: 1,
+      xSpeed: 0,
+      ySpeed: 0,
+      speed: startingZombieSpeed,
       width: board.width / zombieSize,
       height: board.height / zombieSize,
+      zombieAngle: 0,
     };
-    setZombies((z) => [...z, newZ]);
+    let valid = false;
+    let tries = 0;
+    while (!valid) {
+      tries++;
+      const x = board.x + rng(board.width - newZ.width);
+      const y = board.y + rng(board.width - newZ.height);
+      if (
+        !checkCollision(
+          { ...newZ, x: x, y: y },
+          {
+            x: player.x - player.width * 2,
+            y: player.y - player.height * 2,
+            width: player.width * 5,
+            height: player.height * 5,
+          }
+        )
+      ) {
+        newZ.x = x;
+        newZ.y = y;
+        valid = true;
+        setZombies((z) => [...z, newZ]);
+      } else if (tries > 1000) {
+        valid = true;
+        alert("Error: Cannot find valid position for zombie");
+      }
+    }
   }
 
   useEffect(() => {
@@ -208,18 +247,16 @@ const Zombies = () => {
     const handleKeyUp = (e) => {
       e.preventDefault();
       setPlayer((p) => {
-        switch (e.key) {
-          case "w":
-            return { ...p, ySpeed: 0 };
-          case "a":
-            return { ...p, xSpeed: 0 };
-          case "s":
-            return { ...p, ySpeed: 0 };
-          case "d":
-            return { ...p, xSpeed: 0 };
-          default:
-            return p;
-        }
+        const key = e.key;
+        if (key === "w" && p.ySpeed < 0) {
+          return { ...p, ySpeed: 0 };
+        } else if (key === "a" && p.xSpeed < 0) {
+          return { ...p, xSpeed: 0 };
+        } else if (key === "s" && p.ySpeed > 0) {
+          return { ...p, ySpeed: 0 };
+        } else if (key === "d" && p.xSpeed > 0) {
+          return { ...p, xSpeed: 0 };
+        } else return p;
       });
     };
 
@@ -315,7 +352,8 @@ const Zombies = () => {
                 width: zombie.width,
                 height: zombie.height,
                 backgroundColor: "green",
-                borderRadius: "100%",
+                borderRadius: "40% 100% 100% 100%",
+                transform: `rotate(${zombie.angle}deg)`,
               }}
             ></div>
           ))}

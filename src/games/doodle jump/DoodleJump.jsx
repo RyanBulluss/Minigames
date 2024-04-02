@@ -223,7 +223,16 @@ const DoodleJump = () => {
     };
 
     const handleKeyUp = (e) => {
-      setDirection(null);
+      setDirection(d => {
+        if (e.key === "ArrowLeft" && d === "left") {
+          return null;
+        } else if (e.key === "ArrowRight" && d === "right") {
+          return null;
+        } else {
+          return d;
+        }
+
+      })
     };
 
     window.addEventListener("keydown", handleKeyPress);
