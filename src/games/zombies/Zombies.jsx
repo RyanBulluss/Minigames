@@ -1,10 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
-import { startingHealth, startingAngle } from "./constants";
+import {
+  startingHealth,
+  startingAngle,
+  playerSize,
+  zombieSize,
+} from "./constants";
 
 const Zombies = () => {
   const [playing, setPlaying] = useState(false);
   const [board, setBoard] = useState({});
   const [player, setPlayer] = useState({});
+  const [zombies, setZombies] = useState([]);
   const [bullets, setBullets] = useState([]);
   const boardRef = useRef(null);
 
@@ -22,8 +28,8 @@ const Zombies = () => {
       mouseY: 0,
       xSpeed: 0,
       ySpeed: 0,
-      width: newBoard.width / 15,
-      height: newBoard.height / 15,
+      width: newBoard.width / playerSize,
+      height: newBoard.height / playerSize,
       angle: startingAngle,
       health: startingHealth,
     };
@@ -31,13 +37,30 @@ const Zombies = () => {
     setPlayer(newPlayer);
   }
 
-  function gameLoop() {
+  function movePlayer() {
     setPlayer((p) => {
-      let newPlayer = movePlayer(p);
+      let newPlayer = walkPlayer(p);
       newPlayer = aimPlayer(newPlayer);
       return newPlayer;
     });
+  }
+
+  function moveZombies() {
+    setZombies((z) => {
+      return z.map((zombie) => {
+        return {
+          ...zombie,
+          x: zombie.x + zombie.xSpeed,
+          y: zombie.y + zombie.ySpeed,
+        };
+      });
+    });
+  }
+
+  function gameLoop() {
+    movePlayer();
     moveBullets();
+    moveZombies();
   }
 
   function checkBoundaries(obj) {
@@ -56,6 +79,19 @@ const Zombies = () => {
   function moveBullets() {
     setBullets((b) => {
       let newB = [...b];
+      setZombies((z) => {
+        let newZ = [...z];
+        z.forEach((zombie, zIdx) => {
+          b.forEach((bullet, bIdx) => {
+            if (checkCollision(zombie, bullet)) {
+              // Possible bug when a bullet hits multiple enemies
+              newZ.splice(zIdx, 1);
+              newB.splice(bIdx, 1);
+            }
+          });
+        });
+        return newZ;
+      });
       newB = newB.filter((bullet) => checkBoundaries(bullet));
       newB = newB.map((bullet) => {
         return {
@@ -66,6 +102,17 @@ const Zombies = () => {
       });
       return newB;
     });
+  }
+
+  function checkCollision(obj1, obj2) {
+    if (
+      obj1.x + obj1.width > obj2.x &&
+      obj1.x < obj2.x + obj2.width &&
+      obj1.y + obj1.height > obj2.y &&
+      obj1.y < obj2.y + obj2.height
+    )
+      return true;
+    return false;
   }
 
   function aimPlayer(oldPlayer) {
@@ -82,7 +129,7 @@ const Zombies = () => {
     return newPlayer;
   }
 
-  function movePlayer(p) {
+  function walkPlayer(p) {
     const newPlayer = { ...p };
     const newX = newPlayer.x + newPlayer.xSpeed;
     const newY = newPlayer.y + newPlayer.ySpeed;
@@ -107,6 +154,19 @@ const Zombies = () => {
     }
 
     return newPlayer;
+  }
+
+  function spawnZombie(e) {
+    e.preventDefault();
+    const newZ = {
+      x: board.x,
+      y: board.y,
+      xSpeed: 1,
+      ySpeed: 1,
+      width: board.width / zombieSize,
+      height: board.height / zombieSize,
+    };
+    setZombies((z) => [...z, newZ]);
   }
 
   useEffect(() => {
@@ -187,8 +247,8 @@ const Zombies = () => {
     if (!playing) return;
     const shoot = (e) => {
       e.preventDefault();
-      const newAngle = player.angle - 135
-      const angleRadians = newAngle * Math.PI / 180
+      const newAngle = player.angle - 135;
+      const angleRadians = (newAngle * Math.PI) / 180;
       const newBullet = {
         x: player.x + player.width / 2 - player.width / 10,
         y: player.y + player.height / 2 - player.height / 10,
@@ -202,11 +262,13 @@ const Zombies = () => {
 
     const gameBoard = boardRef.current;
     gameBoard.addEventListener("click", shoot);
+    gameBoard.addEventListener("contextmenu", spawnZombie);
 
     return () => {
       gameBoard.removeEventListener("click", shoot);
+      gameBoard.removeEventListener("contextmenu", spawnZombie);
     };
-  }, [player, playing]);
+  }, [player, playing, zombies]);
 
   return (
     <div className="h-full w-full bg-gray-400" ref={boardRef}>
@@ -239,6 +301,20 @@ const Zombies = () => {
                 width: bullet.width,
                 height: bullet.height,
                 backgroundColor: "black",
+                borderRadius: "100%",
+              }}
+            ></div>
+          ))}
+          {zombies.map((zombie, idx) => (
+            <div
+              key={idx}
+              style={{
+                position: "absolute",
+                left: zombie.x,
+                top: zombie.y,
+                width: zombie.width,
+                height: zombie.height,
+                backgroundColor: "green",
                 borderRadius: "100%",
               }}
             ></div>
