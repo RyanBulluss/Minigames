@@ -24,6 +24,11 @@ const Zombies = () => {
   const [score, setScore] = useState(0);
   const boardRef = useRef(null);
 
+  function gameOver() {
+    setPlaying(false);
+    gameOverSound();
+  }
+
   function resizeGame() {
     return boardRef.current.getBoundingClientRect();
   }
@@ -44,6 +49,12 @@ const Zombies = () => {
       health: startingHealth,
       kills: 0,
     };
+    setZombies([]);
+    setBullets([]);
+    setZombieSpeed(startingZombieSpeed);
+    setZombieSpawnRate(startingZombieSpawnRate);
+    setTimer(0);
+    setScore(0);
     setBoard(newBoard);
     setPlayer(newPlayer);
   }
@@ -79,10 +90,19 @@ const Zombies = () => {
         newZombie.x += newZombie.xSpeed;
         newZombie.y += newZombie.ySpeed;
         // Game over check
-        // if (checkCollision(player, zombie)) {
-        //   setPlaying(false);
-        //   gameOverSound()
-        // }
+        if (
+          checkCollision(
+            {
+              y: player.y + player.height / 2,
+              x: player.x + player.width / 2,
+              height: 1,
+              width: 1,
+            },
+            zombie
+          )
+        ) {
+          gameOver();
+        }
 
         return newZombie;
       });
@@ -200,20 +220,20 @@ const Zombies = () => {
     let tries = 0;
 
     // Bad solution for player in dependencies bug
-    setPlayer(p => {
+    setPlayer((p) => {
       while (!valid) {
         tries++;
         const x = board.x + rng(board.width - newZ.width);
         const y = board.y + rng(board.width - newZ.height);
-  
+
         if (
           !checkCollision(
             { ...newZ, x: x, y: y },
             {
-              x: p.x - p.width * 2,
-              y: p.y - p.height * 2,
-              width: p.width * 5,
-              height: p.height * 5,
+              x: p.x - p.width * 3,
+              y: p.y - p.height * 3,
+              width: p.width * 7,
+              height: p.height * 7,
             }
           )
         ) {
@@ -226,8 +246,8 @@ const Zombies = () => {
           alert("Error: Cannot find valid position for zombie");
         }
       }
-      return p
-    })
+      return p;
+    });
   }
 
   useEffect(() => {
@@ -334,8 +354,8 @@ const Zombies = () => {
     const interval = setInterval(() => {
       setTimer((t) => t + 1);
       if (timer % 5 === 0) {
-        setZombieSpawnRate((zsr) => zsr / 1.01);
-        setZombieSpeed((zs) => zs / 1.01);
+        setZombieSpawnRate((zsr) => zsr / 1.05);
+        setZombieSpeed((zs) => zs / 1.05);
       }
     }, 1000);
 
