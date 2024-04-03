@@ -12,6 +12,7 @@ import {
   sniperPlayer,
   scoutPlayer,
 } from "./constants";
+import HealthBar from "./HealthBar";
 import { gameOverSound } from "../../variables/audio";
 
 const Zombies = () => {
@@ -55,6 +56,8 @@ const Zombies = () => {
       height: newBoard.height / loadout.height,
       angle: startingAngle,
       health: loadout.health,
+      damage: loadout.bulletDamage,
+      startingHealth: loadout.health,
       kills: 0,
       fireRate: loadout.fireRate,
       bulletSpeed: loadout.bulletSpeed,
@@ -114,9 +117,15 @@ const Zombies = () => {
             zombie
           )
         ) {
-          gameOver();
+          let dead = false;
+          if (player.health - zombie.damage <= 0) {
+            gameOver();
+            dead = true;
+          }
+          setPlayer(p => {
+            return {...p, health: dead ? 0 : p.health - zombie.damage}
+          })
         }
-
         return newZombie;
       });
     });
@@ -146,17 +155,25 @@ const Zombies = () => {
       let newB = [...b];
       setZombies((z) => {
         let newZ = [...z];
-        z.forEach((zombie, zIdx) => {
+        let killIdxs = [];
+        newZ.forEach((zombie, zIdx) => {
           b.forEach((bullet, bIdx) => {
             if (checkCollision(zombie, bullet)) {
-              // Possible bug when a bullet hits multiple enemies
-              newZ.splice(zIdx, 1);
+              if (zombie.health - bullet.damage <= 0) {
+                if (!killIdxs.includes(zIdx)) killIdxs.push(zIdx);
+              } else {
+                // some may have under 0 health when dead
+                newZ[zIdx].health -= bullet.damage;
+              }
               if (player.loadout !== "tank") {
                 newB.splice(bIdx, 1);
               }
             }
           });
         });
+        killIdxs.forEach((idx) => {
+          newZ.splice(idx, 1);
+        })
         return newZ;
       });
       newB = newB.filter((bullet) => checkBoundaries(bullet));
@@ -229,6 +246,9 @@ const Zombies = () => {
       ySpeed: 0,
       width: board.width / zombieSize,
       height: board.height / zombieSize,
+      health: 100,
+      damage: 1,
+      startingHealth: 100,
       zombieAngle: 0,
     };
     let valid = false;
@@ -349,6 +369,7 @@ const Zombies = () => {
         ySpeed: (board.height / p.bulletSpeed) * Math.sin(angleRadians),
         width: p.width / p.bulletSize,
         height: p.height / p.bulletSize,
+        damage: p.damage,
       };
       return p;
     })
@@ -433,6 +454,7 @@ const Zombies = () => {
               zIndex: "20",
             }}
           ></div>
+          {player.health !== player.startingHealth && <HealthBar user={player} />}
           {bullets.map((bullet, idx) => (
             <div
               key={idx}
@@ -448,6 +470,7 @@ const Zombies = () => {
             ></div>
           ))}
           {zombies.map((zombie, idx) => (
+            <>
             <div
               key={idx}
               style={{
@@ -462,6 +485,8 @@ const Zombies = () => {
                 transform: `rotate(${zombie.angle}deg)`,
               }}
             ></div>
+            {zombie.health !== zombie.startingHealth && <HealthBar user={zombie} />}
+            </>
           ))}
         </>
       )}

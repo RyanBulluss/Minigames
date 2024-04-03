@@ -10,19 +10,19 @@ const startingFireRate = 200;
 
 // Most values are what board width is divided by to get the real value
 const scoutPlayer = {
-    loadout: "scout",
+  loadout: "scout",
   speed: 200,
   width: 20,
   height: 20,
   health: 100,
   bulletSize: 5,
-  bulletDamage: 30,
-  fireRate: 200,
+  bulletDamage: 20,
+  fireRate: 100,
   bulletSpeed: 75,
 };
 
 const sniperPlayer = {
-    loadout: "sniper",
+  loadout: "sniper",
   speed: 300,
   width: 16,
   height: 16,
@@ -34,13 +34,13 @@ const sniperPlayer = {
 };
 
 const tankPlayer = {
-    loadout: "tank",
+  loadout: "tank",
   speed: 400,
   width: 12,
   height: 12,
   health: 200,
   bulletSize: 2,
-  bulletDamage: 60,
+  bulletDamage: 15,
   fireRate: 600,
   bulletSpeed: 100,
 };
@@ -56,5 +56,5 @@ export {
   startingFireRate,
   tankPlayer,
   sniperPlayer,
-  scoutPlayer
+  scoutPlayer,
 };
