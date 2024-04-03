@@ -5,7 +5,10 @@ import {
   startingZombieSpeed,
   playerSize,
   zombieSize,
+  startingBulletSpeed,
+  startingZombieSpawnRate,
 } from "./constants";
+import { gameOverSound } from "../../variables/audio";
 
 const Zombies = () => {
   const [playing, setPlaying] = useState(false);
@@ -13,6 +16,12 @@ const Zombies = () => {
   const [player, setPlayer] = useState({});
   const [zombies, setZombies] = useState([]);
   const [bullets, setBullets] = useState([]);
+  const [zombieSpeed, setZombieSpeed] = useState(startingZombieSpeed);
+  const [zombieSpawnRate, setZombieSpawnRate] = useState(
+    startingZombieSpawnRate
+  );
+  const [timer, setTimer] = useState(0);
+  const [score, setScore] = useState(0);
   const boardRef = useRef(null);
 
   function resizeGame() {
@@ -33,6 +42,7 @@ const Zombies = () => {
       height: newBoard.height / playerSize,
       angle: startingAngle,
       health: startingHealth,
+      kills: 0,
     };
     setBoard(newBoard);
     setPlayer(newPlayer);
@@ -52,21 +62,29 @@ const Zombies = () => {
 
   function moveZombies() {
     setZombies((z) => {
-      return z.map((zombie) => {
+      return z.map((zombie, idx) => {
         const dy = player.y - zombie.y;
         const dx = player.x - zombie.x;
         const angleRadians = Math.atan2(dy, dx);
 
         const angleDegrees = angleRadians * (180 / Math.PI) + 135;
 
-        return {
+        const newZombie = {
           ...zombie,
-          xSpeed: (board.height / zombie.speed) * Math.cos(angleRadians),
-          ySpeed: (board.height / zombie.speed) * Math.sin(angleRadians),
-          x: zombie.x + zombie.xSpeed,
-          y: zombie.y + zombie.ySpeed,
+          xSpeed: (board.width / zombieSpeed) * Math.cos(angleRadians),
+          ySpeed: (board.height / zombieSpeed) * Math.sin(angleRadians),
           angle: angleDegrees,
         };
+
+        newZombie.x += newZombie.xSpeed;
+        newZombie.y += newZombie.ySpeed;
+        // Game over check
+        // if (checkCollision(player, zombie)) {
+        //   setPlaying(false);
+        //   gameOverSound()
+        // }
+
+        return newZombie;
       });
     });
   }
@@ -170,42 +188,46 @@ const Zombies = () => {
     return newPlayer;
   }
 
-  function spawnZombie(e) {
-    e.preventDefault();
+  function spawnZombie() {
     const newZ = {
       xSpeed: 0,
       ySpeed: 0,
-      speed: startingZombieSpeed,
       width: board.width / zombieSize,
       height: board.height / zombieSize,
       zombieAngle: 0,
     };
     let valid = false;
     let tries = 0;
-    while (!valid) {
-      tries++;
-      const x = board.x + rng(board.width - newZ.width);
-      const y = board.y + rng(board.width - newZ.height);
-      if (
-        !checkCollision(
-          { ...newZ, x: x, y: y },
-          {
-            x: player.x - player.width * 2,
-            y: player.y - player.height * 2,
-            width: player.width * 5,
-            height: player.height * 5,
-          }
-        )
-      ) {
-        newZ.x = x;
-        newZ.y = y;
-        valid = true;
-        setZombies((z) => [...z, newZ]);
-      } else if (tries > 1000) {
-        valid = true;
-        alert("Error: Cannot find valid position for zombie");
+
+    // Bad solution for player in dependencies bug
+    setPlayer(p => {
+      while (!valid) {
+        tries++;
+        const x = board.x + rng(board.width - newZ.width);
+        const y = board.y + rng(board.width - newZ.height);
+  
+        if (
+          !checkCollision(
+            { ...newZ, x: x, y: y },
+            {
+              x: p.x - p.width * 2,
+              y: p.y - p.height * 2,
+              width: p.width * 5,
+              height: p.height * 5,
+            }
+          )
+        ) {
+          newZ.x = x;
+          newZ.y = y;
+          valid = true;
+          setZombies((z) => [...z, newZ]);
+        } else if (tries > 1000) {
+          valid = true;
+          alert("Error: Cannot find valid position for zombie");
+        }
       }
-    }
+      return p
+    })
   }
 
   useEffect(() => {
@@ -289,8 +311,8 @@ const Zombies = () => {
       const newBullet = {
         x: player.x + player.width / 2 - player.width / 10,
         y: player.y + player.height / 2 - player.height / 10,
-        xSpeed: (board.height / 100) * Math.cos(angleRadians),
-        ySpeed: (board.height / 100) * Math.sin(angleRadians),
+        xSpeed: (board.height / startingBulletSpeed) * Math.cos(angleRadians),
+        ySpeed: (board.height / startingBulletSpeed) * Math.sin(angleRadians),
         width: player.width / 5,
         height: player.height / 5,
       };
@@ -306,6 +328,32 @@ const Zombies = () => {
       gameBoard.removeEventListener("contextmenu", spawnZombie);
     };
   }, [player, playing, zombies]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const interval = setInterval(() => {
+      setTimer((t) => t + 1);
+      if (timer % 5 === 0) {
+        setZombieSpawnRate((zsr) => zsr / 1.01);
+        setZombieSpeed((zs) => zs / 1.01);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer, playing]);
+
+  useEffect(() => {
+    if (!playing) return;
+    const interval = setInterval(() => {
+      spawnZombie();
+    }, zombieSpawnRate);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [playing, zombieSpawnRate]);
 
   return (
     <div className="h-full w-full bg-gray-400" ref={boardRef}>
@@ -323,6 +371,7 @@ const Zombies = () => {
               width: player.width,
               height: player.height,
               backgroundColor: "brown",
+              border: "solid black 1px",
               borderRadius: "20% 100% 100% 100%",
               transform: `rotate(${player.angle}deg)`,
               zIndex: "20",
@@ -352,6 +401,7 @@ const Zombies = () => {
                 width: zombie.width,
                 height: zombie.height,
                 backgroundColor: "green",
+                border: "solid black 1px",
                 borderRadius: "40% 100% 100% 100%",
                 transform: `rotate(${zombie.angle}deg)`,
               }}
