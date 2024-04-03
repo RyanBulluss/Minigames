@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   startingHealth,
   startingAngle,
@@ -7,6 +7,10 @@ import {
   zombieSize,
   startingBulletSpeed,
   startingZombieSpawnRate,
+  startingFireRate,
+  tankPlayer,
+  sniperPlayer,
+  scoutPlayer,
 } from "./constants";
 import { gameOverSound } from "../../variables/audio";
 
@@ -33,21 +37,30 @@ const Zombies = () => {
     return boardRef.current.getBoundingClientRect();
   }
 
-  function startGame() {
+  function startGame(loadout) {
     setPlaying(true);
     const newBoard = resizeGame();
     const newPlayer = {
-      x: newBoard.x + newBoard.width / 2 - newBoard.width / 30,
-      y: newBoard.y + newBoard.height / 2 - newBoard.height / 30,
+      x: newBoard.x + newBoard.width / 2 - (newBoard.width / loadout.width) * 2,
+      y:
+        newBoard.y +
+        newBoard.height / 2 -
+        (newBoard.height / loadout.height) * 2,
       mouseX: 0,
       mouseY: 0,
       xSpeed: 0,
       ySpeed: 0,
-      width: newBoard.width / playerSize,
-      height: newBoard.height / playerSize,
+      speed: loadout.speed,
+      width: newBoard.width / loadout.width,
+      height: newBoard.height / loadout.height,
       angle: startingAngle,
-      health: startingHealth,
+      health: loadout.health,
       kills: 0,
+      fireRate: loadout.fireRate,
+      bulletSpeed: loadout.bulletSpeed,
+      bulletSize: loadout.bulletSize,
+      shooting: false,
+      loadout: loadout.loadout,
     };
     setZombies([]);
     setBullets([]);
@@ -138,7 +151,9 @@ const Zombies = () => {
             if (checkCollision(zombie, bullet)) {
               // Possible bug when a bullet hits multiple enemies
               newZ.splice(zIdx, 1);
-              newB.splice(bIdx, 1);
+              if (player.loadout !== "tank") {
+                newB.splice(bIdx, 1);
+              }
             }
           });
         });
@@ -273,13 +288,13 @@ const Zombies = () => {
         // if ((e.key === "a" || e.key === "d") && p.xSpeed) return p;
         switch (e.key) {
           case "w":
-            return { ...p, ySpeed: -board.height / 100 };
+            return { ...p, ySpeed: -board.height / p.speed };
           case "a":
-            return { ...p, xSpeed: -board.height / 100 };
+            return { ...p, xSpeed: -board.height / p.speed };
           case "s":
-            return { ...p, ySpeed: board.height / 100 };
+            return { ...p, ySpeed: board.height / p.speed };
           case "d":
-            return { ...p, xSpeed: board.height / 100 };
+            return { ...p, xSpeed: board.height / p.speed };
           default:
             return p;
         }
@@ -321,33 +336,51 @@ const Zombies = () => {
       gameBoard.removeEventListener("mousemove", handleMouseMove);
     };
   }, [board, playing]);
+  
+  const shoot = () => {
+    let newBullet
+    setPlayer(p => {
+      const newAngle = p.angle - 135;
+      const angleRadians = (newAngle * Math.PI) / 180;
+      newBullet = {
+        x: p.x + p.width / 2 - p.width / 10,
+        y: p.y + p.height / 2 - p.height / 10,
+        xSpeed: (board.height / p.bulletSpeed) * Math.cos(angleRadians),
+        ySpeed: (board.height / p.bulletSpeed) * Math.sin(angleRadians),
+        width: p.width / p.bulletSize,
+        height: p.height / p.bulletSize,
+      };
+      return p;
+    })
+    setBullets((b) => [...b, newBullet]);
+  };
+
 
   useEffect(() => {
     if (!playing) return;
-    const shoot = (e) => {
+    let intervalId;
+
+    function startShooting(e) {
       e.preventDefault();
-      const newAngle = player.angle - 135;
-      const angleRadians = (newAngle * Math.PI) / 180;
-      const newBullet = {
-        x: player.x + player.width / 2 - player.width / 10,
-        y: player.y + player.height / 2 - player.height / 10,
-        xSpeed: (board.height / startingBulletSpeed) * Math.cos(angleRadians),
-        ySpeed: (board.height / startingBulletSpeed) * Math.sin(angleRadians),
-        width: player.width / 5,
-        height: player.height / 5,
-      };
-      setBullets((b) => [...b, newBullet]);
-    };
+      shoot();
+      intervalId = setInterval(shoot, player.fireRate);
+    }
+
+    function stopShooting(e) {
+      e.preventDefault();
+      clearInterval(intervalId);
+    }
 
     const gameBoard = boardRef.current;
-    gameBoard.addEventListener("click", shoot);
-    gameBoard.addEventListener("contextmenu", spawnZombie);
+    gameBoard.addEventListener("mousedown", startShooting);
+    window.addEventListener("mouseup", stopShooting);
 
     return () => {
-      gameBoard.removeEventListener("click", shoot);
-      gameBoard.removeEventListener("contextmenu", spawnZombie);
+      clearInterval(intervalId);
+      gameBoard.removeEventListener("mousedown", startShooting);
+      gameBoard.removeEventListener("mouseup", stopShooting);
     };
-  }, [player, playing, zombies]);
+  }, [playing, board]);
 
   useEffect(() => {
     if (!playing) return;
@@ -378,8 +411,11 @@ const Zombies = () => {
   return (
     <div className="h-full w-full bg-gray-400" ref={boardRef}>
       {!playing ? (
-        <div className="h-full w-full flex justify-center items-center">
-          <button onClick={startGame}>Start Game</button>
+        <div className="h-full w-full flex flex-col gap-4 justify-center items-center">
+          <h2 onClick={startGame}>Choose Your Loadout:</h2>
+          <button onClick={() => startGame(scoutPlayer)}>Scout</button>
+          <button onClick={() => startGame(sniperPlayer)}>Sniper</button>
+          <button onClick={() => startGame(tankPlayer)}>Tank</button>
         </div>
       ) : (
         <>
