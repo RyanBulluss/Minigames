@@ -1,0 +1,60 @@
+.zombie {
+  position: absolute;
+  background-size: 120%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+}
+
+.zombie0 {
+  background-image: url("./assets/zombieSprites/z0.png");
+}
+.zombie1 {
+  background-image: url("./assets/zombieSprites/z1.png");
+}
+.zombie2 {
+  background-image: url("./assets/zombieSprites/z2.png");
+}
+.zombie3 {
+  background-image: url("./assets/zombieSprites/z3.png");
+}
+.zombie4 {
+  background-image: url("./assets/zombieSprites/z4.png");
+}
+.zombie5 {
+  background-image: url("./assets/zombieSprites/z5.png");
+}
+.zombie6 {
+  background-image: url("./assets/zombieSprites/z6.png");
+}
+.zombie7 {
+  background-image: url("./assets/zombieSprites/z7.png");
+}
+.zombie8 {
+  background-image: url("./assets/zombieSprites/z8.png");
+}
+.zombie9 {
+  background-image: url("./assets/zombieSprites/z9.png");
+}
+.zombie10 {
+  background-image: url("./assets/zombieSprites/z10.png");
+}
+.zombie11 {
+  background-image: url("./assets/zombieSprites/z11.png");
+}
+.zombie12 {
+  background-image: url("./assets/zombieSprites/z12.png");
+}
+.zombie13 {
+  background-image: url("./assets/zombieSprites/z13.png");
+}
+.zombie14 {
+  background-image: url("./assets/zombieSprites/z14.png");
+}
+.zombie15 {
+  background-image: url("./assets/zombieSprites/z15.png");
+}
+.zombie16 {
+  background-image: url("./assets/zombieSprites/z16.png");
+}

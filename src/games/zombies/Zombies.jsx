@@ -8,9 +8,10 @@ import {
   sniperPlayer,
   scoutPlayer,
   zombiesArr,
-  maxZombies
+  maxZombies,
 } from "./constants";
 import HealthBar from "./HealthBar";
+import "./Zombies.css";
 import { gameOverSound } from "../../variables/audio";
 
 const Zombies = () => {
@@ -40,11 +41,9 @@ const Zombies = () => {
     setPlaying(true);
     const newBoard = resizeGame();
     const newPlayer = {
-      x: newBoard.x + newBoard.width / 2 - (newBoard.width / loadout.width) * 2,
+      x: newBoard.x + newBoard.width / 2 - newBoard.width / loadout.width / 2,
       y:
-        newBoard.y +
-        newBoard.height / 2 -
-        (newBoard.height / loadout.height) * 2,
+        newBoard.y + newBoard.height / 2 - newBoard.height / loadout.height / 2,
       mouseX: 0,
       mouseY: 0,
       xSpeed: 0,
@@ -92,18 +91,15 @@ const Zombies = () => {
         const dx = player.x - zombie.x;
         const angleRadians = Math.atan2(dy, dx);
 
-        const angleDegrees = angleRadians * (180 / Math.PI) + 135;
+        const angleDegrees = angleRadians * (180 / Math.PI);
 
         const newZombie = {
           ...zombie,
-          xSpeed: (zombie.speed) * Math.cos(angleRadians),
-          ySpeed: (zombie.speed) * Math.sin(angleRadians),
+          xSpeed: zombie.speed * Math.cos(angleRadians),
+          ySpeed: zombie.speed * Math.sin(angleRadians),
           angle: angleDegrees,
         };
 
-        newZombie.x += newZombie.xSpeed;
-        newZombie.y += newZombie.ySpeed;
-        // Game over check
         if (
           checkCollision(
             {
@@ -120,10 +116,18 @@ const Zombies = () => {
             gameOver();
             dead = true;
           }
-          setPlayer(p => {
-            return {...p, health: dead ? 0 : p.health - zombie.damage}
-          })
+          setPlayer((p) => {
+            return { ...p, health: dead ? 0 : p.health - zombie.damage };
+          });
+          newZombie.xSpeed = 0;
+          newZombie.ySpeed = 0;
+          newZombie.distance -= newZombie.speed;
         }
+
+        newZombie.distance += newZombie.speed;
+        newZombie.x += newZombie.xSpeed;
+        newZombie.y += newZombie.ySpeed;
+        // Game over check
         return newZombie;
       });
     });
@@ -162,7 +166,7 @@ const Zombies = () => {
                 if (!killIdxs.includes(zIdx)) {
                   killIdxs.push(zIdx);
                   dead = true;
-                } 
+                }
               } else {
                 // some may have under 0 health when dead
                 newZ[zIdx].health -= bullet.damage;
@@ -175,7 +179,7 @@ const Zombies = () => {
         });
         killIdxs.forEach((idx) => {
           newZ.splice(idx, 1);
-        })
+        });
         return newZ;
       });
       newB = newB.filter((bullet) => checkBoundaries(bullet));
@@ -254,7 +258,8 @@ const Zombies = () => {
       startingHealth: zombie.health,
       damage: zombie.damage,
       zombieAngle: 0,
-      color: zombie.color
+      color: zombie.color,
+      distance: 0,
     };
     let valid = false;
     let tries = 0;
@@ -361,10 +366,10 @@ const Zombies = () => {
       gameBoard.removeEventListener("mousemove", handleMouseMove);
     };
   }, [board, playing]);
-  
+
   const shoot = () => {
-    let newBullet
-    setPlayer(p => {
+    let newBullet;
+    setPlayer((p) => {
       const newAngle = p.angle - 135;
       const angleRadians = (newAngle * Math.PI) / 180;
       newBullet = {
@@ -377,10 +382,9 @@ const Zombies = () => {
         damage: p.damage,
       };
       return p;
-    })
+    });
     setBullets((b) => [...b, newBullet]);
   };
-
 
   useEffect(() => {
     if (!playing) return;
@@ -433,7 +437,7 @@ const Zombies = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [playing, zombieSpawnRate]);
+  }, [playing, zombieSpawnRate, zombies.length]);
 
   return (
     <div className="h-full w-full bg-gray-400" ref={boardRef}>
@@ -460,7 +464,9 @@ const Zombies = () => {
               zIndex: "20",
             }}
           ></div>
-          {player.health !== player.startingHealth && <HealthBar user={player} />}
+          {player.health !== player.startingHealth && (
+            <HealthBar user={player} />
+          )}
           {bullets.map((bullet, idx) => (
             <div
               key={idx}
@@ -477,21 +483,57 @@ const Zombies = () => {
           ))}
           {zombies.map((zombie, idx) => (
             <>
-            <div
-              key={idx}
-              style={{
-                position: "absolute",
-                left: zombie.x,
-                top: zombie.y,
-                width: zombie.width,
-                height: zombie.height,
-                backgroundColor: zombie.color,
-                border: "solid black 1px",
-                borderRadius: "40% 100% 100% 100%",
-                transform: `rotate(${zombie.angle}deg)`,
-              }}
-            ></div>
-            {zombie.health !== zombie.startingHealth && <HealthBar user={zombie} />}
+              <div
+                key={idx}
+                style={{
+                  position: "absolute",
+                  left: zombie.x,
+                  top: zombie.y,
+                  width: zombie.width,
+                  height: zombie.height,
+                  transform: `rotate(${zombie.angle}deg)`,
+                }}
+                className={
+                  zombie.xSpeed === 0 && zombie.ySpeed === 0
+                    ? "zombieStill zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 0
+                    ? "zombie0 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 1
+                    ? "zombie1 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 2
+                    ? "zombie2 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 3
+                    ? "zombie3 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 4
+                    ? "zombie4 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 5
+                    ? "zombie5 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 6
+                    ? "zombie6 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 7
+                    ? "zombie7 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 8
+                    ? "zombie8 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 9
+                    ? "zombie9 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 10
+                    ? "zombie10 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 11
+                    ? "zombie11 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 12
+                    ? "zombie12 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 13
+                    ? "zombie13 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 14
+                    ? "zombie14 zombie"
+                    : Math.floor(zombie.distance / 10) % 17 === 15
+                    ? "zombie15 zombie" : "zombie16 zombie"
+
+                }
+              ></div>
+              {zombie.health !== zombie.startingHealth && (
+                <HealthBar user={zombie} />
+              )}
             </>
           ))}
         </>
