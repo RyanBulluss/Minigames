@@ -1,16 +1,14 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
-  startingHealth,
   startingAngle,
   startingZombieSpeed,
-  playerSize,
   zombieSize,
-  startingBulletSpeed,
   startingZombieSpawnRate,
-  startingFireRate,
   tankPlayer,
   sniperPlayer,
   scoutPlayer,
+  zombiesArr,
+  maxZombies
 } from "./constants";
 import HealthBar from "./HealthBar";
 import { gameOverSound } from "../../variables/audio";
@@ -98,8 +96,8 @@ const Zombies = () => {
 
         const newZombie = {
           ...zombie,
-          xSpeed: (board.width / zombieSpeed) * Math.cos(angleRadians),
-          ySpeed: (board.height / zombieSpeed) * Math.sin(angleRadians),
+          xSpeed: (zombie.speed) * Math.cos(angleRadians),
+          ySpeed: (zombie.speed) * Math.sin(angleRadians),
           angle: angleDegrees,
         };
 
@@ -157,10 +155,14 @@ const Zombies = () => {
         let newZ = [...z];
         let killIdxs = [];
         newZ.forEach((zombie, zIdx) => {
-          b.forEach((bullet, bIdx) => {
+          let dead = false;
+          newB.forEach((bullet, bIdx) => {
             if (checkCollision(zombie, bullet)) {
-              if (zombie.health - bullet.damage <= 0) {
-                if (!killIdxs.includes(zIdx)) killIdxs.push(zIdx);
+              if (zombie.health - bullet.damage <= 0 && !dead) {
+                if (!killIdxs.includes(zIdx)) {
+                  killIdxs.push(zIdx);
+                  dead = true;
+                } 
               } else {
                 // some may have under 0 health when dead
                 newZ[zIdx].health -= bullet.damage;
@@ -241,15 +243,18 @@ const Zombies = () => {
   }
 
   function spawnZombie() {
+    const zombie = zombiesArr[rng(zombiesArr.length)];
     const newZ = {
       xSpeed: 0,
       ySpeed: 0,
-      width: board.width / zombieSize,
-      height: board.height / zombieSize,
-      health: 100,
-      damage: 1,
-      startingHealth: 100,
+      speed: board.width / zombie.speed,
+      width: board.width / zombie.width,
+      height: board.height / zombie.height,
+      health: zombie.health,
+      startingHealth: zombie.health,
+      damage: zombie.damage,
       zombieAngle: 0,
+      color: zombie.color
     };
     let valid = false;
     let tries = 0;
@@ -420,6 +425,7 @@ const Zombies = () => {
 
   useEffect(() => {
     if (!playing) return;
+    if (zombies.length >= maxZombies) return;
     const interval = setInterval(() => {
       spawnZombie();
     }, zombieSpawnRate);
@@ -479,7 +485,7 @@ const Zombies = () => {
                 top: zombie.y,
                 width: zombie.width,
                 height: zombie.height,
-                backgroundColor: "green",
+                backgroundColor: zombie.color,
                 border: "solid black 1px",
                 borderRadius: "40% 100% 100% 100%",
                 transform: `rotate(${zombie.angle}deg)`,

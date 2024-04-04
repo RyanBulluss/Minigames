@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const HealthBar = ({ user }) => {
+  const [healthPercent, setHealthPercent] = useState(100);
+  useEffect(() => {
+    setHealthPercent((user.health / user.startingHealth) * 100)
+  }, [user])
+
   return (
     <>
       <div
@@ -9,8 +14,7 @@ const HealthBar = ({ user }) => {
           left: user.x - user.width / 4,
           top: user.y - user.height / 2,
           width: user.width * 1.5,
-          height: user.height / 4,
-          border: "solid black 1px",
+          height: user.height / 6,
           zIndex: 500
         }}
       ></div>
@@ -21,9 +25,9 @@ const HealthBar = ({ user }) => {
           top: user.y - user.height / 2,
           width:
             ((user.width * 1.5) / 100) *
-            ((user.health / user.startingHealth) * 100),
-          height: user.height / 4,
-          backgroundColor: "pink",
+            healthPercent,
+          height: user.height / 6,
+          backgroundColor: `rgb(${200 + healthPercent / 10 * 5} 0, 0)`,
           zIndex: 500
         }}
       ></div>

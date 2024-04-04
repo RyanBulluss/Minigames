@@ -2,9 +2,10 @@ const startingHealth = 100;
 const startingAngle = 45;
 const playerSize = 15;
 const zombieSize = 15;
+const maxZombies = 25;
 
 const startingBulletSpeed = 50;
-const startingZombieSpeed = 1000;
+const startingZombieSpeed = 500;
 const startingZombieSpawnRate = 1000;
 const startingFireRate = 200;
 
@@ -45,6 +46,38 @@ const tankPlayer = {
   bulletSpeed: 100,
 };
 
+const regularZombie = {
+  type: "regular",
+  speed: startingZombieSpeed,
+  width: zombieSize,
+  height: zombieSize,
+  health: 100,
+  damage: 1,
+  color: "#090",
+};
+
+const tankZombie = {
+  type: "tank",
+  speed: startingZombieSpeed * 1.5,
+  width: zombieSize * 0.8,
+  height: zombieSize * 0.8,
+  health: 300,
+  damage: 5,
+  color: "#0b0",
+};
+
+const fastZombie = {
+  type: "fast",
+  speed: startingZombieSpeed * 0.5,
+  width: zombieSize * 1.2,
+  height: zombieSize * 1.2,
+  health: 100,
+  damage: 2,
+  color: "#0d0",
+};
+
+const zombiesArr = [regularZombie, tankZombie, fastZombie];
+
 export {
   startingHealth,
   startingAngle,
@@ -57,4 +90,6 @@ export {
   tankPlayer,
   sniperPlayer,
   scoutPlayer,
+  zombiesArr,
+  maxZombies,
 };
