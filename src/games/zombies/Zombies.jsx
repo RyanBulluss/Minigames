@@ -2,17 +2,36 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   startingAngle,
   startingZombieSpeed,
-  zombieSize,
   startingZombieSpawnRate,
   tankPlayer,
   sniperPlayer,
   scoutPlayer,
   zombiesArr,
   maxZombies,
+  powerUpsArr
 } from "./constants";
 import HealthBar from "./HealthBar";
 import "./Zombies.css";
-import { gameOverSound } from "../../variables/audio";
+import {
+  cannonSound,
+  gameOverSound,
+  sniperSound,
+  gunshotSound,
+  zombieHitSound,
+} from "../../variables/audio";
+import zombieBite from "../../assets/zombieBite.mp3";
+
+const zba = new Audio(zombieBite);
+
+function playZombieBiteSound() {
+  zba.volume = 0.01;
+  if (zba.currentTime > 0.4) {
+    zba.currentTime = 0;
+  }
+  if (zba.currentTime === 0) {
+    zba.play();
+  }
+}
 
 const Zombies = () => {
   const [playing, setPlaying] = useState(false);
@@ -26,6 +45,7 @@ const Zombies = () => {
   );
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
+  const [powerUps, setPowerUps] = useState([]);
   const boardRef = useRef(null);
 
   function gameOver() {
@@ -64,6 +84,7 @@ const Zombies = () => {
     };
     setZombies([]);
     setBullets([]);
+    setPowerUps([]);
     setZombieSpeed(startingZombieSpeed);
     setZombieSpawnRate(startingZombieSpawnRate);
     setTimer(0);
@@ -112,6 +133,7 @@ const Zombies = () => {
           )
         ) {
           let dead = false;
+          playZombieBiteSound();
           if (player.health - zombie.damage <= 0) {
             gameOver();
             dead = true;
@@ -152,6 +174,17 @@ const Zombies = () => {
     } else return true;
   }
 
+  function spawnPowerUp(y, x) {
+    const newPU = powerUpsArr[rng(powerUpsArr.length)];
+    setPowerUps(pu => [...pu, {
+      type: newPU.type,
+      height: board.height / newPU.height,
+      width: board.width / newPU.width,
+      x: x,
+      y: y,
+    }])
+  }
+
   function moveBullets() {
     setBullets((b) => {
       let newB = [...b];
@@ -166,6 +199,7 @@ const Zombies = () => {
                 if (!killIdxs.includes(zIdx)) {
                   killIdxs.push(zIdx);
                   dead = true;
+                  spawnPowerUp(zombie.y, zombie.x);
                 }
               } else {
                 // some may have under 0 health when dead
@@ -173,6 +207,7 @@ const Zombies = () => {
               }
               if (player.loadout !== "tank") {
                 newB.splice(bIdx, 1);
+                zombieHitSound();
               }
             }
           });
@@ -214,7 +249,7 @@ const Zombies = () => {
     const dy = playerY - newPlayer.mouseY;
 
     const angleRadians = Math.atan2(dy, dx);
-    const angleDegrees = angleRadians * (180 / Math.PI) - 45;
+    const angleDegrees = angleRadians * (180 / Math.PI) - 90;
     newPlayer.angle = angleDegrees;
     return newPlayer;
   }
@@ -242,8 +277,27 @@ const Zombies = () => {
       newPlayer.y = board.y;
       newPlayer.ySpeed = 0;
     }
+    checkPowerUps(newPlayer);
 
     return newPlayer;
+  }
+
+  function checkPowerUps(newPlayer) {
+    const newPowerUps = [...powerUps]
+    powerUps.forEach((pu, idx) => {
+      if (checkCollision(newPlayer, pu)) {
+        if (pu.type === "nuke") nuke();
+        newPowerUps.splice(idx, 1);
+      }
+    })
+    setPowerUps(newPowerUps);
+  }
+
+  function nuke() {
+    setPlayer(p => {
+      return {...p, kills: p.kills + zombies.length}
+    });
+    setZombies([]);
   }
 
   function spawnZombie() {
@@ -370,11 +424,11 @@ const Zombies = () => {
   const shoot = () => {
     let newBullet;
     setPlayer((p) => {
-      const newAngle = p.angle - 135;
+      const newAngle = p.angle - 90;
       const angleRadians = (newAngle * Math.PI) / 180;
       newBullet = {
-        x: p.x + p.width / 2 - p.width / 10,
-        y: p.y + p.height / 2 - p.height / 10,
+        x: p.x + p.width / 2 - p.width / p.bulletSize / 2,
+        y: p.y + p.height / 2 - p.height / p.bulletSize / 2,
         xSpeed: (board.height / p.bulletSpeed) * Math.cos(angleRadians),
         ySpeed: (board.height / p.bulletSpeed) * Math.sin(angleRadians),
         width: p.width / p.bulletSize,
@@ -383,8 +437,17 @@ const Zombies = () => {
       };
       return p;
     });
+    playShotSound();
     setBullets((b) => [...b, newBullet]);
   };
+
+  function playShotSound() {
+    if (player.loadout === "tank") {
+      cannonSound();
+    } else if (player.loadout === "sniper") {
+      sniperSound();
+    } else if (player.loadout === "scout") gunshotSound();
+  }
 
   useEffect(() => {
     if (!playing) return;
@@ -451,18 +514,23 @@ const Zombies = () => {
       ) : (
         <>
           <div
+            className="zBackground"
+            style={{
+              height: board.height,
+              width: board.width,
+            }}
+          ></div>
+          <div
             style={{
               position: "absolute",
               left: player.x,
               top: player.y,
               width: player.width,
               height: player.height,
-              backgroundColor: "brown",
-              border: "solid black 1px",
-              borderRadius: "20% 100% 100% 100%",
               transform: `rotate(${player.angle}deg)`,
               zIndex: "20",
             }}
+            className="zPlayer player0"
           ></div>
           {player.health !== player.startingHealth && (
             <HealthBar user={player} />
@@ -476,10 +544,24 @@ const Zombies = () => {
                 top: bullet.y,
                 width: bullet.width,
                 height: bullet.height,
-                backgroundColor: "black",
+                background: "linear-gradient(to right, #111, #222)",
                 borderRadius: "100%",
               }}
             ></div>
+          ))}
+          {powerUps.map((powerUp, idx) => (
+            <div
+            key={idx}
+            style={{
+              position: "absolute",
+              left: powerUp.x,
+              top: powerUp.y,
+              width: powerUp.width,
+              height: powerUp.height,
+              background: "red",
+              borderRadius: "100%",
+            }}
+          ></div>
           ))}
           {zombies.map((zombie, idx) => (
             <>
@@ -494,41 +576,39 @@ const Zombies = () => {
                   transform: `rotate(${zombie.angle}deg)`,
                 }}
                 className={
-                  zombie.xSpeed === 0 && zombie.ySpeed === 0
-                    ? "zombieStill zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 0
+                  Math.floor(zombie.distance / 5) % 17 === 0
                     ? "zombie0 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 1
+                    : Math.floor(zombie.distance / 5) % 17 === 1
                     ? "zombie1 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 2
+                    : Math.floor(zombie.distance / 5) % 17 === 2
                     ? "zombie2 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 3
+                    : Math.floor(zombie.distance / 5) % 17 === 3
                     ? "zombie3 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 4
+                    : Math.floor(zombie.distance / 5) % 17 === 4
                     ? "zombie4 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 5
+                    : Math.floor(zombie.distance / 5) % 17 === 5
                     ? "zombie5 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 6
+                    : Math.floor(zombie.distance / 5) % 17 === 6
                     ? "zombie6 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 7
+                    : Math.floor(zombie.distance / 5) % 17 === 7
                     ? "zombie7 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 8
+                    : Math.floor(zombie.distance / 5) % 17 === 8
                     ? "zombie8 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 9
+                    : Math.floor(zombie.distance / 5) % 17 === 9
                     ? "zombie9 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 10
+                    : Math.floor(zombie.distance / 5) % 17 === 10
                     ? "zombie10 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 11
+                    : Math.floor(zombie.distance / 5) % 17 === 11
                     ? "zombie11 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 12
+                    : Math.floor(zombie.distance / 5) % 17 === 12
                     ? "zombie12 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 13
+                    : Math.floor(zombie.distance / 5) % 17 === 13
                     ? "zombie13 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 14
+                    : Math.floor(zombie.distance / 5) % 17 === 14
                     ? "zombie14 zombie"
-                    : Math.floor(zombie.distance / 10) % 17 === 15
-                    ? "zombie15 zombie" : "zombie16 zombie"
-
+                    : Math.floor(zombie.distance / 5) % 17 === 15
+                    ? "zombie15 zombie"
+                    : "zombie16 zombie"
                 }
               ></div>
               {zombie.health !== zombie.startingHealth && (

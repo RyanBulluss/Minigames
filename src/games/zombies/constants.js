@@ -1,7 +1,7 @@
 const startingHealth = 100;
 const startingAngle = 45;
-const playerSize = 15;
-const zombieSize = 15;
+const playerSize = 10;
+const zombieSize = 10;
 const maxZombies = 25;
 
 const startingBulletSpeed = 50;
@@ -13,8 +13,8 @@ const startingFireRate = 200;
 const scoutPlayer = {
   loadout: "scout",
   speed: 200,
-  width: 20,
-  height: 20,
+  width: playerSize,
+  height: playerSize,
   health: 100,
   bulletSize: 5,
   bulletDamage: 20,
@@ -24,9 +24,9 @@ const scoutPlayer = {
 
 const sniperPlayer = {
   loadout: "sniper",
-  speed: 300,
-  width: 16,
-  height: 16,
+  speed: 250,
+  width: playerSize,
+  height: playerSize,
   health: 150,
   bulletSize: 4,
   bulletDamage: 200,
@@ -36,9 +36,9 @@ const sniperPlayer = {
 
 const tankPlayer = {
   loadout: "tank",
-  speed: 400,
-  width: 12,
-  height: 12,
+  speed: 300,
+  width: playerSize,
+  height: playerSize,
   health: 200,
   bulletSize: 2,
   bulletDamage: 15,
@@ -76,7 +76,14 @@ const fastZombie = {
   color: "#0d0",
 };
 
+const nuke = {
+  type: "nuke",
+  width: playerSize,
+  height: playerSize,
+}
+
 const zombiesArr = [regularZombie, tankZombie, fastZombie];
+const powerUpsArr = [nuke];
 
 export {
   startingHealth,
@@ -92,4 +99,5 @@ export {
   scoutPlayer,
   zombiesArr,
   maxZombies,
+  powerUpsArr
 };

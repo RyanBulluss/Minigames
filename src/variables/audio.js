@@ -11,14 +11,29 @@ import win from "../assets/win.mp3";
 import jetpack from "../assets/jetpack.mp3";
 import spring from "../assets/spring.mp3";
 import snap from "../assets/snap.mp3";
+import gunshot from "../assets/gunshot.mp3";
+import cannon from "../assets/cannon.mp3";
+import sniper from "../assets/sniper.mp3";
+import zombieHit from "../assets/zombieHit.mp3";
+import zombieBite from "../assets/zombieBite.mp3";
 
-const volume = 0.1;
+const volume = 0.01;
 
 const playAudio = (sound) => {
   return () => {
     sound.volume = volume;
     sound.currentTime = 0;
     sound.play();
+  };
+};
+
+const playAudioNoSkip = (mp3) => {
+  return () => {
+    const newAudio = new Audio(mp3);
+    newAudio.volume = volume;
+    if (newAudio.currentTime === 0) {
+      newAudio.play();
+    }
   };
 };
 
@@ -50,6 +65,11 @@ const springSound = playAudio(springAudio);
 const jetpackSound = playAudio(jetpackAudio);
 const snapSound = playAudio(snapAudio);
 
+const gunshotSound = playAudioNoSkip(gunshot);
+const cannonSound = playAudioNoSkip(cannon);
+const sniperSound = playAudioNoSkip(sniper);
+const zombieHitSound = playAudioNoSkip(zombieHit);
+
 export {
   flapSound,
   hitSound,
@@ -64,4 +84,8 @@ export {
   springSound,
   jetpackSound,
   snapSound,
+  gunshotSound,
+  cannonSound,
+  sniperSound,
+  zombieHitSound,
 };
