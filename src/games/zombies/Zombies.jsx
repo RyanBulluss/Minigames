@@ -18,13 +18,14 @@ import {
   sniperSound,
   gunshotSound,
   zombieHitSound,
+  bombSound,
 } from "../../variables/audio";
 import zombieBite from "../../assets/zombieBite.mp3";
 
 const zba = new Audio(zombieBite);
 
 function playZombieBiteSound() {
-  zba.volume = 0.01;
+  zba.volume = 0.05;
   if (zba.currentTime > 0.4) {
     zba.currentTime = 0;
   }
@@ -175,6 +176,7 @@ const Zombies = () => {
   }
 
   function spawnPowerUp(y, x) {
+    if (rng(10) !== 0) return;
     const newPU = powerUpsArr[rng(powerUpsArr.length)];
     setPowerUps(pu => [...pu, {
       type: newPU.type,
@@ -298,6 +300,7 @@ const Zombies = () => {
       return {...p, kills: p.kills + zombies.length}
     });
     setZombies([]);
+    bombSound();
   }
 
   function spawnZombie() {
@@ -558,9 +561,8 @@ const Zombies = () => {
               top: powerUp.y,
               width: powerUp.width,
               height: powerUp.height,
-              background: "red",
-              borderRadius: "100%",
             }}
+            className={powerUp.type === "nuke" ? "nuke" : ""}
           ></div>
           ))}
           {zombies.map((zombie, idx) => (

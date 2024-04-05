@@ -26,6 +26,16 @@
   background-image: url("./assets/floor/zBackground.png");
 }
 
+.nuke {
+  position: absolute;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  background-image: url("./assets/powerUps/nuke.png");
+}
+
 .zombie0 {
   background-image: url("./assets/zombieSprites/z0.png");
 }
