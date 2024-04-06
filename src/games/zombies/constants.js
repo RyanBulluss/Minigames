@@ -1,13 +1,15 @@
 const startingHealth = 100;
 const startingAngle = 45;
 const playerSize = 10;
-const zombieSize = 10;
+const zombieSize = playerSize;
+const powerUpSize = playerSize * 0.8;
 const maxZombies = 25;
 
 const startingBulletSpeed = 50;
 const startingZombieSpeed = 500;
 const startingZombieSpawnRate = 1000;
 const startingFireRate = 200;
+
 
 // Most values are what board width is divided by to get the real value
 const scoutPlayer = {
@@ -78,12 +80,23 @@ const fastZombie = {
 
 const nuke = {
   type: "nuke",
-  width: playerSize,
-  height: playerSize,
+  width: powerUpSize,
+  height: powerUpSize,
 }
 
+const instantKill = {
+  type: "instant kill",
+  width: powerUpSize,
+  height: powerUpSize,
+}
+
+const instantKillData = {
+  time: 5000,
+  damage: 9000,
+};
+
 const zombiesArr = [regularZombie, tankZombie, fastZombie];
-const powerUpsArr = [nuke];
+const powerUpsArr = [nuke, instantKill];
 
 export {
   startingHealth,
@@ -99,5 +112,6 @@ export {
   scoutPlayer,
   zombiesArr,
   maxZombies,
-  powerUpsArr
+  powerUpsArr,
+  instantKillData
 };

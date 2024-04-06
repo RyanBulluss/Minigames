@@ -8,7 +8,8 @@ import {
   scoutPlayer,
   zombiesArr,
   maxZombies,
-  powerUpsArr
+  powerUpsArr,
+  instantKillData
 } from "./constants";
 import HealthBar from "./HealthBar";
 import "./Zombies.css";
@@ -47,6 +48,7 @@ const Zombies = () => {
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
   const [powerUps, setPowerUps] = useState([]);
+  const [currentPowerUps, setCurrentPowerUps] = useState([]);
   const boardRef = useRef(null);
 
   function gameOver() {
@@ -176,7 +178,7 @@ const Zombies = () => {
   }
 
   function spawnPowerUp(y, x) {
-    if (rng(10) !== 0) return;
+    if (rng(25) !== 0) return;
     const newPU = powerUpsArr[rng(powerUpsArr.length)];
     setPowerUps(pu => [...pu, {
       type: newPU.type,
@@ -197,7 +199,7 @@ const Zombies = () => {
           let dead = false;
           newB.forEach((bullet, bIdx) => {
             if (checkCollision(zombie, bullet)) {
-              if (zombie.health - bullet.damage <= 0 && !dead) {
+              if ((zombie.health - bullet.damage <= 0 && !dead) || (currentPowerUps.instantKill && !dead)) {
                 if (!killIdxs.includes(zIdx)) {
                   killIdxs.push(zIdx);
                   dead = true;
@@ -285,15 +287,30 @@ const Zombies = () => {
   }
 
   function checkPowerUps(newPlayer) {
+    if (powerUps.length < 1) return;
     const newPowerUps = [...powerUps]
     powerUps.forEach((pu, idx) => {
       if (checkCollision(newPlayer, pu)) {
         if (pu.type === "nuke") nuke();
+        if (pu.type === "instant kill") instantKill();
         newPowerUps.splice(idx, 1);
       }
     })
     setPowerUps(newPowerUps);
   }
+
+  function instantKill() {
+    if (currentPowerUps.instantKill) return
+    setCurrentPowerUps(b => {
+      if (b.instantKill) return b;
+      return {...b, instantKill: true}
+    })
+    setTimeout(() => {
+      setCurrentPowerUps(b => {
+        return {...b, instantKill: false}
+      })
+    }, instantKillData.time);
+  };
 
   function nuke() {
     setPlayer(p => {
@@ -364,7 +381,7 @@ const Zombies = () => {
       window.removeEventListener("resize", startGame);
       clearInterval(interval);
     };
-  }, [board, playing, bullets]);
+  }, [currentPowerUps, board, playing, bullets]);
 
   useEffect(() => {
     if (!playing) return;
@@ -562,7 +579,9 @@ const Zombies = () => {
               width: powerUp.width,
               height: powerUp.height,
             }}
-            className={powerUp.type === "nuke" ? "nuke" : ""}
+            className={powerUp.type === "nuke" ? "nuke" : 
+          powerUp.type === "instant kill" ? "instant-kill" : ""
+          }
           ></div>
           ))}
           {zombies.map((zombie, idx) => (

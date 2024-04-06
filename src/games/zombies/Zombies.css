@@ -36,6 +36,16 @@
   background-image: url("./assets/powerUps/nuke.png");
 }
 
+.instant-kill {
+  position: absolute;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  background-image: url("./assets/powerUps/skull.png");
+}
+
 .zombie0 {
   background-image: url("./assets/zombieSprites/z0.png");
 }
