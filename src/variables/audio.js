@@ -16,7 +16,7 @@ import cannon from "../assets/cannon.mp3";
 import sniper from "../assets/sniper.mp3";
 import zombieHit from "../assets/zombieHit.mp3";
 
-const volume = 0.05;
+const volume = 0.03;
 
 const playAudio = (sound) => {
   return () => {

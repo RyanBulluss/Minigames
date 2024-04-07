@@ -26,7 +26,7 @@ import zombieBite from "../../assets/zombieBite.mp3";
 const zba = new Audio(zombieBite);
 
 function playZombieBiteSound() {
-  zba.volume = 0.05;
+  zba.volume = 0.03;
   if (zba.currentTime > 0.4) {
     zba.currentTime = 0;
   }
@@ -290,7 +290,7 @@ const Zombies = () => {
     if (powerUps.length < 1) return;
     const newPowerUps = [...powerUps]
     powerUps.forEach((pu, idx) => {
-      if (checkCollision(newPlayer, pu)) {
+      if (checkCollision(newPlayer, {x: pu.x + pu.width / 2 - pu.width / 20, y: pu.y + pu.height / 2 - pu.height / 20, width: pu.width / 10, height: pu.height / 10})) {
         if (pu.type === "nuke") nuke();
         if (pu.type === "instant kill") instantKill();
         newPowerUps.splice(idx, 1);
