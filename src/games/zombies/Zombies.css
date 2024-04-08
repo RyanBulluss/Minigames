@@ -36,6 +36,7 @@
   background-image: url("./assets/powerUps/nuke.png");
 }
 
+
 .instant-kill {
   position: absolute;
   background-size: 100%;
@@ -48,9 +49,12 @@
 
 .double-speed {
   position: absolute;
-  background-color: red;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
   height: 100%;
   width: 100%;
+  background-image: url("./assets/powerUps/double-speed.png");
 }
 
 .zombie0 {
