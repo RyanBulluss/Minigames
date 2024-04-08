@@ -1,16 +1,13 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   startingAngle,
   startingZombieSpawnRate,
-  tankPlayer,
-  sniperPlayer,
-  scoutPlayer,
+  loadouts,
   zombiesArr,
   maxZombies,
   powerUpsArr,
   powerUpTime
 } from "./constants";
-import HealthBar from "./HealthBar";
 import "./Zombies.css";
 import {
   cannonSound,
@@ -22,6 +19,12 @@ import {
 } from "../../variables/audio";
 import zombieBite from "../../assets/zombieBite.mp3";
 import PowerUpsUI from "./PowerUpsUI";
+import Bullet from "./game pieces/Bullet";
+import PowerUp from "./game pieces/PowerUp";
+import Zombie from "./game pieces/Zombie";
+import Player from "./game pieces/Player";
+import Background from "./game pieces/Background";
+import Menu from "./game pieces/Menu";
 
 const zba = new Audio(zombieBite);
 
@@ -176,7 +179,8 @@ const Zombies = () => {
   }
 
   function spawnPowerUp(y, x) {
-    if (rng(1) !== 0) return;
+    if (powerUps.length > 3) return;
+    if (rng(25) !== 0) return;
     const newPU = powerUpsArr[rng(powerUpsArr.length)];
     setPowerUps(pu => [...pu, {
       type: newPU.type,
@@ -399,7 +403,7 @@ const Zombies = () => {
       window.removeEventListener("resize", startGame);
       clearInterval(interval);
     };
-  }, [currentPowerUps, board, playing, bullets]);
+  }, [currentPowerUps, powerUps, board, playing, bullets]);
 
   useEffect(() => {
     if (!playing) return;
@@ -542,119 +546,20 @@ const Zombies = () => {
   return (
     <div className="h-full w-full bg-gray-400" ref={boardRef}>
       {!playing ? (
-        <div className="h-full w-full flex flex-col gap-4 justify-center items-center">
-          <h2 onClick={startGame}>Choose Your Loadout:</h2>
-          <button onClick={() => startGame(scoutPlayer)}>Scout</button>
-          <button onClick={() => startGame(sniperPlayer)}>Sniper</button>
-          <button onClick={() => startGame(tankPlayer)}>Tank</button>
-        </div>
+        <Menu startGame={startGame} loadouts={loadouts} />
       ) : (
         <>
-          <div
-            className="zBackground"
-            style={{
-              height: board.height,
-              width: board.width,
-            }}
-          ></div>
+          <Background board={board} />
           <PowerUpsUI currentPowerUps={currentPowerUps} board={board} />
-          <div
-            style={{
-              position: "absolute",
-              left: player.x,
-              top: player.y,
-              width: player.width,
-              height: player.height,
-              transform: `rotate(${player.angle}deg)`,
-              zIndex: "20",
-            }}
-            className="zPlayer player0"
-          ></div>
-          {player.health !== player.startingHealth && (
-            <HealthBar user={player} />
-          )}
+          <Player player={player} />
           {bullets.map((bullet, idx) => (
-            <div
-              key={idx}
-              style={{
-                position: "absolute",
-                left: bullet.x,
-                top: bullet.y,
-                width: bullet.width,
-                height: bullet.height,
-                background: "linear-gradient(to right, #111, #222)",
-                borderRadius: "100%",
-              }}
-            ></div>
+            <Bullet key={idx} bullet={bullet} />
           ))}
           {powerUps.map((powerUp, idx) => (
-            <div
-            key={idx}
-            style={{
-              position: "absolute",
-              left: powerUp.x,
-              top: powerUp.y,
-              width: powerUp.width,
-              height: powerUp.height,
-            }}
-            className={powerUp.type === "nuke" ? "nuke" : 
-          powerUp.type === "instant kill" ? "instant-kill" :
-          powerUp.type === "double speed" ? "double-speed" : ""
-          }
-          ></div>
+            <PowerUp key={idx} powerUp={powerUp} />
           ))}
           {zombies.map((zombie, idx) => (
-            <>
-              <div
-                key={idx}
-                style={{
-                  position: "absolute",
-                  left: zombie.x,
-                  top: zombie.y,
-                  width: zombie.width,
-                  height: zombie.height,
-                  transform: `rotate(${zombie.angle}deg)`,
-                }}
-                className={
-                  Math.floor(zombie.distance / 5) % 17 === 0
-                    ? "zombie0 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 1
-                    ? "zombie1 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 2
-                    ? "zombie2 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 3
-                    ? "zombie3 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 4
-                    ? "zombie4 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 5
-                    ? "zombie5 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 6
-                    ? "zombie6 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 7
-                    ? "zombie7 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 8
-                    ? "zombie8 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 9
-                    ? "zombie9 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 10
-                    ? "zombie10 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 11
-                    ? "zombie11 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 12
-                    ? "zombie12 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 13
-                    ? "zombie13 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 14
-                    ? "zombie14 zombie"
-                    : Math.floor(zombie.distance / 5) % 17 === 15
-                    ? "zombie15 zombie"
-                    : "zombie16 zombie"
-                }
-              ></div>
-              {zombie.health !== zombie.startingHealth && (
-                <HealthBar user={zombie} />
-              )}
-            </>
+            <Zombie key={idx} zombie={zombie} />
           ))}
         </>
       )}

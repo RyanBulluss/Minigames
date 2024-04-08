@@ -12,7 +12,7 @@ import Zombies from '../games/zombies/Zombies'
 
 const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
-    <div className=' h-[90vmin] w-[90vmin] p-3 bg-first'>
+    <div className=' h-[90vmin] w-[90vmin] p-3 bg-first no-select'>
         {!currentGame && <div className='flex text-2xl font-semibold h-full w-full justify-center items-center'>Select a game to start playing</div>}
         {currentGame === "Snake" && <Snake currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Minesweeper" && <Minesweeper currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}

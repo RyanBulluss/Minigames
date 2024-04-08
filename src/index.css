@@ -12,6 +12,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.no-select {
+  user-select: none;
+}
+
 .snake-board-1 {
   background-color: rgb(170, 215, 81);
 }
