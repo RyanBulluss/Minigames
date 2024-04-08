@@ -78,25 +78,23 @@ const fastZombie = {
   color: "#0d0",
 };
 
-const nuke = {
-  type: "nuke",
-  width: powerUpSize,
-  height: powerUpSize,
+class powerUp {
+  constructor(type) {
+    this.type = type;
+    this.width = powerUpSize;
+    this.height = powerUpSize;
+  }
 }
 
-const instantKill = {
-  type: "instant kill",
-  width: powerUpSize,
-  height: powerUpSize,
-}
+const nuke = new powerUp("nuke")
+const instantKill = new powerUp("instant kill")
+const doubleSpeed = new powerUp("double speed")
 
-const instantKillData = {
-  time: 5000,
-  damage: 9000,
-};
+const powerUpTime = 5000;
+
 
 const zombiesArr = [regularZombie, tankZombie, fastZombie];
-const powerUpsArr = [nuke, instantKill];
+const powerUpsArr = [nuke, instantKill, doubleSpeed];
 
 export {
   startingHealth,
@@ -113,5 +111,5 @@ export {
   zombiesArr,
   maxZombies,
   powerUpsArr,
-  instantKillData
+  powerUpTime
 };

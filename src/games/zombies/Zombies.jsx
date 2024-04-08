@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   startingAngle,
-  startingZombieSpeed,
   startingZombieSpawnRate,
   tankPlayer,
   sniperPlayer,
@@ -9,7 +8,7 @@ import {
   zombiesArr,
   maxZombies,
   powerUpsArr,
-  instantKillData
+  powerUpTime
 } from "./constants";
 import HealthBar from "./HealthBar";
 import "./Zombies.css";
@@ -22,6 +21,7 @@ import {
   bombSound,
 } from "../../variables/audio";
 import zombieBite from "../../assets/zombieBite.mp3";
+import PowerUpsUI from "./PowerUpsUI";
 
 const zba = new Audio(zombieBite);
 
@@ -41,7 +41,6 @@ const Zombies = () => {
   const [player, setPlayer] = useState({});
   const [zombies, setZombies] = useState([]);
   const [bullets, setBullets] = useState([]);
-  const [zombieSpeed, setZombieSpeed] = useState(startingZombieSpeed);
   const [zombieSpawnRate, setZombieSpawnRate] = useState(
     startingZombieSpawnRate
   );
@@ -88,7 +87,6 @@ const Zombies = () => {
     setZombies([]);
     setBullets([]);
     setPowerUps([]);
-    setZombieSpeed(startingZombieSpeed);
     setZombieSpawnRate(startingZombieSpawnRate);
     setTimer(0);
     setScore(0);
@@ -178,7 +176,7 @@ const Zombies = () => {
   }
 
   function spawnPowerUp(y, x) {
-    if (rng(25) !== 0) return;
+    if (rng(1) !== 0) return;
     const newPU = powerUpsArr[rng(powerUpsArr.length)];
     setPowerUps(pu => [...pu, {
       type: newPU.type,
@@ -262,8 +260,8 @@ const Zombies = () => {
     const newPlayer = { ...p };
     const newX = newPlayer.x + newPlayer.xSpeed;
     const newY = newPlayer.y + newPlayer.ySpeed;
-    newPlayer.x = newPlayer.x + newPlayer.xSpeed;
-    newPlayer.y = newPlayer.y + newPlayer.ySpeed;
+    newPlayer.x += currentPowerUps.doubleSpeed ? 2 * newPlayer.xSpeed : newPlayer.xSpeed;
+    newPlayer.y += currentPowerUps.doubleSpeed ? 2 * newPlayer.ySpeed : newPlayer.ySpeed;
 
     if (newX + newPlayer.width > board.x + board.width) {
       newPlayer.x = board.x + board.width - player.width;
@@ -293,6 +291,7 @@ const Zombies = () => {
       if (checkCollision(newPlayer, {x: pu.x + pu.width / 2 - pu.width / 20, y: pu.y + pu.height / 2 - pu.height / 20, width: pu.width / 10, height: pu.height / 10})) {
         if (pu.type === "nuke") nuke();
         if (pu.type === "instant kill") instantKill();
+        if (pu.type === "double speed") doubleSpeed();
         newPowerUps.splice(idx, 1);
       }
     })
@@ -302,14 +301,25 @@ const Zombies = () => {
   function instantKill() {
     if (currentPowerUps.instantKill) return
     setCurrentPowerUps(b => {
-      if (b.instantKill) return b;
       return {...b, instantKill: true}
     })
     setTimeout(() => {
       setCurrentPowerUps(b => {
         return {...b, instantKill: false}
       })
-    }, instantKillData.time);
+    }, powerUpTime);
+  };
+
+  function doubleSpeed() {
+    if (currentPowerUps.doubleSpeed) return
+    setCurrentPowerUps(b => {
+      return {...b, doubleSpeed: true}
+    })
+    setTimeout(() => {
+      setCurrentPowerUps(b => {
+        return {...b, doubleSpeed: false}
+      })
+    }, powerUpTime);
   };
 
   function nuke() {
@@ -317,6 +327,14 @@ const Zombies = () => {
       return {...p, kills: p.kills + zombies.length}
     });
     setZombies([]);
+    setCurrentPowerUps(b => {
+      return {...b, nuke: true}
+    })
+    setTimeout(() => {
+      setCurrentPowerUps(b => {
+        return {...b, nuke: false}
+      })
+    }, 1000);
     bombSound();
   }
 
@@ -501,7 +519,6 @@ const Zombies = () => {
       setTimer((t) => t + 1);
       if (timer % 5 === 0) {
         setZombieSpawnRate((zsr) => zsr / 1.05);
-        setZombieSpeed((zs) => zs / 1.05);
       }
     }, 1000);
 
@@ -540,6 +557,7 @@ const Zombies = () => {
               width: board.width,
             }}
           ></div>
+          <PowerUpsUI currentPowerUps={currentPowerUps} board={board} />
           <div
             style={{
               position: "absolute",
@@ -580,7 +598,8 @@ const Zombies = () => {
               height: powerUp.height,
             }}
             className={powerUp.type === "nuke" ? "nuke" : 
-          powerUp.type === "instant kill" ? "instant-kill" : ""
+          powerUp.type === "instant kill" ? "instant-kill" :
+          powerUp.type === "double speed" ? "double-speed" : ""
           }
           ></div>
           ))}

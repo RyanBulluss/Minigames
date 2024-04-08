@@ -46,6 +46,13 @@
   background-image: url("./assets/powerUps/skull.png");
 }
 
+.double-speed {
+  position: absolute;
+  background-color: red;
+  height: 100%;
+  width: 100%;
+}
+
 .zombie0 {
   background-image: url("./assets/zombieSprites/z0.png");
 }
