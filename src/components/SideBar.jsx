@@ -9,7 +9,7 @@ export default function SideBar({ user, setUser, setCurrentGame }) {
   }
 
   return (
-    <nav className="w-40 bg-first py-4 flex flex-col justify-between">
+    <nav className="w-40 bg-first py-4 flex flex-col justify-between no-select">
       <div>
         <h1 className="hover:bg-second hover:cursor-pointer p-2 text-2xl mb-8">Minigames</h1>
         {allGames.map((game, idx) => (

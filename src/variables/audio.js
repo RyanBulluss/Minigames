@@ -15,6 +15,7 @@ import gunshot from "../assets/gunshot.mp3";
 import cannon from "../assets/cannon.mp3";
 import sniper from "../assets/sniper.mp3";
 import zombieHit from "../assets/zombieHit.mp3";
+import doubleSpeed from "../assets/double-speed.mp3";
 
 const volume = 0.03;
 
@@ -49,6 +50,7 @@ const winAudio = new Audio(win);
 const jetpackAudio = new Audio(jetpack);
 const springAudio = new Audio(spring);
 const snapAudio = new Audio(snap);
+const doubleSpeedAudio = new Audio(doubleSpeed);
 
 const flapSound = playAudio(flapAudio);
 const hitSound = playAudio(hitAudio);
@@ -63,6 +65,7 @@ const winSound = playAudio(winAudio);
 const springSound = playAudio(springAudio);
 const jetpackSound = playAudio(jetpackAudio);
 const snapSound = playAudio(snapAudio);
+const doubleSpeedSound = playAudio(doubleSpeedAudio);
 
 const gunshotSound = playAudioNoSkip(gunshot);
 const cannonSound = playAudioNoSkip(cannon);
@@ -87,4 +90,5 @@ export {
   cannonSound,
   sniperSound,
   zombieHitSound,
+  doubleSpeedSound,
 };

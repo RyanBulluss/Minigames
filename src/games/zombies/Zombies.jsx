@@ -16,15 +16,18 @@ import {
   gunshotSound,
   zombieHitSound,
   bombSound,
+  doubleSpeedSound,
+  pop2Sound,
 } from "../../variables/audio";
 import zombieBite from "../../assets/zombieBite.mp3";
-import PowerUpsUI from "./PowerUpsUI";
+import PowerUpsUI from "./game pieces/PowerUpsUI";
 import Bullet from "./game pieces/Bullet";
 import PowerUp from "./game pieces/PowerUp";
 import Zombie from "./game pieces/Zombie";
 import Player from "./game pieces/Player";
 import Background from "./game pieces/Background";
 import Menu from "./game pieces/Menu";
+import PlayerInfoUI from "./game pieces/PlayerInfoUI";
 
 const zba = new Audio(zombieBite);
 
@@ -205,6 +208,9 @@ const Zombies = () => {
                 if (!killIdxs.includes(zIdx)) {
                   killIdxs.push(zIdx);
                   dead = true;
+                  setPlayer(p => {
+                    return {...p, kills: p.kills + 1};
+                  })
                   spawnPowerUp(zombie.y, zombie.x);
                 }
               } else {
@@ -303,6 +309,7 @@ const Zombies = () => {
   }
 
   function instantKill() {
+    pop2Sound();
     if (currentPowerUps.instantKill) return
     setCurrentPowerUps(b => {
       return {...b, instantKill: true}
@@ -315,6 +322,7 @@ const Zombies = () => {
   };
 
   function doubleSpeed() {
+    doubleSpeedSound();
     if (currentPowerUps.doubleSpeed) return
     setCurrentPowerUps(b => {
       return {...b, doubleSpeed: true}
@@ -550,7 +558,11 @@ const Zombies = () => {
       ) : (
         <>
           <Background board={board} />
-          <PowerUpsUI currentPowerUps={currentPowerUps} board={board} />
+          <div style={{position: "absolute", left: board.x, top: board.y, height: board.height / 10, width: board.width}}
+          className="flex justify-between">
+          <PowerUpsUI currentPowerUps={currentPowerUps}  />
+          <PlayerInfoUI player={player} timer={timer} />
+          </div>
           <Player player={player} />
           {bullets.map((bullet, idx) => (
             <Bullet key={idx} bullet={bullet} />

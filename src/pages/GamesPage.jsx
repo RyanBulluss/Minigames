@@ -26,7 +26,7 @@ export default function GamesPage({ user, setUser }) {
           <div className="flex flex-wrap gap-4">
             <GameArea user={user} currentGame={currentGame} setUpdateLb={setUpdateLb} />
             <Leaderboard user={user} currentGame={currentGame} updateLb={updateLb} />
-            <Ads />
+            {/* <Ads /> */}
           </div>
           <Comments user={user} currentGame={currentGame} />
         </div>

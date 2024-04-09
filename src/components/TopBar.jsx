@@ -6,7 +6,7 @@ const TopBar = ({ user, setUser, setCurrentGame }) => {
   const [showNav, setShowNav] = useState(false);
 
   return (
-    <div className="flex justify-between xl:hidden bg-second">
+    <div className="flex justify-between xl:hidden bg-second no-select">
       <h1 className="cursor-pointer hover:bg-first/50 p-2">Minigames</h1>
       <div onClick={() => setShowNav(true)} className="cursor-pointer hover:bg-first/50 p-2">Open top</div>
       {showNav && (

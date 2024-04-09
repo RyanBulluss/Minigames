@@ -27,7 +27,7 @@ const HealthBar = ({ user }) => {
           top: user.y - user.height / 4,
           width: ((user.width * 1.5) / 100) * healthPercent,
           height: user.height / 8,
-          backgroundColor: `rgba(${150 + healthPercent} 0, 0, 0.7)`,
+          backgroundColor: `rgb(${150 + healthPercent}, 0, 0)`,
           zIndex: 500,
         }}
         className="rounded-xl"
