@@ -212,7 +212,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [ball.x, playing]);
+  }, [ball, playing]);
 
   useEffect(() => {
     const newBoard = boardRef.current;
@@ -225,7 +225,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
     };
   }, [board, paddle]);
 
-  // This function is unlovable, pls ignore him
+
   function checkBrick() {
     const newX = ball.x + ball.xSpeed;
     const newY = ball.y + ball.ySpeed;
@@ -240,6 +240,8 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
       const brickRight = brick.x + brick.width;
       const brickTop = brick.y;
       const brickBottom = brick.y + brick.height;
+
+
       if (
         ballRight >= brickLeft &&
         ballLeft <= brickRight &&
@@ -247,6 +249,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
         ballTop < brickBottom &&
         brick.hitsRemaining > 0
       ) {
+
         const distTop = brickTop - ballBottom;
         const distBottom = ballTop - brickBottom;
         const distRight = ballLeft - brickRight;
@@ -258,7 +261,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
             ...ball,
             ySpeed: ball.ySpeed > 0 ? -ball.ySpeed : ball.ySpeed,
           });
-        if (
+        else if (
           distBottom >= distTop &&
           distBottom >= distRight &&
           distBottom >= disLeft
@@ -267,7 +270,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
             ...ball,
             ySpeed: ball.ySpeed < 0 ? -ball.ySpeed : ball.ySpeed,
           });
-        if (
+        else if (
           distRight >= distBottom &&
           distRight >= distTop &&
           distRight >= disLeft
@@ -276,7 +279,7 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
             ...ball,
             xSpeed: ball.xSpeed > 0 ? ball.xSpeed : -ball.xSpeed,
           });
-        if (disLeft >= distBottom && disLeft >= distRight && disLeft >= distTop)
+        else if (disLeft >= distBottom && disLeft >= distRight && disLeft >= distTop)
           setBall({
             ...ball,
             xSpeed: ball.xSpeed < 0 ? ball.xSpeed : -ball.xSpeed,
