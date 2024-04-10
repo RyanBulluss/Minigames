@@ -256,35 +256,35 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
         const disLeft = brickLeft - ballRight;
         popSound();
         setScore(score + 100);
-        if (distTop >= distBottom && distTop >= distRight && distTop >= disLeft)
+        if (distTop >= distBottom && distTop >= distRight && distTop >= disLeft) {
           setBall({
             ...ball,
             ySpeed: ball.ySpeed > 0 ? -ball.ySpeed : ball.ySpeed,
-          });
-        else if (
+          })
+        } else if (
           distBottom >= distTop &&
           distBottom >= distRight &&
           distBottom >= disLeft
-        )
+        ) {
           setBall({
             ...ball,
             ySpeed: ball.ySpeed < 0 ? -ball.ySpeed : ball.ySpeed,
           });
-        else if (
+        } else if (
           distRight >= distBottom &&
           distRight >= distTop &&
           distRight >= disLeft
-        )
+        ) {
           setBall({
             ...ball,
             xSpeed: ball.xSpeed > 0 ? ball.xSpeed : -ball.xSpeed,
           });
-        else if (disLeft >= distBottom && disLeft >= distRight && disLeft >= distTop)
+        } else if (disLeft >= distBottom && disLeft >= distRight && disLeft >= distTop) {
           setBall({
             ...ball,
             xSpeed: ball.xSpeed < 0 ? ball.xSpeed : -ball.xSpeed,
           });
-
+        }
         setBricks((b) => {
           const newBricks = [...b];
           newBricks[idx] = { ...brick, hitsRemaining: brick.hitsRemaining - 1 };
