@@ -29,6 +29,9 @@ const gamesList = [
     {
         name: "Zombies",
     },
+    {
+        name: "Pong",
+    },
 ]
 
 export default gamesList
