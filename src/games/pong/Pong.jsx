@@ -11,6 +11,7 @@ const Pong = () => {
     const [score, setScore] = useState({player: 0, cpu: 0});
     
     const boardRef = useRef(null);
+    const playerRef = useRef(null);
 
     function resizeBoard() {
         const newBoard = boardRef.current.getBoundingClientRect()
@@ -45,7 +46,7 @@ const Pong = () => {
         const newCpuPaddle = moveCpuPaddle(newBall);
         setBall(newBall);
         setCpuPaddle(newCpuPaddle);
-    }
+    };
 
     function moveCpuPaddle(newBall) {
         const newCpuPaddle = {...cpuPaddle};
@@ -56,10 +57,10 @@ const Pong = () => {
         if (dif < board.height / 10 && dif > board.height / 10) {
 
         } else if (dif > 0) {
-            newCpuPaddle.y -= board.height / 200;
+            newCpuPaddle.y -= board.height / 500;
             if (newCpuPaddle.y < board.y) newCpuPaddle.y = board.y;
         } else if (dif < 0) {
-            newCpuPaddle.y += board.height / 200;
+            newCpuPaddle.y += board.height / 500;
             if (newCpuPaddle.y + newCpuPaddle.height > board.y + board.height) newCpuPaddle.y = board.y + board.height - newCpuPaddle.height;
         }
         return newCpuPaddle;
@@ -71,6 +72,8 @@ const Pong = () => {
 
     function moveBall() {
         let newBall = {...ball};
+        if (checkWin(newBall)) return newBall;
+        
         newBall = checkBoundaries(board, newBall);
         newBall.x += newBall.xSpeed;
         newBall.y += newBall.ySpeed;
@@ -83,6 +86,19 @@ const Pong = () => {
             newBall.ySpeed = checkAngle(cpuPaddle);
         }
         return newBall
+    }
+
+    function checkWin(b) {
+        if (b.x + b.xSpeed < board.x) {
+            setScore(s => {
+                return {...s, player: s.player + 1};
+            })
+        }
+        if (b.x + b.width + b.xSpeed > board.x + board.width) {
+            setScore(s => {
+                return {...s, cpu: s.cpu + 1};
+            })
+        }
     }
 
     function checkAngle(paddle) {
@@ -110,6 +126,28 @@ const Pong = () => {
 
     useEffect(() => {
         if (!playing) return;
+        function handleMouseMove(e) {
+            setPlayerPaddle(p => {
+                const newP = {...p}
+                newP.y = e.clientY - p.height / 2;
+                if (newP.y + newP.height > board.y + board.height) {
+                    newP.y = board.y + board.height - newP.height;
+                }
+                if (newP.y < board.y) {
+                    newP.y = board.y;
+                }
+                return newP;
+            })
+        }
+        document.addEventListener("mousemove", handleMouseMove);
+
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+        }
+    }, [playing]);
+
+    useEffect(() => {
+        if (!playing) return;
         const interval = setInterval(() => {
             gameLoop();
         }, 8);
@@ -121,7 +159,9 @@ const Pong = () => {
 
 
   return (
-    <div className="h-full w-full bg-black" ref={boardRef}>
+    <div className="h-full w-full bg-black cursor-none" ref={boardRef}>
+        {score. player}
+        {score. cpu}
         <Render obj={cpuPaddle} />
         <Render obj={playerPaddle} />
         <Render obj={ball} />
