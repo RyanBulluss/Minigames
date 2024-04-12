@@ -1,6 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Render from './Render';
+import Score from './Score';
 import { checkBoundaries, checkCollision } from '../../variables/boundaries';
+
+const maxScore = 1;
+const ballDelay = 500;
 
 const Pong = () => {
     const [board, setBoard] = useState({});
@@ -24,6 +28,10 @@ const Pong = () => {
         }
         setPlayerPaddle({...paddle, x: newBoard.x + newBoard.width - paddle.width * 2});
         setCpuPaddle({...paddle, x: newBoard.x + paddle.width });
+        createBall(newBoard);
+    };
+
+    function createBall(newBoard) {
         setBall({
             height: newBoard.width / 30,
             width: newBoard.width / 30,
@@ -33,13 +41,17 @@ const Pong = () => {
             xSpeed: newBoard.width / 200,
             color: "white",
         })
-    };
+    }
 
     function startGame() {
         resizeBoard();
         setScore({player: 0, cpu: 0});
         setPlaying(true);
     };
+
+    function gameOver() {
+        setPlaying(false);
+    }
 
     function gameLoop() {
         const newBall = moveBall();
@@ -72,7 +84,7 @@ const Pong = () => {
 
     function moveBall() {
         let newBall = {...ball};
-        if (checkWin(newBall)) return newBall;
+        newBall = checkWin(newBall);
         
         newBall = checkBoundaries(board, newBall);
         newBall.x += newBall.xSpeed;
@@ -93,12 +105,29 @@ const Pong = () => {
             setScore(s => {
                 return {...s, player: s.player + 1};
             })
+            if (score.player + 1 >= maxScore) {
+                gameOver();
+            } else {
+                setTimeout(() => {
+                    createBall(board);
+                }, ballDelay)
+            }
+            return {};
         }
         if (b.x + b.width + b.xSpeed > board.x + board.width) {
             setScore(s => {
                 return {...s, cpu: s.cpu + 1};
             })
+            if (score.cpu + 1 >= maxScore) {
+                gameOver();
+            } else {
+                setTimeout(() => {
+                    createBall(board);
+                }, ballDelay)
+            }
+            return {};
         }
+        return b;
     }
 
     function checkAngle(paddle) {
@@ -159,9 +188,8 @@ const Pong = () => {
 
 
   return (
-    <div className="h-full w-full bg-black cursor-none" ref={boardRef}>
-        {score. player}
-        {score. cpu}
+    <div className="h-full w-full bg-black" style={{cursor: playing ? "none" : ""}} ref={boardRef}>
+        <Score score={score} board={board} />
         <Render obj={cpuPaddle} />
         <Render obj={playerPaddle} />
         <Render obj={ball} />
