@@ -57,6 +57,23 @@
   background-image: url("./assets/powerUps/double-speed.png");
 }
 
+.ui {
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+}
+
+.scope {
+  background-size: 100%;
+  background-image: url("./assets/scope.png");
+}
+
+.timer {
+  background-size: 100%;
+  background-image: url("./assets/timer.png");
+}
+
 .zombie0 {
   background-image: url("./assets/zombieSprites/z0.png");
 }

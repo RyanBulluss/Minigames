@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import Render from './Render';
 import Score from './Score';
 import { checkBoundaries, checkCollision } from '../../variables/boundaries';
+import Message from './Message';
+import { gameOverSound, pop2Sound, winSound } from '../../variables/audio';
 
 const maxScore = 1;
 const ballDelay = 500;
@@ -32,13 +34,15 @@ const Pong = () => {
     };
 
     function createBall(newBoard) {
+        const xSpeed = rng(2) === 1 ? newBoard.width / 200 : -newBoard.width / 200;
+        const ySpeed = rng(2) === 1 ? rng(newBoard.width / 400) : -rng(newBoard.width / 400);
         setBall({
             height: newBoard.width / 30,
             width: newBoard.width / 30,
             y: newBoard.y + newBoard.height / 2 - newBoard.width / 60,
             x: newBoard.x + newBoard.width / 2 - newBoard.width / 60,
-            ySpeed: newBoard.width / 1000,
-            xSpeed: newBoard.width / 200,
+            ySpeed: ySpeed,
+            xSpeed: xSpeed,
             color: "white",
         })
     }
@@ -69,10 +73,10 @@ const Pong = () => {
         if (dif < board.height / 10 && dif > board.height / 10) {
 
         } else if (dif > 0) {
-            newCpuPaddle.y -= board.height / 500;
+            newCpuPaddle.y -= board.height / 300;
             if (newCpuPaddle.y < board.y) newCpuPaddle.y = board.y;
         } else if (dif < 0) {
-            newCpuPaddle.y += board.height / 500;
+            newCpuPaddle.y += board.height / 300;
             if (newCpuPaddle.y + newCpuPaddle.height > board.y + board.height) newCpuPaddle.y = board.y + board.height - newCpuPaddle.height;
         }
         return newCpuPaddle;
@@ -92,10 +96,12 @@ const Pong = () => {
         if (checkCollision(newBall, playerPaddle)) {
             newBall.xSpeed = newBall.xSpeed > 0 ? -newBall.xSpeed : newBall.xSpeed;
             newBall.ySpeed = checkAngle(playerPaddle);
+            pop2Sound();
         }
         if (checkCollision(newBall, cpuPaddle)) {
             newBall.xSpeed = newBall.xSpeed < 0 ? -newBall.xSpeed : newBall.xSpeed;
             newBall.ySpeed = checkAngle(cpuPaddle);
+            pop2Sound();
         }
         return newBall
     }
@@ -105,6 +111,7 @@ const Pong = () => {
             setScore(s => {
                 return {...s, player: s.player + 1};
             })
+            winSound();
             if (score.player + 1 >= maxScore) {
                 gameOver();
             } else {
@@ -118,6 +125,7 @@ const Pong = () => {
             setScore(s => {
                 return {...s, cpu: s.cpu + 1};
             })
+            gameOverSound();
             if (score.cpu + 1 >= maxScore) {
                 gameOver();
             } else {
@@ -150,7 +158,12 @@ const Pong = () => {
     }
 
     useEffect(() => {
-        startGame();
+        resizeBoard();
+        window.addEventListener("resize", resizeBoard)
+
+        return () => {
+            window.removeEventListener("resize", resizeBoard)
+        }
     }, []);
 
     useEffect(() => {
@@ -173,7 +186,7 @@ const Pong = () => {
         return () => {
             document.removeEventListener("mousemove", handleMouseMove);
         }
-    }, [playing]);
+    }, [playing, board]);
 
     useEffect(() => {
         if (!playing) return;
@@ -189,6 +202,7 @@ const Pong = () => {
 
   return (
     <div className="h-full w-full bg-black" style={{cursor: playing ? "none" : ""}} ref={boardRef}>
+        {!playing && <Message score={score} board={board} startGame={startGame} />}
         <Score score={score} board={board} />
         <Render obj={cpuPaddle} />
         <Render obj={playerPaddle} />
