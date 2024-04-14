@@ -5,7 +5,7 @@ import { checkBoundaries, checkCollision } from '../../variables/boundaries';
 import Message from './Message';
 import { gameOverSound, pop2Sound, winSound } from '../../variables/audio';
 
-const maxScore = 1;
+const maxScore = 10;
 const ballDelay = 500;
 
 const Pong = () => {

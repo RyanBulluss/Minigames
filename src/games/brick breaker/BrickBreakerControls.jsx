@@ -8,7 +8,6 @@ const BrickBreakerControls = ({ handleRestart, score, timer, firstGame  }) => {
           {firstGame ? "Play" : "Restart"}
         </button>
       </div>
-      <button>Info</button>
       <div>Score: {score} </div>
       <div>Timer: {timer} </div>
     </div>

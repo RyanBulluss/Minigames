@@ -8,7 +8,6 @@ const NumbersControls = ({ timer, score, restartGame }) => {
           Restart
         </button>
       </div>
-      <button>Info</button>
       <div>Score: {score}</div>
       <div>Timer: {timer}</div>
     </div>

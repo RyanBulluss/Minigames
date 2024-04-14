@@ -6,7 +6,6 @@ const FlappyBirdControls = ({ timer, score, startGame }) => {
       <div className="w-2">
         <button onClick={startGame}>Play</button>
       </div>
-      <button>Info</button>
       <div>Score: {score}</div>
       <div>Timer: {timer}</div>
     </div>

@@ -6,7 +6,6 @@ const MinesweeperControls = ({ restartGame, timer, score }) => {
       <div className="w-2">
         <button onClick={restartGame}>Restart</button>
       </div>
-      <button>Info</button>
       <div>Score: {score}</div>
       <div>Timer: {timer}</div>
     </div>
