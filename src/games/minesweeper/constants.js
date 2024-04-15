@@ -3,7 +3,7 @@ const board = {
   width: 15,
 };
 
-const minesAmount = 30;
+const minesAmount = 35;
 
 const adjacents = [
   [1, 0],
