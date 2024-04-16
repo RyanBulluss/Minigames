@@ -80,7 +80,7 @@ const Wordle = ({ currentGame, user, setUpdateLb }) => {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <WordleControls timer={timer} />
+      <WordleControls timer={timer} handleStartGame={handleStartGame} playing={playing} />
       <div className="h-[80vmin] bg-gray-600">
         <div className="flex flex-col gap-1 md:gap-2 justify-center items-center h-full">
           <h1 className="text-[4vmin] uppercase">wordle</h1>
