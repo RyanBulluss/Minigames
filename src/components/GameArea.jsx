@@ -10,6 +10,7 @@ import FlappyBird from '../games/flappy bird/FlappyBird'
 import DoodleJump from '../games/doodle jump/DoodleJump'
 import Zombies from '../games/zombies/Zombies'
 import Pong from '../games/pong/Pong'
+import Tron from '../games/tron/Tron'
 
 const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
@@ -26,6 +27,7 @@ const GameArea = ( {currentGame, user, setUpdateLb} ) => {
         {currentGame === "Doodle Jump" && <DoodleJump currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Zombies" && <Zombies currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Pong" && <Pong currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Tron" && <Tron currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }

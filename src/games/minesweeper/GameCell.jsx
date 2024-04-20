@@ -26,7 +26,6 @@ const GameCell = ({ obj, y, x, handleCellClick, handleRightClick }) => {
         </p>
 
         </div>
-        
     </div>
   )
 }
