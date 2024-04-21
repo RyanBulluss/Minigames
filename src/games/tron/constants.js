@@ -1,5 +1,5 @@
-const boardWidth = 30;
-const boardHeight = 30;
+const boardWidth = 40;
+const boardHeight = 40;
 
 const playersStart = {
     1: {

@@ -13,6 +13,7 @@ const Tron = () => {
   const [state, setState] = useState([[]]);
   const [players, setPlayers] = useState({});
   const [playing, setPlaying] = useState(false);
+  const [win, setWin] = useState(false);
 
   function startGame(numOfPlayers) {
     let [newState, newPlayers] = createState(numOfPlayers);
@@ -21,8 +22,44 @@ const Tron = () => {
     setPlaying(true);
   }
 
-  function gameOver() {
+  function gameOver(bool) {
     setPlaying(false);
+    setWin(bool);
+  }
+
+  function checkBoundaries(y, x) {
+    if (y < boardHeight && y >= 0 && x >= 0 && x < boardWidth) {
+        return true;
+    } return false;
+  }
+
+  function cpuDirection(p, s) {
+    let [dirY, dirX] = directions[p.direction];
+    let newY = p.y + dirY;
+    let newX = p.x + dirX;
+    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return p;
+    let dirArr;
+    if (p.direction === "up" || p.direction === "down") {
+        dirArr = ["left", "right"];
+    } else {
+        dirArr = ["up", "down"];
+    }
+
+    const randNum = Math.floor(Math.random() * 2);
+
+    [dirY, dirX] = directions[dirArr[randNum]];
+    newY = p.y + dirY;
+    newX = p.x + dirX;
+    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return {...p, direction: dirArr[randNum]}; 
+
+    dirArr.splice(randNum, 1);
+
+    [dirY, dirX] = directions[dirArr[0]];
+    newY = p.y + dirY;
+    newX = p.x + dirX;
+    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return {...p, direction: dirArr[0]};
+
+    return p;
   }
 
   function movePlayers() {
@@ -30,11 +67,15 @@ const Tron = () => {
     const newS = [...state];
 
     let lossCheck = false;
+    let winCheck = true;
 
     for (let i = 1; i < 5; i++) {
-      const player = newP[i];
+      let player = newP[i];
       if (!player) continue;
       if (player.dead) continue;
+      if (i !== 1) {
+        player = cpuDirection(player, newS);
+      }
       let [newY, newX] = directions[player.direction];
       newY += player.y;
       newX += player.x;
@@ -55,8 +96,11 @@ const Tron = () => {
       newS[newY][newX] = i;
       newP[i].y = newY;
       newP[i].x = newX;
+      newP[i].direction = player.direction;
+      if (i !== 1 && !newP[i].dead) winCheck = false;
     }
-    if (lossCheck) gameOver();
+    if (lossCheck) gameOver(false);
+    if (winCheck) gameOver(true);
     return [newS, newP];
   }
 
@@ -132,8 +176,11 @@ const Tron = () => {
     <div className="relative h-full w-full bg-sky-500 ">
       {!playing && (
         <div 
-          className="h-full w-full absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-2xl gap-8"
+          className="h-full w-full absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-2xl gap-8"
         >
+            <h3>
+                {win ? "You win!" : "You Lose!"}
+            </h3>
           <h3>How many opponents?</h3>
           <div className="flex gap-8">
             <button onClick={() => startGame(2)}>1</button>
