@@ -10,9 +10,19 @@ function createState(numOfPlayers) {
         }
         state.push(row);
     }
-    state[0][0] = numOfPlayers;
+    const players = {}
+    for (let i = 1; i - 1 < numOfPlayers; i++) {
+        state[boardHeight / 2][boardWidth - 5] = i;
+        players[i] = {
+            y: boardHeight / 2,
+            x: boardWidth - 5,
+            direction: "left",
+            dead: false,
+        }
+    }
 
-    return state;
+    return [state, players];
 }
 
-export { createState }
+
+export { createState, boardHeight, boardWidth }
