@@ -9,6 +9,12 @@ const directions = {
   down: [1, 0],
 };
 
+const numHorizontalLines = 20;
+const numVerticalLines = 20;
+
+const horizontalGap = 100 / numHorizontalLines;
+const verticalGap = 100 / numVerticalLines;
+
 const Tron = () => {
   const [state, setState] = useState([[]]);
   const [players, setPlayers] = useState({});
@@ -173,12 +179,12 @@ const Tron = () => {
   }, [players, state, playing]);
 
   return (
-    <div className="relative h-full w-full bg-sky-500 ">
+    <div className="relative h-full w-full">
       {!playing && (
         <div 
-          className="h-full w-full absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-2xl gap-8"
+          className="h-full w-full absolute inset-0 bg-black/70 flex flex-col justify-center items-center text-2xl gap-8 z-40 font-semibold"
         >
-            <h3>
+            <h3 className="text-3xl">
                 {win ? "You win!" : "You Lose!"}
             </h3>
           <h3>How many opponents?</h3>
@@ -189,8 +195,9 @@ const Tron = () => {
           </div>
         </div>
       )}
+            
       <div
-        className="h-full w-full grid gap-[1px]"
+        className="h-full w-full grid"
         style={{
           gridTemplateColumns: `repeat(${boardWidth}, 1fr)`,
           gridTemplateRows: `repeat(${boardHeight}, 1fr)`,
