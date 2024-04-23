@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { createState, boardHeight, boardWidth } from "./constants";
 import Cell from "./Cell";
+import { gameOverSound, winSound, swipeSound, hitSound } from "../../variables/audio";
 
 const directions = {
   left: [0, -1],
@@ -29,6 +30,8 @@ const Tron = () => {
   }
 
   function gameOver(bool) {
+    if (bool) winSound();
+    if (!bool) gameOverSound();
     setPlaying(false);
     setWin(bool);
   }
@@ -56,14 +59,20 @@ const Tron = () => {
     [dirY, dirX] = directions[dirArr[randNum]];
     newY = p.y + dirY;
     newX = p.x + dirX;
-    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return {...p, direction: dirArr[randNum]}; 
+    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) {
+      swipeSound();
+      return {...p, direction: dirArr[randNum]};
+    } 
 
     dirArr.splice(randNum, 1);
 
     [dirY, dirX] = directions[dirArr[0]];
     newY = p.y + dirY;
     newX = p.x + dirX;
-    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return {...p, direction: dirArr[0]};
+    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) {
+      swipeSound();
+      return {...p, direction: dirArr[0]};
+    }
 
     return p;
   }
@@ -93,6 +102,7 @@ const Tron = () => {
         newS[newY][newX]
       ) {
         newP[i].dead = true;
+        hitSound();
         if (i === 1) lossCheck = true;
         continue;
       }
@@ -137,6 +147,7 @@ const Tron = () => {
         )
           return;
         setPlayers({ ...players, 1: { ...players[1], direction: "up" } });
+        swipeSound();
       }
       if (k === "S" || k === "s" || k === "ArrowDown") {
         if (
@@ -147,6 +158,7 @@ const Tron = () => {
         )
           return;
         setPlayers({ ...players, 1: { ...players[1], direction: "down" } });
+        swipeSound();
       }
       if (k === "A" || k === "a" || k === "ArrowLeft") {
         if (
@@ -157,6 +169,7 @@ const Tron = () => {
         )
           return;
         setPlayers({ ...players, 1: { ...players[1], direction: "left" } });
+        swipeSound();
       }
       if (k === "D" || k === "d" || k === "ArrowRight") {
         if (
@@ -167,6 +180,7 @@ const Tron = () => {
         )
           return;
         setPlayers({ ...players, 1: { ...players[1], direction: "right" } });
+        swipeSound();
       }
     }
 
