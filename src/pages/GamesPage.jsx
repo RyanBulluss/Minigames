@@ -22,7 +22,7 @@ export default function GamesPage({ user, setUser }) {
             setCurrentGame={setCurrentGame}
           />
         </div>
-        <div className="min-h-[100vh] w-full p-4">
+        <div className="min-h-[100vh] w-full p-4 mx-auto xl:mx-0">
           <div className="flex flex-wrap gap-4">
             <GameArea user={user} currentGame={currentGame} setUpdateLb={setUpdateLb} />
             <Leaderboard user={user} currentGame={currentGame} updateLb={updateLb} />

@@ -42,19 +42,36 @@ const Tron = () => {
     } return false;
   }
 
+  function rng(n) {
+    return Math.floor(Math.random() * n);
+  }
+
   function cpuDirection(p, s) {
-    let [dirY, dirX] = directions[p.direction];
-    let newY = p.y + dirY;
-    let newX = p.x + dirX;
-    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return p;
+    const randNum = Math.floor(Math.random() * 2);
     let dirArr;
     if (p.direction === "up" || p.direction === "down") {
         dirArr = ["left", "right"];
     } else {
         dirArr = ["up", "down"];
     }
+    let [dirY, dirX, newY, newX] = [0, 0, 0, 0];
 
-    const randNum = Math.floor(Math.random() * 2);
+    // Chance to randomly change dir to make ai more dynamic
+    if (Math.random() > 0.95) {
+      [dirY, dirX] = directions[dirArr[randNum]];
+      newY = p.y + dirY;
+      newX = p.x + dirX;
+      if (checkBoundaries(newY, newX) && s[newY][newX] === 0) {
+        swipeSound();
+        return {...p, direction: dirArr[randNum]};
+      }
+    }
+
+    [dirY, dirX] = directions[p.direction];
+    newY = p.y + dirY;
+    newX = p.x + dirX;
+    if (checkBoundaries(newY, newX) && s[newY][newX] === 0) return p;
+
 
     [dirY, dirX] = directions[dirArr[randNum]];
     newY = p.y + dirY;
@@ -62,7 +79,7 @@ const Tron = () => {
     if (checkBoundaries(newY, newX) && s[newY][newX] === 0) {
       swipeSound();
       return {...p, direction: dirArr[randNum]};
-    } 
+    }
 
     dirArr.splice(randNum, 1);
 
