@@ -42,9 +42,6 @@ const Tron = () => {
     } return false;
   }
 
-  function rng(n) {
-    return Math.floor(Math.random() * n);
-  }
 
   function cpuDirection(p, s) {
     const randNum = Math.floor(Math.random() * 2);
