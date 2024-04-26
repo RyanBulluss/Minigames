@@ -81,7 +81,7 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
     setPaddle({
       y: newBoard.height - newBoard.height / 20,
       x: 0,
-      width: newBoard.width / 3,
+      width: newBoard.width / 4,
       height: newBoard.height / 20,
       color: "linear-gradient(to top, #fbf8f7, #aba8a7)",
     });
