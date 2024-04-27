@@ -3,28 +3,27 @@ const boardHeight = 50;
 
 const playersStart = {
     1: {
-        direction: "left",
+        direction: "down",
         y: boardHeight / 2,
         x: boardWidth - 3,
     },
     2: {
-        direction: "right",
+        direction: "up",
         y: boardHeight / 2,
         x: 2,
     },
     3: {
-        direction: "down",
+        direction: "right",
         y: 2,
         x: boardWidth / 2,
     },
     4: {
-        direction: "up",
+        direction: "left",
         y: boardHeight - 3,
         x: boardWidth / 2,
     },
 }
 
-const startPos = {}
 
 function createState(numOfPlayers) {
     const state = [];

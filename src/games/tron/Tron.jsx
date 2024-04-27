@@ -54,7 +54,7 @@ const Tron = () => {
     let [dirY, dirX, newY, newX] = [0, 0, 0, 0];
 
     // Chance to randomly change dir to make ai more dynamic
-    if (Math.random() > 0.95) {
+    if (Math.random() > 0.99) {
       [dirY, dirX] = directions[dirArr[randNum]];
       newY = p.y + dirY;
       newX = p.x + dirX;
