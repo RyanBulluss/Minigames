@@ -11,6 +11,7 @@ import DoodleJump from '../games/doodle jump/DoodleJump'
 import Zombies from '../games/zombies/Zombies'
 import Pong from '../games/pong/Pong'
 import Tron from '../games/tron/Tron'
+import Mario from '../games/mario/Mario'
 
 const GameArea = ( {currentGame, user, setUpdateLb} ) => {
   return (
@@ -28,6 +29,7 @@ const GameArea = ( {currentGame, user, setUpdateLb} ) => {
         {currentGame === "Zombies" && <Zombies currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Pong" && <Pong currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Tron" && <Tron currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Mario" && <Mario currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }

@@ -10,11 +10,6 @@ const directions = {
   down: [1, 0],
 };
 
-const numHorizontalLines = 20;
-const numVerticalLines = 20;
-
-const horizontalGap = 100 / numHorizontalLines;
-const verticalGap = 100 / numVerticalLines;
 
 const Tron = () => {
   const [state, setState] = useState([[]]);
