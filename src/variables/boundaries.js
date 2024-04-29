@@ -18,6 +18,17 @@ function checkBoundaries(board, obj) {
     return newObj;
 }
 
+function checkBorders(board, obj) {
+    if (
+        obj.x < board.x ||
+        obj.y < board.y ||
+        obj.x + obj.width > board.x + board.width ||
+        obj.y + obj.height > board.y + board.height
+    ) {
+        return true;
+    } return false;
+}
+
 function checkCollision(a, b) {
     if (
         a.x + a.width > b.x &&
@@ -28,4 +39,4 @@ function checkCollision(a, b) {
     return false;
 }
 
-export { checkBoundaries, checkCollision }
+export { checkBoundaries, checkCollision, checkBorders }
