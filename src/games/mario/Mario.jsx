@@ -28,6 +28,8 @@ const Mario = () => {
 
   function movePlayer(oldP) {
     let newP = { ...oldP };
+
+    newP.ySpeed += board.height / gravity;
     
     newP = checkCollision(newP, oldP);
     
@@ -44,8 +46,10 @@ const Mario = () => {
      
 
     if (!newP.keyDown) {
-      newP.xSpeed *= 0.9;
-    }
+      if (newP.xSpeed > board.width / 1000 || newP.xSpeed < -board.width / 1000) {
+        newP.xSpeed *= 0.9;
+      } else newP.xSpeed = 0;
+    } else newP.xSpeed = newP.keyDown;
     return newP;
   }
 
@@ -55,8 +59,6 @@ const Mario = () => {
     const oldY = olderP.y;
     const newX = newP.x + newP.xSpeed;
     const newY = newP.y + newP.ySpeed;
-
-    newP.ySpeed += board.height / gravity;
     
     staticPieces.forEach((piece) => {
       if (
@@ -89,7 +91,23 @@ const Mario = () => {
           newP.xSpeed = 0;
         }
       }
+
+      // Fail safe incase player is inside a block
+      if (
+        oldX < piece.x + piece.width &&
+        oldY < piece.y + piece.height &&
+        oldX + newP.width > piece.x &&
+        oldY + newP.height > piece.y
+      ) {
+        const distBottom = piece.y + piece.height - oldY; 
+        const distTop = oldY + newP.height - piece.y; 
+        newP.ySpeed = 0;
+        if (distTop < distBottom) {
+          newP.y = piece.y - newP.height;
+        } else newP.y = piece.y + piece.height;
+      }
     });
+
 
     return newP;
   }
@@ -167,9 +185,9 @@ const Mario = () => {
             if (p.ySpeed !== 0) return p;
             return { ...p, ySpeed: -board.height / 50 };
           case "a":
-            return { ...p, xSpeed: -board.width / 100, keyDown: true };
+            return { ...p, xSpeed: -board.width / 100, keyDown: -board.width / 100 };
           case "d":
-            return { ...p, xSpeed: board.width / 100, keyDown: true };
+            return { ...p, xSpeed: board.width / 100, keyDown: board.width / 100 };
           default:
             return p;
         }
@@ -181,9 +199,9 @@ const Mario = () => {
       setPlayer((p) => {
         const key = e.key;
         if (key === "a" && p.xSpeed < 0) {
-          return { ...p, keyDown: false };
+          return { ...p, keyDown: 0 };
         } else if (key === "d" && p.xSpeed > 0) {
-          return { ...p, keyDown: false };
+          return { ...p, keyDown: 0 };
         } else return p;
       });
     };
@@ -209,7 +227,7 @@ const Mario = () => {
 
   return (
     <div className="h-full w-full bg-sky-800" ref={boardRef}>
-      <button onClick={() => createPlatform(20, 0, 0)}>Create Floor</button>
+      <button onClick={() => createPlatform(5, 9, 9)}>Create Floor</button>
       <br />
       <button onClick={() => createStairs(5, 1, 10)}>Create Stairs</button>
       <br />
