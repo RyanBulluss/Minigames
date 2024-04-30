@@ -8,5 +8,7 @@ class GamePiece {
   }
 }
 
+const gravity = 2000;
 
-export { GamePiece };
+
+export { GamePiece, gravity };
