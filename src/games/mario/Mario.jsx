@@ -328,7 +328,16 @@ const Mario = () => {
   }, []);
 
   return (
-    <div className="h-full w-full bg-sky-800" ref={boardRef}>
+    <div className="h-full w-full bg-sky-600" ref={boardRef}>
+      <div
+      style={{
+        position: "absolute",
+            top: board.y,
+            left: board.x,
+            height: board.height,
+            width: board.width,
+      }}
+      ></div>
       {!playing && (
         <div
           style={{
