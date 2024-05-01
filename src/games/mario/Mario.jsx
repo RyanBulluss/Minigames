@@ -2,6 +2,10 @@ import React, { useRef, useState, useEffect } from "react";
 import { GamePiece, gravity } from "./constants";
 import { level1, levels } from "./levels";
 import { checkBorders } from "../../variables/boundaries";
+import Brick from "./game-pieces/Brick";
+import Pipe from "./game-pieces/Pipe";
+import "./Mario.css";
+import GameObject from "./game-pieces/GameObject";
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
@@ -26,7 +30,7 @@ const Mario = () => {
   function startGame() {
     setPlaying(true);
     resizeGame();
-    createPlatform(20, 0, 0, "brick");
+    createPlatform(20, 0, 0, "grass");
     createPlatform(20, 20, 0, "sky");
     spawnPlayer(50, 50, 10, 20);
   }
@@ -42,13 +46,16 @@ const Mario = () => {
       const newSP = [...sp];
       level[idx].forEach((piece, i) => {
         if (piece) {
+          const width = piece === "pipe" ? board.gridWidth * 2 : board.gridWidth;
+          const height = piece === "pipe" ? board.gridHeight * 3 : board.gridHeight;
           y = board.y + board.height - board.gridHeight * (i + 1);
+          y = piece === "pipe" ? y - board.gridHeight * 2 : y;
           const newPiece = new GamePiece(
             piece,
             y,
             x,
-            board.gridHeight,
-            board.gridWidth
+            height,
+            width
           );
           newSP.push(newPiece);
         }
@@ -365,22 +372,14 @@ const Mario = () => {
         </>
       )}
       {staticPieces.map((piece, idx) => (
-        <div
-          key={idx}
-          style={{
-            position: "absolute",
-            top: piece.y,
-            left: piece.x,
-            height: piece.height,
-            width: piece.width,
-            backgroundColor: piece.type === "sky" ? "lightblue" : "brown",
-            border: "solid black 1px",
-            zIndex: checkBorders(board, piece) ? -50 : 50,
-            // visibility: piece.type === "sky" ? "hidden" : "visible"
-          }}
-        ></div>
+        <>
+        {piece.type === "question" && <GameObject key={idx} object={piece} visable={checkBorders(board, piece)} />}
+        {piece.type === "grass" && <GameObject key={idx} object={piece} visable={checkBorders(board, piece)} />}
+        {piece.type === "brick" && <Brick key={idx} brick={piece} visable={checkBorders(board, piece)} />}
+        {piece.type === "pipe" && <Pipe key={idx} brick={piece} visable={checkBorders(board, piece)} isTop={false} />}
+        </>
       ))}
-      {!player.dead && (
+      {playing && (
         <div
           style={{
             position: "absolute",
@@ -388,9 +387,11 @@ const Mario = () => {
             left: player.x,
             height: player.height,
             width: player.width,
-            backgroundColor: "red",
-            border: "solid black 1px",
+            transform: player.xSpeed < 0 ? "scaleX(-1)" : "scaleX(1)",
           }}
+          className={player.ySpeed ? "mario-jump" :
+          player.xSpeed ? "mario-run" : "mario-still"
+        }
         ></div>
       )}
     </div>

@@ -1,0 +1,48 @@
+.mario-still {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/mario-still.webp");
+  }
+
+.mario-run {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/mario-run.gif");
+  }
+
+.mario-jump {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/mario-jump.webp");
+  }
+
+.question {
+    position: absolute;
+    background-size: 95%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/question.webp");
+  }
+.grass {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/grass.webp");
+  }
