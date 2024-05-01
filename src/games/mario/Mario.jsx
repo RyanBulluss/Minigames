@@ -1,12 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
 import { GamePiece, gravity } from "./constants";
+import { level1, levels } from "./levels";
 import { checkBorders } from "../../variables/boundaries";
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
   const [player, setPlayer] = useState({ dead: true });
   const [board, setBoard] = useState({});
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
+  const [currentLevel, setCurrentLevel] = useState({
+    level: level1,
+    column: 0,
+  });
 
   const boardRef = useRef(null);
 
@@ -15,38 +20,119 @@ const Mario = () => {
     newBoard.gridSize = 20;
     newBoard.gridHeight = newBoard.height / newBoard.gridSize;
     newBoard.gridWidth = newBoard.width / newBoard.gridSize;
-    return newBoard;
+    setBoard(newBoard);
   }
 
   function startGame() {
-    setBoard(resizeGame());
+    setPlaying(true);
+    resizeGame();
+    createPlatform(20, 0, 0, "brick");
+    createPlatform(20, 20, 0, "sky");
+    spawnPlayer(50, 50, 10, 20);
+  }
+
+  function createLevelCol(level, idx, newP) {
+    let y;
+    let x = board.x + board.width - board.gridWidth;
+    if (staticPieces.length) {
+      const lastPiece = staticPieces[staticPieces.length - 1];
+      x = lastPiece.x + board.gridWidth - newP.xSpeed;
+    }
+    setStaticPieces((sp) => {
+      const newSP = [...sp];
+      level[idx].forEach((piece, i) => {
+        if (piece) {
+          y = board.y + board.height - board.gridHeight * (i + 1);
+          const newPiece = new GamePiece(
+            piece,
+            y,
+            x,
+            board.gridHeight,
+            board.gridWidth
+          );
+          newSP.push(newPiece);
+        }
+      });
+
+      // add sky limit
+      const newPiece = new GamePiece(
+        "sky",
+        board.y - board.gridHeight,
+        x,
+        board.gridHeight,
+        board.gridWidth
+      );
+      newSP.push(newPiece);
+      return newSP;
+    });
+  }
+
+  function gameOver() {
+    setPlaying(false);
+    setPlayer({});
+    setStaticPieces([]);
   }
 
   function gameLoop() {
     setPlayer((p) => movePlayer(p));
   }
 
+  function moveGamePieces(newP) {
+    setStaticPieces((sp) => {
+      const newSP = sp
+        .map((piece) => {
+          return { ...piece, x: piece.x - newP.xSpeed };
+        })
+        .filter((piece) => piece.x > board.x);
+      if (
+        sp.length !== newSP.length &&
+        currentLevel.level.length > currentLevel.column
+      ) {
+        createLevelCol(currentLevel.level, currentLevel.column, newP);
+        setCurrentLevel((cl) => {
+          const newL = { ...cl };
+          if (cl.column + 1 >= cl.level.length) {
+            newL.level = levels[rng(levels.length)];
+            newL.column = 0;
+            return newL;
+          } else return { ...cl, column: cl.column + 1 };
+        });
+      }
+      return newSP;
+    });
+  }
+
+  function rng(n) {
+    return Math.floor(Math.random() * n);
+  }
+
   function movePlayer(oldP) {
     let newP = { ...oldP };
 
     newP.ySpeed += board.height / gravity;
-    
+
     newP = checkCollision(newP, oldP);
-    
-    
     newP.y += newP.ySpeed;
-    newP.x += newP.xSpeed;
-    
+
+    if (
+      newP.x + newP.width / 2 < board.x + board.width / 2 ||
+      newP.xSpeed <= 0
+    ) {
+      if (newP.x + newP.xSpeed > board.x + board.gridSize) {
+        newP.x += newP.xSpeed;
+      }
+    } else {
+      moveGamePieces(newP);
+    }
 
     if (newP.y + newP.height >= board.y + board.height) {
       newP.y = board.y + board.height - newP.height;
       newP.ySpeed = 0;
-      //   setPlaying(false);
-    } 
-     
+      gameOver();
+    }
 
     if (!newP.keyDown) {
-      if (newP.xSpeed > board.width / 1000 || newP.xSpeed < -board.width / 1000) {
+      if (newP.xSpeed > board.width / 100 || newP.xSpeed < -board.width / 100) {
         newP.xSpeed *= 0.9;
       } else newP.xSpeed = 0;
     } else newP.xSpeed = newP.keyDown;
@@ -59,7 +145,7 @@ const Mario = () => {
     const oldY = olderP.y;
     const newX = newP.x + newP.xSpeed;
     const newY = newP.y + newP.ySpeed;
-    
+
     staticPieces.forEach((piece) => {
       if (
         oldX < piece.x + piece.width &&
@@ -99,15 +185,14 @@ const Mario = () => {
         oldX + newP.width > piece.x &&
         oldY + newP.height > piece.y
       ) {
-        const distBottom = piece.y + piece.height - oldY; 
-        const distTop = oldY + newP.height - piece.y; 
+        const distBottom = piece.y + piece.height - oldY;
+        const distTop = oldY + newP.height - piece.y;
         newP.ySpeed = 0;
         if (distTop < distBottom) {
           newP.y = piece.y - newP.height;
         } else newP.y = piece.y + piece.height;
       }
     });
-
 
     return newP;
   }
@@ -124,7 +209,7 @@ const Mario = () => {
     });
   }
 
-  function createPlatform(num, startY, startX) {
+  function createPlatform(num, startY, startX, type) {
     const floor = [];
     let y;
     let x;
@@ -133,7 +218,7 @@ const Mario = () => {
       y = board.y + board.height - board.gridHeight * (startY + 1);
       x = board.x + board.gridWidth * (startX + i);
       const newPiece = new GamePiece(
-        "brick",
+        type,
         y,
         x,
         board.gridHeight,
@@ -180,29 +265,39 @@ const Mario = () => {
     const handleKeyPress = (e) => {
       e.preventDefault();
       setPlayer((p) => {
-        switch (e.key) {
-          case " ":
-            if (p.ySpeed !== 0) return p;
-            return { ...p, ySpeed: -board.height / 50 };
-          case "a":
-            return { ...p, xSpeed: -board.width / 100, keyDown: -board.width / 100 };
-          case "d":
-            return { ...p, xSpeed: board.width / 100, keyDown: board.width / 100 };
-          default:
-            return p;
+        const k = e.key;
+        if (k === " ") {
+          if (p.ySpeed !== 0) return { ...p };
+          return { ...p, ySpeed: -board.height / 50 };
         }
+        if (k === "a" || k === "A" || k === "ArrowLeft")
+          return {
+            ...p,
+            xSpeed: -board.width / 100,
+            keyDown: -board.width / 100,
+          };
+        if (k === "d" || k === "D" || k === "ArrowRight")
+          return {
+            ...p,
+            xSpeed: board.width / 100,
+            keyDown: board.width / 100,
+          };
+        return p;
       });
     };
 
     const handleKeyUp = (e) => {
       e.preventDefault();
       setPlayer((p) => {
-        const key = e.key;
-        if (key === "a" && p.xSpeed < 0) {
+        const k = e.key;
+        if ((k === "a" || k === "A" || k === "ArrowLeft") && p.xSpeed < 0) {
           return { ...p, keyDown: 0 };
-        } else if (key === "d" && p.xSpeed > 0) {
+        } else if (
+          (k === "d" || k === "D" || k === "ArrowRight") &&
+          p.xSpeed > 0
+        ) {
           return { ...p, keyDown: 0 };
-        } else return p;
+        } else return { ...p };
       });
     };
 
@@ -214,10 +309,10 @@ const Mario = () => {
       window.removeEventListener("keyup", handleKeyUp);
       clearInterval(interval);
     };
-  }, [board, staticPieces, playing]);
+  }, [board, staticPieces, playing, currentLevel]);
 
   useEffect(() => {
-    startGame();
+    resizeGame();
     window.addEventListener("resize", startGame);
 
     return () => {
@@ -227,15 +322,48 @@ const Mario = () => {
 
   return (
     <div className="h-full w-full bg-sky-800" ref={boardRef}>
-      <button onClick={() => createPlatform(5, 9, 9)}>Create Floor</button>
-      <br />
-      <button onClick={() => createStairs(5, 1, 10)}>Create Stairs</button>
-      <br />
-      <button onClick={() => spawnPlayer(0, 0, 10, 15)}>spawnPlayer</button>
-      <br />
-      {player.xSpeed}
-      <br />
-      {player.ySpeed}
+      {!playing && (
+        <div
+          style={{
+            position: "absolute",
+            top: board.y,
+            left: board.x,
+            height: board.height,
+            width: board.width,
+            backgroundColor: "black",
+            zIndex: 60,
+          }}
+          className="flex justify-center items-center"
+        >
+          <button onClick={startGame}>Start Game</button>
+        </div>
+      )}
+      {playing && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: board.y,
+              left: board.x,
+              height: board.height,
+              width: board.width / board.gridSize,
+              backgroundColor: "#262422",
+              zIndex: 60,
+            }}
+          ></div>
+          <div
+            style={{
+              position: "absolute",
+              top: board.y,
+              left: board.x + board.width - board.width / board.gridSize,
+              height: board.height,
+              width: board.width / board.gridSize,
+              backgroundColor: "#262422",
+              zIndex: 60,
+            }}
+          ></div>
+        </>
+      )}
       {staticPieces.map((piece, idx) => (
         <div
           key={idx}
@@ -245,9 +373,10 @@ const Mario = () => {
             left: piece.x,
             height: piece.height,
             width: piece.width,
-            backgroundColor: "brown",
+            backgroundColor: piece.type === "sky" ? "lightblue" : "brown",
             border: "solid black 1px",
-            visibility: checkBorders(board, piece) ? "hidden" : "visable",
+            zIndex: checkBorders(board, piece) ? -50 : 50,
+            // visibility: piece.type === "sky" ? "hidden" : "visible"
           }}
         ></div>
       ))}
