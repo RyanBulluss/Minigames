@@ -1,15 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
-import { GamePiece, gravity } from "./constants";
+import { GamePiece, Npc, gravity } from "./constants";
 import { level1, levels } from "./levels";
 import { checkBorders } from "../../variables/boundaries";
 import Brick from "./game-pieces/Brick";
 import Pipe from "./game-pieces/Pipe";
 import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
-import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
+  const [npcs, setNpcs] = useState([]);
   const [player, setPlayer] = useState({ dead: true });
   const [board, setBoard] = useState({});
   const [playing, setPlaying] = useState(false);
@@ -34,6 +34,7 @@ const Mario = () => {
     createPlatform(20, 0, 0, "grass");
     createPlatform(20, 20, 0, "sky");
     spawnPlayer(50, 50, 10, 20);
+    setNpcs([]);
   }
 
   function createLevelCol(level, idx, newP) {
@@ -71,6 +72,55 @@ const Mario = () => {
     });
   }
 
+  function spawnNpc() {
+    setNpcs((n) => {
+      const goomba = new Npc("goomba", 500, 500, board.gridHeight, board.gridWidth);
+      return [...n, goomba];
+    });
+  }
+
+  function moveNpcs(newP) {
+    const newNpcs = npcs.map((obj, idx) => {
+      if (obj.type === "goomba") return moveGoomba(obj, newP);
+      return obj
+    })
+
+    setNpcs(newNpcs.filter(n => n.dead === false));
+  }
+
+  function moveGoomba(obj, newP) {
+    let goomba = {...obj};
+    goomba.xSpeed = goomba.xSpeed !== 0 ? goomba.xSpeed : rng(2) === 1 ? -board.width / 300 : board.width / 300;
+    goomba.ySpeed += board.height / gravity;
+
+    goomba = checkCollision(goomba, obj);
+
+    goomba.y += goomba.ySpeed;
+    goomba.x += goomba.xSpeed;
+
+    goomba = checkNpcBoundaries(goomba)
+
+    return goomba;
+  }
+
+  function checkNpcBoundaries(oldNpc) {
+    const n = {...oldNpc};
+    if (n.x + n.width > board.x + board.width) {
+      n.xSpeed = n.xSpeed > 0 ? -n.xSpeed : n.xSpeed
+    }
+    if (n.x < board.x) {
+      n.xSpeed = n.xSpeed < 0 ? -n.xSpeed : n.xSpeed
+    }
+    if (n.y + n.height > board.y + board.height) {
+      n.ySpeed = n.ySpeed > 0 ? -n.ySpeed : n.ySpeed
+      n.dead = true;
+    }
+    if (n.y < board.y) {
+      n.ySpeed = n.ySpeed < 0 ? -n.ySpeed : n.ySpeed
+    }
+    return n;
+  }
+
   function gameOver() {
     setPlaying(false);
     setPlayer({});
@@ -79,11 +129,12 @@ const Mario = () => {
 
   function gameLoop() {
     setPlayer((p) => movePlayer(p));
+    console.log(npcs);
   }
 
   function moveGamePieces(newP) {
     setStaticPieces((sp) => {
-      const newSP = sp
+      const newSP = [...sp]
         .map((piece) => {
           return { ...piece, x: piece.x - newP.xSpeed };
         })
@@ -129,6 +180,8 @@ const Mario = () => {
       moveGamePieces(newP);
     }
 
+    moveNpcs(newP);
+
     if (newP.y + newP.height >= board.y + board.height) {
       newP.y = board.y + board.height - newP.height;
       newP.ySpeed = 0;
@@ -143,6 +196,38 @@ const Mario = () => {
     return newP;
   }
 
+  function getCoin(idx, arr) {
+    const newArr = [...arr];
+    setPlayer((p) => {
+      return { ...p, score: p.score + 1 };
+    });
+    newArr.push(idx);
+    return newArr;
+  }
+
+  function breakBlock(idx, arr) {
+    const newArr = [...arr];
+    newArr.push(idx);
+    return newArr;
+  }
+
+  function hitQuestion(idx) {
+    setStaticPieces((sp) => {
+      let newSP = JSON.parse(JSON.stringify(sp));
+      newSP[idx].type = "brick";
+      const oldP = newSP[idx];
+      const newCoin = new GamePiece(
+        "coin",
+        oldP.y - board.gridHeight * 2,
+        oldP.x,
+        board.gridHeight,
+        board.gridWidth
+      );
+      newSP.splice(newSP.length - 2, 0, newCoin);
+      return newSP;
+    });
+  }
+
   function checkCollision(oldP, olderP) {
     const newP = { ...oldP };
     const oldX = olderP.x;
@@ -150,13 +235,7 @@ const Mario = () => {
     const newX = newP.x + newP.xSpeed;
     const newY = newP.y + newP.ySpeed;
 
-    const coinIdxs = [];
-    function getCoin(idx) {
-      setPlayer((p) => {
-        return { ...p, score: p.score + 1 };
-      });
-      coinIdxs.push(idx);
-    }
+    let deleteIdxs = [];
 
     staticPieces.forEach((piece, idx) => {
       const isCoin = piece.type === "coin";
@@ -168,7 +247,7 @@ const Mario = () => {
       ) {
         if (oldY + newP.height <= piece.y && newY + newP.height >= piece.y) {
           if (isCoin) {
-            getCoin(idx);
+            deleteIdxs = getCoin(idx, deleteIdxs);
           } else {
             newP.y = piece.y - newP.height;
             newP.ySpeed = 0;
@@ -176,8 +255,13 @@ const Mario = () => {
         }
         if (oldY >= piece.y + piece.height && newY <= piece.y + piece.height) {
           if (isCoin) {
-            getCoin(idx);
+            deleteIdxs = getCoin(idx, deleteIdxs);
           } else {
+            if (piece.type === "breakable") {
+              deleteIdxs = breakBlock(idx, deleteIdxs);
+            } else if (piece.type === "question") {
+              hitQuestion(idx);
+            }
             newP.y = piece.y + piece.height;
             newP.ySpeed = 0;
           }
@@ -191,7 +275,7 @@ const Mario = () => {
       ) {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
           if (isCoin) {
-            getCoin(idx);
+            deleteIdxs = getCoin(idx, deleteIdxs);
           } else {
             newP.x = piece.x - newP.width;
             newP.xSpeed = 0;
@@ -199,7 +283,7 @@ const Mario = () => {
         }
         if (oldX >= piece.x + piece.width && newX <= piece.x + piece.width) {
           if (isCoin) {
-            getCoin(idx);
+            deleteIdxs = getCoin(idx, deleteIdxs);
           } else {
             newP.x = piece.x + piece.width;
             newP.xSpeed = 0;
@@ -225,10 +309,10 @@ const Mario = () => {
       }
     });
 
-    if (!coinIdxs.length) return newP;
+    if (!deleteIdxs.length) return newP;
     setStaticPieces((sp) => {
       const newSP = [...sp];
-      coinIdxs.forEach((idx) => {
+      deleteIdxs.forEach((idx) => {
         newSP.splice(idx, 1);
       });
       return newSP;
@@ -350,7 +434,7 @@ const Mario = () => {
       window.removeEventListener("keyup", handleKeyUp);
       clearInterval(interval);
     };
-  }, [board, staticPieces, playing, currentLevel]);
+  }, [board, staticPieces, playing, currentLevel, npcs]);
 
   useEffect(() => {
     resizeGame();
@@ -362,7 +446,7 @@ const Mario = () => {
   }, []);
 
   return (
-    <div className="h-full w-full bg-sky-600" ref={boardRef}>
+    <div onClick={spawnNpc} className="h-full w-full bg-sky-600" ref={boardRef}>
       <div
         style={{
           position: "absolute",
@@ -373,14 +457,20 @@ const Mario = () => {
         }}
       ></div>
 
-      <div className="text-4xl z-50 font-semibold" style={{
-        position: "absolute",
-        top: board.y + board.gridHeight,
-        left: board.x + board.gridWidth * 2,
-        height: board.height,
-        width: board.width,
-      }}>
-        <div className="coin" style={{width: board.gridWidth * 0.9, height: board.gridHeight}}></div>
+      <div
+        className="text-4xl z-50 font-semibold"
+        style={{
+          position: "absolute",
+          top: board.y + board.gridHeight,
+          left: board.x + board.gridWidth * 2,
+          height: board.height,
+          width: board.width,
+        }}
+      >
+        <div
+          className="coin"
+          style={{ width: board.gridWidth * 0.9, height: board.gridHeight }}
+        ></div>
         <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{player.score}</h3>
       </div>
 
@@ -449,6 +539,19 @@ const Mario = () => {
             />
           )}
         </>
+      ))}
+      {npcs.map((npc, idx) => (
+        <div key={idx}
+          style={{
+            position: "absolute",
+            top: npc.y,
+            left: npc.x,
+            height: npc.height,
+            width: npc.width,
+            transform: npc.xSpeed < 0 ? "scaleX(-1)" : "scaleX(1)",
+            backgroundColor: "red"
+          }}
+        ></div>
       ))}
       {playing && (
         <div
