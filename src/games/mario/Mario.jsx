@@ -6,6 +6,7 @@ import Brick from "./game-pieces/Brick";
 import Pipe from "./game-pieces/Pipe";
 import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
+import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
@@ -46,17 +47,13 @@ const Mario = () => {
       const newSP = [...sp];
       level[idx].forEach((piece, i) => {
         if (piece) {
-          const width = piece === "pipe" ? board.gridWidth * 2 : board.gridWidth;
-          const height = piece === "pipe" ? board.gridHeight * 3 : board.gridHeight;
+          const width =
+            piece === "pipe" ? board.gridWidth * 2 : board.gridWidth;
+          const height =
+            piece === "pipe" ? board.gridHeight * 3 : board.gridHeight;
           y = board.y + board.height - board.gridHeight * (i + 1);
           y = piece === "pipe" ? y - board.gridHeight * 2 : y;
-          const newPiece = new GamePiece(
-            piece,
-            y,
-            x,
-            height,
-            width
-          );
+          const newPiece = new GamePiece(piece, y, x, height, width);
           newSP.push(newPiece);
         }
       });
@@ -153,7 +150,16 @@ const Mario = () => {
     const newX = newP.x + newP.xSpeed;
     const newY = newP.y + newP.ySpeed;
 
-    staticPieces.forEach((piece) => {
+    const coinIdxs = [];
+    function getCoin(idx) {
+      setPlayer((p) => {
+        return { ...p, score: p.score + 1 };
+      });
+      coinIdxs.push(idx);
+    }
+
+    staticPieces.forEach((piece, idx) => {
+      const isCoin = piece.type === "coin";
       if (
         oldX < piece.x + piece.width &&
         newY <= piece.y + piece.height &&
@@ -161,12 +167,20 @@ const Mario = () => {
         newY + newP.height >= piece.y
       ) {
         if (oldY + newP.height <= piece.y && newY + newP.height >= piece.y) {
-          newP.y = piece.y - newP.height;
-          newP.ySpeed = 0;
+          if (isCoin) {
+            getCoin(idx);
+          } else {
+            newP.y = piece.y - newP.height;
+            newP.ySpeed = 0;
+          }
         }
         if (oldY >= piece.y + piece.height && newY <= piece.y + piece.height) {
-          newP.y = piece.y + piece.height;
-          newP.ySpeed = 0;
+          if (isCoin) {
+            getCoin(idx);
+          } else {
+            newP.y = piece.y + piece.height;
+            newP.ySpeed = 0;
+          }
         }
       }
       if (
@@ -176,12 +190,20 @@ const Mario = () => {
         oldY + newP.height > piece.y
       ) {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
-          newP.x = piece.x - newP.width;
-          newP.xSpeed = 0;
+          if (isCoin) {
+            getCoin(idx);
+          } else {
+            newP.x = piece.x - newP.width;
+            newP.xSpeed = 0;
+          }
         }
         if (oldX >= piece.x + piece.width && newX <= piece.x + piece.width) {
-          newP.x = piece.x + piece.width;
-          newP.xSpeed = 0;
+          if (isCoin) {
+            getCoin(idx);
+          } else {
+            newP.x = piece.x + piece.width;
+            newP.xSpeed = 0;
+          }
         }
       }
 
@@ -192,13 +214,24 @@ const Mario = () => {
         oldX + newP.width > piece.x &&
         oldY + newP.height > piece.y
       ) {
-        const distBottom = piece.y + piece.height - oldY;
-        const distTop = oldY + newP.height - piece.y;
-        newP.ySpeed = 0;
-        if (distTop < distBottom) {
-          newP.y = piece.y - newP.height;
-        } else newP.y = piece.y + piece.height;
+        if (!isCoin) {
+          const distBottom = piece.y + piece.height - oldY;
+          const distTop = oldY + newP.height - piece.y;
+          newP.ySpeed = 0;
+          if (distTop < distBottom) {
+            newP.y = piece.y - newP.height;
+          } else newP.y = piece.y + piece.height;
+        }
       }
+    });
+
+    if (!coinIdxs.length) return newP;
+    setStaticPieces((sp) => {
+      const newSP = [...sp];
+      coinIdxs.forEach((idx) => {
+        newSP.splice(idx, 1);
+      });
+      return newSP;
     });
 
     return newP;
@@ -213,6 +246,7 @@ const Mario = () => {
       ySpeed: 0,
       xSpeed: 0,
       dead: false,
+      score: 0,
     });
   }
 
@@ -330,14 +364,26 @@ const Mario = () => {
   return (
     <div className="h-full w-full bg-sky-600" ref={boardRef}>
       <div
-      style={{
-        position: "absolute",
-            top: board.y,
-            left: board.x,
-            height: board.height,
-            width: board.width,
-      }}
+        style={{
+          position: "absolute",
+          top: board.y,
+          left: board.x,
+          height: board.height,
+          width: board.width,
+        }}
       ></div>
+
+      <div className="text-4xl z-50 font-semibold" style={{
+        position: "absolute",
+        top: board.y + board.gridHeight,
+        left: board.x + board.gridWidth * 2,
+        height: board.height,
+        width: board.width,
+      }}>
+        <div className="coin" style={{width: board.gridWidth * 0.9, height: board.gridHeight}}></div>
+        <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{player.score}</h3>
+      </div>
+
       {!playing && (
         <div
           style={{
@@ -382,10 +428,26 @@ const Mario = () => {
       )}
       {staticPieces.map((piece, idx) => (
         <>
-        {piece.type === "question" && <GameObject key={idx} object={piece} visable={checkBorders(board, piece)} />}
-        {piece.type === "grass" && <GameObject key={idx} object={piece} visable={checkBorders(board, piece)} />}
-        {piece.type === "brick" && <Brick key={idx} brick={piece} visable={checkBorders(board, piece)} />}
-        {piece.type === "pipe" && <Pipe key={idx} brick={piece} visable={checkBorders(board, piece)} isTop={false} />}
+          {piece.type === "brick" ? (
+            <Brick
+              key={idx}
+              brick={piece}
+              visable={checkBorders(board, piece)}
+            />
+          ) : piece.type === "pipe" ? (
+            <Pipe
+              key={idx}
+              brick={piece}
+              visable={checkBorders(board, piece)}
+              isTop={false}
+            />
+          ) : (
+            <GameObject
+              key={idx}
+              object={piece}
+              visable={checkBorders(board, piece)}
+            />
+          )}
         </>
       ))}
       {playing && (
@@ -398,9 +460,13 @@ const Mario = () => {
             width: player.width,
             transform: player.xSpeed < 0 ? "scaleX(-1)" : "scaleX(1)",
           }}
-          className={player.ySpeed ? "mario-jump" :
-          player.xSpeed ? "mario-run" : "mario-still"
-        }
+          className={
+            player.ySpeed
+              ? "mario-jump"
+              : player.xSpeed
+              ? "mario-run"
+              : "mario-still"
+          }
         ></div>
       )}
     </div>

@@ -37,6 +37,15 @@
     width: 100%;
     background-image: url("./assets/question.webp");
   }
+.coin {
+    position: absolute;
+    background-size: 90%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/coin.png");
+  }
 .grass {
     position: absolute;
     background-size: 100%;
