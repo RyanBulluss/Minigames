@@ -1,7 +1,8 @@
 {
   "files": {
-    "main.css": "/Minigames/static/css/main.d6d57e43.css",
-    "main.js": "/Minigames/static/js/main.5d45acfe.js",
+    "main.css": "/Minigames/static/css/main.ef2d078d.css",
+    "main.js": "/Minigames/static/js/main.3d937b2f.js",
+    "static/media/question.webp": "/Minigames/static/media/question.ac984cf34a018b1c97f2.webp",
     "static/media/zBackground.png": "/Minigames/static/media/zBackground.29b7b7763b2308d62636.png",
     "static/media/background.jpg": "/Minigames/static/media/background.0aee3325af846025bc1b.jpg",
     "static/media/point.mp3": "/Minigames/static/media/point.310d99cfa684a7e78529.mp3",
@@ -9,6 +10,7 @@
     "static/media/scope.png": "/Minigames/static/media/scope.95de0a33a2a52192f082.png",
     "static/media/jetpack.mp3": "/Minigames/static/media/jetpack.9bc5eca2456efd92f08f.mp3",
     "static/media/hit.mp3": "/Minigames/static/media/hit.28ca25f8dda47bd07084.mp3",
+    "static/media/background.png": "/Minigames/static/media/background.95859898689537b2f6a9.png",
     "static/media/double-speed.mp3": "/Minigames/static/media/double-speed.3d92412a6c063eb66d84.mp3",
     "static/media/gunshot.mp3": "/Minigames/static/media/gunshot.63f340c7a36ba2a2ff90.mp3",
     "static/media/spring.mp3": "/Minigames/static/media/spring.2eff2fac550b8bdb3e61.mp3",
@@ -40,17 +42,22 @@
     "static/media/zombieBite.mp3": "/Minigames/static/media/zombieBite.a5dd44e43edfe9a11283.mp3",
     "static/media/game-over.mp3": "/Minigames/static/media/game-over.70bcf1d61a0acab0d320.mp3",
     "static/media/jetpack.jpg": "/Minigames/static/media/jetpack.a60d322245a35a61c034.jpg",
+    "static/media/breakable.webp": "/Minigames/static/media/breakable.2af612f4ce712460bea6.webp",
+    "static/media/goomba.gif": "/Minigames/static/media/goomba.0b51b728eba958ce071a.gif",
     "static/media/snap.mp3": "/Minigames/static/media/snap.1a092774b64749be6dbb.mp3",
     "static/media/pop.mp3": "/Minigames/static/media/pop.d140e054666280a61ad6.mp3",
     "static/media/win.mp3": "/Minigames/static/media/win.5d8f13c5e3c46a5f36e0.mp3",
     "static/media/combine.mp3": "/Minigames/static/media/combine.dda04884c99aed765f08.mp3",
     "static/media/swipe.mp3": "/Minigames/static/media/swipe.96966333aa989c794362.mp3",
+    "static/media/grass.webp": "/Minigames/static/media/grass.4fca32218acd82766d11.webp",
     "index.html": "/Minigames/index.html",
-    "main.d6d57e43.css.map": "/Minigames/static/css/main.d6d57e43.css.map",
-    "main.5d45acfe.js.map": "/Minigames/static/js/main.5d45acfe.js.map"
+    "static/media/mario-jump.webp": "/Minigames/static/media/mario-jump.faa3e824e91d1883f43e.webp",
+    "static/media/mario-still.webp": "/Minigames/static/media/mario-still.132ce167ecba756d7867.webp",
+    "main.ef2d078d.css.map": "/Minigames/static/css/main.ef2d078d.css.map",
+    "main.3d937b2f.js.map": "/Minigames/static/js/main.3d937b2f.js.map"
   },
   "entrypoints": [
-    "static/css/main.d6d57e43.css",
-    "static/js/main.5d45acfe.js"
+    "static/css/main.ef2d078d.css",
+    "static/js/main.3d937b2f.js"
   ]
 }
