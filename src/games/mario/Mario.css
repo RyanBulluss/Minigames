@@ -64,6 +64,16 @@
     width: 100%;
     background-image: url("./assets/breakable.webp");
   }
+.goomba {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-position: 0 -1vmin;
+    background-image: url("./assets/goomba.gif");
+  }
 .background {
     position: absolute;
     background-size: 180%;

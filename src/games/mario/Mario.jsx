@@ -6,6 +6,7 @@ import Brick from "./game-pieces/Brick";
 import Pipe from "./game-pieces/Pipe";
 import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
+import NpcObject from "./game-pieces/NpcObject";
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
@@ -74,23 +75,35 @@ const Mario = () => {
 
   function spawnNpc() {
     setNpcs((n) => {
-      const goomba = new Npc("goomba", 500, 500, board.gridHeight, board.gridWidth);
+      const goomba = new Npc(
+        "goomba",
+        500,
+        500,
+        board.gridHeight * 1.5,
+        board.gridWidth * 1.5
+      );
       return [...n, goomba];
     });
   }
 
   function moveNpcs(newP) {
-    const newNpcs = npcs.map((obj, idx) => {
-      if (obj.type === "goomba") return moveGoomba(obj, newP);
-      return obj
-    })
-
-    setNpcs(newNpcs.filter(n => n.dead === false));
+    setNpcs((n) => {
+      const newNpcs = n.map((obj, idx) => {
+        if (obj.type === "goomba") return moveGoomba(obj, newP);
+        return obj;
+      });
+      return newNpcs.filter((n) => n.dead === false);
+    });
   }
 
   function moveGoomba(obj, newP) {
-    let goomba = {...obj};
-    goomba.xSpeed = goomba.xSpeed !== 0 ? goomba.xSpeed : rng(2) === 1 ? -board.width / 300 : board.width / 300;
+    let goomba = { ...obj };
+    goomba.xSpeed =
+      goomba.xSpeed !== 0
+        ? goomba.xSpeed
+        : rng(2) === 1
+        ? -board.width / 300
+        : board.width / 300;
     goomba.ySpeed += board.height / gravity;
 
     goomba = checkCollision(goomba, obj);
@@ -98,25 +111,27 @@ const Mario = () => {
     goomba.y += goomba.ySpeed;
     goomba.x += goomba.xSpeed;
 
-    goomba = checkNpcBoundaries(goomba)
+    goomba = checkNpcBoundaries(goomba);
 
     return goomba;
   }
 
   function checkNpcBoundaries(oldNpc) {
-    const n = {...oldNpc};
-    if (n.x + n.width > board.x + board.width) {
-      n.xSpeed = n.xSpeed > 0 ? -n.xSpeed : n.xSpeed
+    const n = { ...oldNpc };
+    const newX = n.x + n.xSpeed;
+    const newY = n.y + n.ySpeed;
+    if (newX + n.width > board.x + board.width - board.gridWidth) {
+      n.xSpeed = n.xSpeed > 0 ? -n.xSpeed : n.xSpeed;
     }
-    if (n.x < board.x) {
-      n.xSpeed = n.xSpeed < 0 ? -n.xSpeed : n.xSpeed
+    if (newX < board.x + board.gridWidth) {
+      n.xSpeed = n.xSpeed < 0 ? -n.xSpeed : n.xSpeed;
     }
-    if (n.y + n.height > board.y + board.height) {
-      n.ySpeed = n.ySpeed > 0 ? -n.ySpeed : n.ySpeed
+    if (newY + n.height > board.y + board.height) {
+      n.ySpeed = n.ySpeed > 0 ? -n.ySpeed : n.ySpeed;
       n.dead = true;
     }
-    if (n.y < board.y) {
-      n.ySpeed = n.ySpeed < 0 ? -n.ySpeed : n.ySpeed
+    if (newY < board.y) {
+      n.ySpeed = n.ySpeed < 0 ? -n.ySpeed : n.ySpeed;
     }
     return n;
   }
@@ -129,10 +144,15 @@ const Mario = () => {
 
   function gameLoop() {
     setPlayer((p) => movePlayer(p));
-    console.log(npcs);
   }
 
   function moveGamePieces(newP) {
+    setNpcs((n) => {
+      return n.map((npc) => {
+        return { ...npc, x: npc.x - newP.xSpeed };
+      });
+    });
+
     setStaticPieces((sp) => {
       const newSP = [...sp]
         .map((piece) => {
@@ -161,12 +181,56 @@ const Mario = () => {
     return Math.floor(Math.random() * n);
   }
 
+  function checkNpcCollision(newP) {
+    const px = newP.x + newP.xSpeed;
+    const py = newP.y + newP.ySpeed;
+
+    const newPlayer = { ...newP };
+
+    const killIdxs = [];
+
+    npcs.forEach((n, idx) => {
+      const nx = n.x + n.xSpeed;
+      const ny = n.y + n.ySpeed;
+
+      if (
+        px + newP.width >= nx &&
+        px <= nx + n.width &&
+        py + newP.height >= ny &&
+        py <= ny + n.height
+      ) {
+        if (newP.y + newP.height <= n.y && py + newP.height > ny) {
+          newPlayer.ySpeed =
+            newPlayer.ySpeed > 0 ? -newPlayer.ySpeed : newPlayer.ySpeed;
+          killIdxs.push(idx);
+        } else if (newP.y >= n.y + n.height && py < ny + n.height) {
+          gameOver();
+        } else if (newP.x + newP.width <= n.x && px + newP.width > nx) {
+          gameOver();
+        } else if (newP.x >= n.x + n.width && px < nx + n.width) {
+          gameOver();
+        }
+      }
+    });
+
+    setNpcs((n) => {
+      const newNpcs = [...n];
+      killIdxs.forEach((kIdx, i) => {
+        newNpcs.splice(kIdx - i, 1);
+      });
+      return newNpcs;
+    });
+
+    return newPlayer;
+  }
+
   function movePlayer(oldP) {
     let newP = { ...oldP };
 
     newP.ySpeed += board.height / gravity;
 
     newP = checkCollision(newP, oldP);
+    newP = checkNpcCollision(newP);
     newP.y += newP.ySpeed;
 
     if (
@@ -243,51 +307,37 @@ const Mario = () => {
         oldX < piece.x + piece.width &&
         newY <= piece.y + piece.height &&
         oldX + newP.width > piece.x &&
-        newY + newP.height >= piece.y
+        newY + newP.height >= piece.y &&
+        piece.type !== "coin"
       ) {
         if (oldY + newP.height <= piece.y && newY + newP.height >= piece.y) {
-          if (isCoin) {
-            deleteIdxs = getCoin(idx, deleteIdxs);
-          } else {
-            newP.y = piece.y - newP.height;
-            newP.ySpeed = 0;
-          }
+          newP.y = piece.y - newP.height;
+          newP.ySpeed = 0;
         }
         if (oldY >= piece.y + piece.height && newY <= piece.y + piece.height) {
-          if (isCoin) {
-            deleteIdxs = getCoin(idx, deleteIdxs);
-          } else {
-            if (piece.type === "breakable") {
-              deleteIdxs = breakBlock(idx, deleteIdxs);
-            } else if (piece.type === "question") {
-              hitQuestion(idx);
-            }
-            newP.y = piece.y + piece.height;
-            newP.ySpeed = 0;
+          if (piece.type === "breakable") {
+            deleteIdxs = breakBlock(idx, deleteIdxs);
+          } else if (piece.type === "question") {
+            hitQuestion(idx);
           }
+          newP.y = piece.y + piece.height;
+          newP.ySpeed = 0;
         }
       }
       if (
         newX <= piece.x + piece.width &&
         oldY < piece.y + piece.height &&
         newX + newP.width >= piece.x &&
-        oldY + newP.height > piece.y
+        oldY + newP.height > piece.y &&
+        piece.type !== "coin"
       ) {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
-          if (isCoin) {
-            deleteIdxs = getCoin(idx, deleteIdxs);
-          } else {
-            newP.x = piece.x - newP.width;
-            newP.xSpeed = 0;
-          }
+          newP.x = piece.x - newP.width;
+          newP.xSpeed = 0;
         }
         if (oldX >= piece.x + piece.width && newX <= piece.x + piece.width) {
-          if (isCoin) {
-            deleteIdxs = getCoin(idx, deleteIdxs);
-          } else {
-            newP.x = piece.x + piece.width;
-            newP.xSpeed = 0;
-          }
+          newP.x = piece.x + piece.width;
+          newP.xSpeed = 0;
         }
       }
 
@@ -305,6 +355,8 @@ const Mario = () => {
           if (distTop < distBottom) {
             newP.y = piece.y - newP.height;
           } else newP.y = piece.y + piece.height;
+        } else {
+          deleteIdxs = getCoin(idx, deleteIdxs);
         }
       }
     });
@@ -312,8 +364,8 @@ const Mario = () => {
     if (!deleteIdxs.length) return newP;
     setStaticPieces((sp) => {
       const newSP = [...sp];
-      deleteIdxs.forEach((idx) => {
-        newSP.splice(idx, 1);
+      deleteIdxs.forEach((idx, idx2) => {
+        newSP.splice(idx - idx2, 1);
       });
       return newSP;
     });
@@ -446,7 +498,7 @@ const Mario = () => {
   }, []);
 
   return (
-    <div onClick={spawnNpc} className="h-full w-full bg-sky-600" ref={boardRef}>
+    <div onClick={spawnNpc} className="h-full w-full bg-sky-400" ref={boardRef}>
       <div
         style={{
           position: "absolute",
@@ -541,17 +593,7 @@ const Mario = () => {
         </>
       ))}
       {npcs.map((npc, idx) => (
-        <div key={idx}
-          style={{
-            position: "absolute",
-            top: npc.y,
-            left: npc.x,
-            height: npc.height,
-            width: npc.width,
-            transform: npc.xSpeed < 0 ? "scaleX(-1)" : "scaleX(1)",
-            backgroundColor: "red"
-          }}
-        ></div>
+        <NpcObject key={idx} npc={npc} />
       ))}
       {playing && (
         <div
