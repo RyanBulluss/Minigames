@@ -76,6 +76,29 @@ function flatGrassStairs() {
     return newL;
 }
 
+function fourPiranhas() {
+    let newL = flatGrass();
+    
+    newL[5][1] = "pipe"
+    newL[9][1] = "pipe"
+    newL[13][1] = "pipe"
+    newL[17][1] = "pipe"
+
+    newL[5][8] = "coin"
+    newL[5][9] = "coin"
+    newL[6][8] = "coin"
+    newL[6][9] = "coin"
+    newL[13][8] = "coin"
+    newL[13][9] = "coin"
+    newL[14][8] = "coin"
+    newL[14][9] = "coin"
+    return newL;
+}
+
+function eightPiranhas() {
+    return [...fourPiranhas(), ...fourPiranhas()];
+}
+
 function poleJumps() {
     let newL = createCols(20, 0);
     for (let i = 0; i < 18; i++) {
@@ -85,6 +108,23 @@ function poleJumps() {
             }
         }
     }
+    return newL;
+}
+
+function questionSection() {
+    let newL = flatGrass();
+    newL[5][5] = "breakable";
+    newL[6][5] = "breakable";
+    newL[7][5] = "breakable";
+    newL[8][5] = "breakable";
+    newL[12][5] = "breakable";
+    newL[13][5] = "breakable";
+    newL[14][5] = "breakable";
+    newL[15][5] = "breakable";
+    newL[9][10] = "breakable";
+    newL[10][10] = "question";
+    newL[11][10] = "breakable";
+    
     return newL;
 }
 
@@ -103,7 +143,8 @@ function tunnel() {
 
 
 
-const levels = [level1, flatGrass(), flatGrassStairs(), poleJumps()];
+const levels = [level1, flatGrass(), flatGrassStairs(), poleJumps(), questionSection(), eightPiranhas(), fourPiranhas()];
+// const levels = [eightPiranhas()];
 
 
 export { level1, levels }
