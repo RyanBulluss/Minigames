@@ -15,6 +15,7 @@ const GameObject = ({object, visable}) => {
       object.type === "question" ? "question" :
       object.type === "grass" ? "grass" :
       object.type === "coin" ? "coin" :
+      object.type === "mushroom" ? "mushroom" :
       object.type === "breakable" ? "breakable" : ""
     }
     ></div>

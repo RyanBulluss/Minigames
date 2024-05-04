@@ -4,9 +4,11 @@ import { level1, levels } from "./levels";
 import { checkBorders } from "../../variables/boundaries";
 import Brick from "./game-pieces/Brick";
 import Pipe from "./game-pieces/Pipe";
+import Player from "./game-pieces/Player";
 import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
 import NpcObject from "./game-pieces/NpcObject";
+import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
@@ -60,11 +62,30 @@ const Mario = () => {
           y = board.y + board.height - board.gridHeight * (i + 1);
           y = piece === "pipe" ? y - board.gridHeight * 2 : y;
           const newPiece = new GamePiece(piece, y, x, height, width);
-          if (piece !== "coin" && level[idx][i + 1] === 0 && level[idx][i + 2] === 0 && rng(50) === 0) {
-            spawnNpc("goomba", y - board.gridHeight, x - board.gridHeight * 1.5, board.gridHeight * 1.5, board.gridWidth * 1.5);
+          if (
+            piece !== "coin" &&
+            level[idx][i + 1] === 0 &&
+            level[idx][i + 2] === 0 &&
+            rng(50) === 0
+          ) {
+            spawnNpc(
+              "goomba",
+              y - board.gridHeight,
+              x - board.gridHeight * 1.5,
+              board.gridHeight * 1.5,
+              board.gridWidth * 1.5
+            );
           }
           if (piece === "pipe") {
-            spawnPiranha("piranha", y - board.gridHeight * 2, x + board.gridWidth * 0.4, y - board.gridHeight * 2, y + board.gridHeight, board.gridHeight * 2.5, board.gridWidth * 1.2);
+            spawnPiranha(
+              "piranha",
+              y - board.gridHeight * 2,
+              x + board.gridWidth * 0.4,
+              y - board.gridHeight * 2,
+              y + board.gridHeight,
+              board.gridHeight * 2.5,
+              board.gridWidth * 1.2
+            );
           }
           newSP.push(newPiece);
         }
@@ -85,18 +106,12 @@ const Mario = () => {
 
   function spawnNpc(type, y, x, height, width) {
     setNpcs((n) => {
-      const newNpc = new Npc(
-        type,
-        y,
-        x,
-        height,
-        width
-      );
+      const newNpc = new Npc(type, y, x, height, width);
       return [...n, newNpc];
     });
   }
 
-  function spawnPiranha(type, y, x, maxY, minY,  height, width) {
+  function spawnPiranha(type, y, x, maxY, minY, height, width) {
     setNpcs((n) => {
       const newNpc = {
         type: type,
@@ -108,9 +123,9 @@ const Mario = () => {
         width: width,
         ySpeed: 0,
         dead: false,
-      }
+      };
       return [...n, newNpc];
-    })
+    });
   }
 
   function moveNpcs(newP) {
@@ -126,18 +141,20 @@ const Mario = () => {
 
   function movePiranha(obj, newP) {
     let piranha = { ...obj };
-    piranha.ySpeed = piranha.ySpeed === 0
-    ? rng(30) === 0 ? 
-    rng(2) === 1
-    ? -board.width / 500
-    : board.width / 500 : piranha.ySpeed : piranha.ySpeed
+    piranha.ySpeed =
+      piranha.ySpeed === 0
+        ? rng(30) === 0
+          ? rng(2) === 1
+            ? -board.width / 500
+            : board.width / 500
+          : piranha.ySpeed
+        : piranha.ySpeed;
 
     // piranha = checkCollision(piranha, obj);
     const newY = piranha.y + piranha.ySpeed;
     if (newY < piranha.maxY) {
       piranha.ySpeed = 0;
-    } else
-    if (newY > piranha.minY) {
+    } else if (newY > piranha.minY) {
       piranha.ySpeed = 0;
     }
 
@@ -254,11 +271,29 @@ const Mario = () => {
         py + newP.height >= ny &&
         py <= ny + n.height
       ) {
-        if (newP.y + newP.height <= n.y && py + newP.height > ny && n.type !== "piranha") {
+        if (
+          newP.y + newP.height <= n.y &&
+          py + newP.height > ny &&
+          n.type !== "piranha"
+        ) {
           newPlayer.ySpeed =
             newPlayer.ySpeed > 0 ? -newPlayer.ySpeed : newPlayer.ySpeed;
           killIdxs.push(idx);
-        } else gameOver();
+        } else {
+          if (!newPlayer.invincible) {
+            if (newPlayer.height > newPlayer.width) {
+              newPlayer.height = newPlayer.width;
+              newPlayer.invincible = true;
+              setTimeout(() => {
+                setPlayer((p) => {
+                  return { ...p, invincible: false };
+                });
+              }, 3000);
+            } else {
+              gameOver();
+            }
+          }
+        }
       }
     });
 
@@ -318,6 +353,12 @@ const Mario = () => {
     return newArr;
   }
 
+  function getMushroom(oldP, idx, arr) {
+    const newArr = [...arr];
+    newArr.push(idx);
+    return [{ ...oldP, height: oldP.width * 2 }, newArr];
+  }
+
   function breakBlock(idx, arr) {
     const newArr = [...arr];
     newArr.push(idx);
@@ -329,20 +370,20 @@ const Mario = () => {
       let newSP = JSON.parse(JSON.stringify(sp));
       newSP[idx].type = "brick";
       const oldP = newSP[idx];
-      const newCoin = new GamePiece(
-        "coin",
-        oldP.y - board.gridHeight * 2,
+      const newMushroom = new GamePiece(
+        "mushroom",
+        oldP.y - board.gridHeight,
         oldP.x,
         board.gridHeight,
         board.gridWidth
       );
-      newSP.splice(newSP.length - 2, 0, newCoin);
+      newSP.splice(newSP.length - 2, 0, newMushroom);
       return newSP;
     });
   }
 
   function checkCollision(oldP, olderP) {
-    const newP = { ...oldP };
+    let newP = { ...oldP };
     const oldX = olderP.x;
     const oldY = olderP.y;
     const newX = newP.x + newP.xSpeed;
@@ -351,13 +392,13 @@ const Mario = () => {
     let deleteIdxs = [];
 
     staticPieces.forEach((piece, idx) => {
-      const isCoin = piece.type === "coin";
       if (
         oldX < piece.x + piece.width &&
         newY <= piece.y + piece.height &&
         oldX + newP.width > piece.x &&
         newY + newP.height >= piece.y &&
-        piece.type !== "coin"
+        piece.type !== "coin" &&
+        piece.type !== "mushroom"
       ) {
         if (oldY + newP.height <= piece.y && newY + newP.height >= piece.y) {
           newP.y = piece.y - newP.height;
@@ -378,7 +419,8 @@ const Mario = () => {
         oldY < piece.y + piece.height &&
         newX + newP.width >= piece.x &&
         oldY + newP.height > piece.y &&
-        piece.type !== "coin"
+        piece.type !== "coin" &&
+        piece.type !== "mushroom"
       ) {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
           newP.x = piece.x - newP.width;
@@ -397,15 +439,17 @@ const Mario = () => {
         oldX + newP.width > piece.x &&
         oldY + newP.height > piece.y
       ) {
-        if (!isCoin) {
+        if (piece.type === "coin") {
+          deleteIdxs = getCoin(idx, deleteIdxs);
+        } else if (piece.type === "mushroom") {
+          [newP, deleteIdxs] = getMushroom(newP, idx, deleteIdxs);
+        } else {
           const distBottom = piece.y + piece.height - oldY;
           const distTop = oldY + newP.height - piece.y;
           newP.ySpeed = 0;
           if (distTop < distBottom) {
             newP.y = piece.y - newP.height;
           } else newP.y = piece.y + piece.height;
-        } else {
-          deleteIdxs = getCoin(idx, deleteIdxs);
         }
       }
     });
@@ -644,25 +688,7 @@ const Mario = () => {
       {npcs.map((npc, idx) => (
         <NpcObject key={idx} npc={npc} visable={checkBorders(board, npc)} />
       ))}
-      {playing && (
-        <div
-          style={{
-            position: "absolute",
-            top: player.y,
-            left: player.x,
-            height: player.height,
-            width: player.width,
-            transform: player.xSpeed < 0 ? "scaleX(-1)" : "scaleX(1)",
-          }}
-          className={
-            player.ySpeed
-              ? "mario-jump"
-              : player.xSpeed
-              ? "mario-run"
-              : "mario-still"
-          }
-        ></div>
-      )}
+      {playing && <Player player={player} />}
     </div>
   );
 };

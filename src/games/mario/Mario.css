@@ -27,6 +27,35 @@
     width: 100%;
     background-image: url("./assets/mario-jump.webp");
   }
+.small-mario-still {
+    position: absolute;
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/small-mario-still.png");
+  }
+
+.small-mario-run {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/small-mario-run.gif");
+  }
+
+.small-mario-jump {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/small-mario-jump.png");
+  }
 
 .question {
     position: absolute;
@@ -45,6 +74,15 @@
     height: 100%;
     width: 100%;
     background-image: url("./assets/coin.png");
+  }
+.mushroom {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/mushroom.png");
   }
 .grass {
     position: absolute;
