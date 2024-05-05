@@ -16,6 +16,18 @@ import cannon from "../assets/cannon.mp3";
 import sniper from "../assets/sniper.mp3";
 import zombieHit from "../assets/zombieHit.mp3";
 import doubleSpeed from "../assets/double-speed.mp3";
+import marioBrickBreak from "../assets/marioBrickBreak.mp3";
+import marioBump from "../assets/marioBump.mp3";
+import marioCoin from "../assets/marioCoin.mp3";
+import marioDeath from "../assets/marioDeath.mp3";
+import marioJump from "../assets/marioJump.mp3";
+import marioJumpBig from "../assets/marioJumpBig.mp3";
+import marioKill from "../assets/marioKill.mp3";
+import marioPowerUp from "../assets/marioPowerUp.mp3";
+import marioPowerDown from "../assets/marioPowerDown.mp3";
+import marioPowerUpSpawn from "../assets/marioPowerUpSpawn.mp3";
+
+
 
 const volume = 0.03;
 
@@ -37,6 +49,16 @@ const playAudioNoSkip = (mp3) => {
   };
 };
 
+const marioBrickBreakAudio = new Audio(marioBrickBreak);
+const marioBumpAudio = new Audio(marioBump);
+const marioCoinAudio = new Audio(marioCoin);
+const marioDeathAudio = new Audio(marioDeath);
+const marioJumpAudio = new Audio(marioJump);
+const marioJumpBigAudio = new Audio(marioJumpBig);
+const marioKillAudio = new Audio(marioKill);
+const marioPowerUpAudio = new Audio(marioPowerUp);
+const marioPowerDownAudio = new Audio(marioPowerDown);
+const marioPowerUpSpawnAudio = new Audio(marioPowerUpSpawn);
 const flapAudio = new Audio(flap);
 const hitAudio = new Audio(hit);
 const pointAudio = new Audio(point);
@@ -52,6 +74,16 @@ const springAudio = new Audio(spring);
 const snapAudio = new Audio(snap);
 const doubleSpeedAudio = new Audio(doubleSpeed);
 
+const marioBumpSound = playAudioNoSkip(marioBump);
+const marioBrickBreakSound = playAudio(marioBrickBreakAudio);
+const marioCoinSound = playAudio(marioCoinAudio);
+const marioDeathSound = playAudio(marioDeathAudio);
+const marioJumpSound = playAudio(marioJumpAudio);
+const marioJumpBigSound = playAudio(marioJumpBigAudio);
+const marioKillSound = playAudio(marioKillAudio);
+const marioPowerUpSound = playAudio(marioPowerUpAudio);
+const marioPowerDownSound = playAudio(marioPowerDownAudio);
+const marioPowerUpSpawnSound = playAudio(marioPowerUpSpawnAudio);
 const flapSound = playAudio(flapAudio);
 const hitSound = playAudio(hitAudio);
 const pointSound = playAudio(pointAudio);
@@ -91,4 +123,14 @@ export {
   sniperSound,
   zombieHitSound,
   doubleSpeedSound,
+  marioBrickBreakSound,
+  marioBumpSound,
+  marioCoinSound,
+  marioDeathSound,
+  marioJumpSound,
+  marioJumpBigSound,
+  marioKillSound,
+  marioPowerUpSound,
+  marioPowerDownSound,
+  marioPowerUpSpawnSound,
 };

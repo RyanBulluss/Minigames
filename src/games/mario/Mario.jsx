@@ -9,6 +9,27 @@ import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
 import NpcObject from "./game-pieces/NpcObject";
 import { height } from "@fortawesome/free-solid-svg-icons/fa0";
+import {
+  marioBrickBreakSound,
+  marioCoinSound,
+  marioDeathSound,
+  marioJumpBigSound,
+  marioJumpSound,
+  marioKillSound,
+  marioPowerDownSound,
+  marioPowerUpSound,
+  marioPowerUpSpawnSound,
+} from "../../variables/audio";
+
+import marioBump from "../../assets/marioBump.mp3";
+
+const mb = new Audio(marioBump);
+
+function marioBumpSound() {
+  mb.volume = 0.03;
+  console.log(mb)
+  mb.play();
+}
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
@@ -209,6 +230,7 @@ const Mario = () => {
   }
 
   function gameOver() {
+    marioDeathSound();
     setPlaying(false);
     setPlayer({});
     setStaticPieces([]);
@@ -278,12 +300,14 @@ const Mario = () => {
         ) {
           newPlayer.ySpeed =
             newPlayer.ySpeed > 0 ? -newPlayer.ySpeed : newPlayer.ySpeed;
+          marioKillSound();
           killIdxs.push(idx);
         } else {
           if (!newPlayer.invincible) {
             if (newPlayer.height > newPlayer.width) {
               newPlayer.height = newPlayer.width;
               newPlayer.invincible = true;
+              marioPowerDownSound();
               setTimeout(() => {
                 setPlayer((p) => {
                   return { ...p, invincible: false };
@@ -349,23 +373,27 @@ const Mario = () => {
     setPlayer((p) => {
       return { ...p, score: p.score + 1 };
     });
+    marioCoinSound();
     newArr.push(idx);
     return newArr;
   }
 
   function getMushroom(oldP, idx, arr) {
     const newArr = [...arr];
+    marioPowerUpSound();
     newArr.push(idx);
     return [{ ...oldP, height: oldP.width * 2 }, newArr];
   }
 
   function breakBlock(idx, arr) {
     const newArr = [...arr];
+    marioBrickBreakSound();
     newArr.push(idx);
     return newArr;
   }
 
   function hitQuestion(idx) {
+    marioPowerUpSpawnSound();
     setStaticPieces((sp) => {
       let newSP = JSON.parse(JSON.stringify(sp));
       newSP[idx].type = "brick";
@@ -412,6 +440,7 @@ const Mario = () => {
           }
           newP.y = piece.y + piece.height;
           newP.ySpeed = 0;
+          if (newY !== piece.y + piece.height) marioBumpSound();
         }
       }
       if (
@@ -425,10 +454,13 @@ const Mario = () => {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
           newP.x = piece.x - newP.width;
           newP.xSpeed = 0;
+          if (newX + newP.width !== piece.x) marioBumpSound();
         }
         if (oldX >= piece.x + piece.width && newX <= piece.x + piece.width) {
           newP.x = piece.x + piece.width;
           newP.xSpeed = 0;
+          if (newX !== piece.x + piece.width) marioBumpSound();
+          
         }
       }
 
@@ -501,30 +533,30 @@ const Mario = () => {
     });
   }
 
-  function createStairs(num, startY, startX) {
-    const floor = [];
-    let y = board.y + board.height - board.gridHeight * startY;
-    let x = board.x + board.gridWidth * startX;
+  // function createStairs(num, startY, startX) {
+  //   const floor = [];
+  //   let y = board.y + board.height - board.gridHeight * startY;
+  //   let x = board.x + board.gridWidth * startX;
 
-    for (let i = 0; i < num; i++) {
-      y = board.y + board.height - board.gridHeight * (startY + 1 + i);
-      for (let j = i; j < num; j++) {
-        x = board.x + board.gridWidth * (startX + j);
-        const newPiece = new GamePiece(
-          "brick",
-          y,
-          x,
-          board.gridHeight,
-          board.gridWidth
-        );
-        floor.push(newPiece);
-      }
-    }
+  //   for (let i = 0; i < num; i++) {
+  //     y = board.y + board.height - board.gridHeight * (startY + 1 + i);
+  //     for (let j = i; j < num; j++) {
+  //       x = board.x + board.gridWidth * (startX + j);
+  //       const newPiece = new GamePiece(
+  //         "brick",
+  //         y,
+  //         x,
+  //         board.gridHeight,
+  //         board.gridWidth
+  //       );
+  //       floor.push(newPiece);
+  //     }
+  //   }
 
-    setStaticPieces((s) => {
-      return [...s, ...floor];
-    });
-  }
+  //   setStaticPieces((s) => {
+  //     return [...s, ...floor];
+  //   });
+  // }
 
   useEffect(() => {
     if (!playing) return;
@@ -538,6 +570,9 @@ const Mario = () => {
         const k = e.key;
         if (k === " ") {
           if (p.ySpeed !== 0) return { ...p };
+          if (p.width === p.height) {
+            marioJumpSound();
+          } else marioJumpBigSound();
           return { ...p, ySpeed: -board.height / 50 };
         }
         if (k === "a" || k === "A" || k === "ArrowLeft")
