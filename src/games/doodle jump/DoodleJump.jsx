@@ -210,10 +210,14 @@ const DoodleJump = () => {
       e.preventDefault();
       switch (e.key) {
         case "ArrowLeft":
+        case "a":
+        case "A":
           if (direction === "left") return;
           setDirection("left");
           break;
         case "ArrowRight":
+        case "d":
+        case "D":
           if (direction === "right") return;
           setDirection("right");
           break;
@@ -224,13 +228,18 @@ const DoodleJump = () => {
 
     const handleKeyUp = (e) => {
       setDirection(d => {
-        if (e.key === "ArrowLeft" && d === "left") {
+       switch (e.key) {
+        case "ArrowLeft":
+        case "a":
+        case "A":
           return null;
-        } else if (e.key === "ArrowRight" && d === "right") {
+        case "ArrowRight":
+        case "d":
+        case "D":
           return null;
-        } else {
+        default:
           return d;
-        }
+      }
 
       })
     };

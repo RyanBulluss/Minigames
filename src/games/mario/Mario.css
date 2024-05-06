@@ -121,12 +121,3 @@
     width: 100%;
     background-image: url("./assets/piranha.gif");
   }
-.background {
-    position: absolute;
-    background-size: 180%;
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 100%;
-    width: 100%;
-    background-image: url("./assets/background.png");
-  }

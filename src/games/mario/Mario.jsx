@@ -21,15 +21,6 @@ import {
   marioPowerUpSpawnSound,
 } from "../../variables/audio";
 
-import marioBump from "../../assets/marioBump.mp3";
-
-const mb = new Audio(marioBump);
-
-function marioBumpSound() {
-  mb.volume = 0.03;
-  console.log(mb)
-  mb.play();
-}
 
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
@@ -440,7 +431,6 @@ const Mario = () => {
           }
           newP.y = piece.y + piece.height;
           newP.ySpeed = 0;
-          if (newY !== piece.y + piece.height) marioBumpSound();
         }
       }
       if (
@@ -454,13 +444,10 @@ const Mario = () => {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
           newP.x = piece.x - newP.width;
           newP.xSpeed = 0;
-          if (newX + newP.width !== piece.x) marioBumpSound();
         }
         if (oldX >= piece.x + piece.width && newX <= piece.x + piece.width) {
           newP.x = piece.x + piece.width;
-          newP.xSpeed = 0;
-          if (newX !== piece.x + piece.width) marioBumpSound();
-          
+          newP.xSpeed = 0;   
         }
       }
 
