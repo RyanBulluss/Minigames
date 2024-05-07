@@ -40,15 +40,17 @@ const Mario = () => {
     newBoard.gridSize = 20;
     newBoard.gridHeight = newBoard.height / newBoard.gridSize;
     newBoard.gridWidth = newBoard.width / newBoard.gridSize;
-    setBoard(newBoard);
+    return newBoard
   }
 
   function startGame() {
+    const newBoard = resizeGame();
+    setBoard(newBoard);
+    setStaticPieces([]);
     setPlaying(true);
-    resizeGame();
-    createPlatform(20, 0, 0, "grass");
-    createPlatform(20, 20, 0, "sky");
-    spawnPlayer(50, 50, 10, 20);
+    createPlatform(20, 0, 0, "grass", newBoard);
+    createPlatform(20, 20, 0, "sky", newBoard);
+    spawnPlayer(50, 50, 10, 20, newBoard);
     setNpcs([]);
     setCurrentLevel({
       level: level1,
@@ -485,12 +487,12 @@ const Mario = () => {
     return newP;
   }
 
-  function spawnPlayer(y, x, height, width) {
+  function spawnPlayer(y, x, height, width, newBoard) {
     setPlayer({
-      y: board.y + y,
-      x: board.x + x,
-      height: board.height / height,
-      width: board.width / width,
+      y: newBoard.y + y,
+      x: newBoard.x + x,
+      height: newBoard.height / height,
+      width: newBoard.width / width,
       ySpeed: 0,
       xSpeed: 0,
       dead: false,
@@ -498,20 +500,20 @@ const Mario = () => {
     });
   }
 
-  function createPlatform(num, startY, startX, type) {
+  function createPlatform(num, startY, startX, type, newBoard) {
     const floor = [];
     let y;
     let x;
 
     for (let i = 0; i < num; i++) {
-      y = board.y + board.height - board.gridHeight * (startY + 1);
-      x = board.x + board.gridWidth * (startX + i);
+      y = newBoard.y + newBoard.height - newBoard.gridHeight * (startY + 1);
+      x = newBoard.x + newBoard.gridWidth * (startX + i);
       const newPiece = new GamePiece(
         type,
         y,
         x,
-        board.gridHeight,
-        board.gridWidth
+        newBoard.gridHeight,
+        newBoard.gridWidth
       );
       floor.push(newPiece);
     }
@@ -604,7 +606,7 @@ const Mario = () => {
   }, [board, staticPieces, playing, currentLevel, npcs]);
 
   useEffect(() => {
-    resizeGame();
+    setBoard(resizeGame())
     window.addEventListener("resize", startGame);
 
     return () => {
@@ -625,7 +627,7 @@ const Mario = () => {
       ></div>
 
       <div
-        className="text-4xl z-50 font-semibold"
+        className="text-[4vmin] z-50 font-semibold"
         style={{
           position: "absolute",
           top: board.y + board.gridHeight,
@@ -638,7 +640,7 @@ const Mario = () => {
           className="coin"
           style={{ width: board.gridWidth * 0.9, height: board.gridHeight }}
         ></div>
-        <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{player.score}</h3>
+        <h3 className="-mt-[1vmin]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{player.score}</h3>
       </div>
 
       {!playing && (
