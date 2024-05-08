@@ -28,6 +28,7 @@ const Mario = () => {
   const [player, setPlayer] = useState({ dead: true });
   const [board, setBoard] = useState({});
   const [playing, setPlaying] = useState(false);
+  const [firstGame, setFirstGame] = useState(true);
   const [currentLevel, setCurrentLevel] = useState({
     level: level1,
     column: 0,
@@ -48,6 +49,7 @@ const Mario = () => {
     setBoard(newBoard);
     setStaticPieces([]);
     setPlaying(true);
+    setFirstGame(false);
     createPlatform(20, 0, 0, "grass", newBoard);
     createPlatform(20, 20, 0, "sky", newBoard);
     spawnPlayer(50, 50, 10, 20, newBoard);
@@ -225,7 +227,7 @@ const Mario = () => {
   function gameOver() {
     marioDeathSound();
     setPlaying(false);
-    setPlayer({});
+    setPlayer({score: player.score, dead: true});
     setStaticPieces([]);
   }
 
@@ -654,9 +656,17 @@ const Mario = () => {
             backgroundColor: "black",
             zIndex: 60,
           }}
-          className="flex justify-center items-center"
+          className="flex justify-center items-center text-2xl font-semibold"
         >
-          <button onClick={startGame}>Start Game</button>
+        {!firstGame ? 
+        <div className="flex flex-col gap-8 items-center">
+          <h4>Game Over</h4>
+          <h4>Score: {player.score}</h4>
+          <button className="hover:text-gray-400" onClick={startGame}>Start Game</button>
+        </div>
+        :
+        <button className="hover:text-gray-400" onClick={startGame}>Start Game</button>
+        }
         </div>
       )}
       {playing && (
