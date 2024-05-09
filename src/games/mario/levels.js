@@ -128,6 +128,36 @@ function questionSection() {
     return newL;
 }
 
+function nineCoins() {
+    let newL = flatGrass();
+    
+    newL[5][14] = "breakable"
+    newL[6][14] = "breakable"
+    newL[7][14] = "breakable"
+    newL[5][15] = "coin"
+    newL[6][15] = "coin"
+    newL[7][15] = "coin"
+    newL[5][16] = "coin"
+    newL[6][16] = "coin"
+    newL[7][16] = "coin"
+    newL[5][17] = "coin"
+    newL[6][17] = "coin"
+    newL[7][17] = "coin"
+
+
+
+
+    newL[5][5] = "breakable"
+    newL[6][5] = "breakable"
+    newL[7][5] = "breakable"
+
+    newL[12][10] = "breakable"
+    newL[13][10] = "breakable"
+    newL[14][10] = "breakable"
+
+    return newL;
+}
+
 // to test performance with maxed out objects
 function tunnel() {
     let newL = createCols(10, "breakable");
@@ -143,8 +173,8 @@ function tunnel() {
 
 
 
-const levels = [level1, flatGrass(), flatGrassStairs(), poleJumps(), questionSection(), eightPiranhas(), fourPiranhas()];
-// const levels = [eightPiranhas()];
+const levels = [level1, flatGrass(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins()];
+// const levels = [nineCoins()];
 
 
 export { level1, levels }
