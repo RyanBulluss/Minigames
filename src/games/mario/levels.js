@@ -156,6 +156,14 @@ function flatBricks() {
     return newL;
 }
 
+function flatBreakable() {
+    let newL = createCols(20, 0);
+    for (let i = 0; i < 20; i++) {
+        newL[i][0] = "breakable";
+    }
+    return newL;
+}
+
 function flatGrassStairs() {
     let newL = flatGrass();
     newL = addStairs(newL, "brick", 3, 1, 7);
@@ -260,8 +268,8 @@ function tunnel() {
 
 
 
-const levels = [level1, level2, level3, flatGrass(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks()];
-// const levels = [];
+const levels = [level1, level2, level3, flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks()];
+// const levels = [flatBreakable()];
 
 
 export { level1, levels }
