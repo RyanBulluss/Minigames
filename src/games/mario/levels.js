@@ -190,10 +190,6 @@ function fourPiranhas() {
     return newL;
 }
 
-function eightPiranhas() {
-    return [...fourPiranhas(), ...fourPiranhas()];
-}
-
 function poleJumps() {
     let newL = createCols(20, 0);
     for (let i = 0; i < 18; i++) {

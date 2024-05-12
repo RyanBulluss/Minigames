@@ -8,7 +8,6 @@ import Player from "./game-pieces/Player";
 import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
 import NpcObject from "./game-pieces/NpcObject";
-import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 import {
   marioBrickBreakSound,
   marioCoinSound,
@@ -20,6 +19,8 @@ import {
   marioPowerUpSound,
   marioPowerUpSpawnSound,
 } from "../../variables/audio";
+import Menu from "./game-pieces/Menu";
+import Ui from "./game-pieces/Ui";
 
 
 const Mario = () => {
@@ -618,56 +619,11 @@ const Mario = () => {
 
   return (
     <div className="h-full w-full bg-sky-400" ref={boardRef}>
-      <div
-        style={{
-          position: "absolute",
-          top: board.y,
-          left: board.x,
-          height: board.height,
-          width: board.width,
-        }}
-      ></div>
 
-      <div
-        className="text-[4vmin] z-50 font-semibold"
-        style={{
-          position: "absolute",
-          top: board.y + board.gridHeight,
-          left: board.x + board.gridWidth * 2,
-          height: board.height,
-          width: board.width,
-        }}
-      >
-        <div
-          className="coin"
-          style={{ width: board.gridWidth * 0.9, height: board.gridHeight }}
-        ></div>
-        <h3 className="-mt-[1vmin]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{player.score}</h3>
-      </div>
-
+      
+      <Ui board={board} player={player}  />
       {!playing && (
-        <div
-          style={{
-            position: "absolute",
-            top: board.y,
-            left: board.x,
-            height: board.height,
-            width: board.width,
-            backgroundColor: "black",
-            zIndex: 60,
-          }}
-          className="flex justify-center items-center text-2xl font-semibold"
-        >
-        {!firstGame ? 
-        <div className="flex flex-col gap-8 items-center">
-          <h4>Game Over</h4>
-          <h4>Score: {player.score}</h4>
-          <button className="hover:text-gray-400" onClick={startGame}>Start Game</button>
-        </div>
-        :
-        <button className="hover:text-gray-400" onClick={startGame}>Start Game</button>
-        }
-        </div>
+        <Menu board={board} player={player} firstGame={firstGame} startGame={startGame} />
       )}
       {playing && (
         <>
