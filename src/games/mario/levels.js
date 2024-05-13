@@ -21,7 +21,7 @@ const level1 = [
     ["grass", "pipe", 0, 0, 0, 0, 0, 0, 0, 0, 0, "coin", 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
-    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, "thwomp", 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
@@ -219,6 +219,17 @@ function questionSection() {
     return newL;
 }
 
+function thwompField() {
+    const newL = flatGrass();
+
+    newL[6][10] = "thwomp";
+    newL[10][10] = "thwomp";
+    newL[14][10] = "thwomp";
+    newL[18][10] = "thwomp";
+
+    return newL
+}
+
 function nineCoins() {
     let newL = flatGrass();
     
@@ -264,8 +275,8 @@ function tunnel() {
 
 
 
-const levels = [level1, level2, level3, flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks()];
-// const levels = [flatBreakable()];
+// const levels = [level1, level2, level3, flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks()];
+const levels = [thwompField()];
 
 
 export { level1, levels }

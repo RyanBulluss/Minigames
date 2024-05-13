@@ -22,7 +22,6 @@ import {
 import Menu from "./game-pieces/Menu";
 import Ui from "./game-pieces/Ui";
 
-
 const Mario = () => {
   const [staticPieces, setStaticPieces] = useState([]);
   const [npcs, setNpcs] = useState([]);
@@ -42,7 +41,7 @@ const Mario = () => {
     newBoard.gridSize = 20;
     newBoard.gridHeight = newBoard.height / newBoard.gridSize;
     newBoard.gridWidth = newBoard.width / newBoard.gridSize;
-    return newBoard
+    return newBoard;
   }
 
   function startGame() {
@@ -104,6 +103,18 @@ const Mario = () => {
               board.gridWidth * 1.2
             );
           }
+          if (piece === "thwomp") {
+            spawnPiranha(
+              "thwomp",
+              y - board.gridHeight * 2,
+              x + board.gridWidth * 0.4,
+              y - board.gridHeight * 2,
+              board.y + board.height - board.gridHeight * 3.2,
+              board.gridHeight * 2.4,
+              board.gridWidth * 2
+            );
+          }
+
           newSP.push(newPiece);
         }
       });
@@ -150,6 +161,7 @@ const Mario = () => {
       const newNpcs = n.map((obj, idx) => {
         if (obj.type === "goomba") return moveGoomba(obj, newP);
         if (obj.type === "piranha") return movePiranha(obj, newP);
+        if (obj.type === "thwomp") return moveThwomp(obj, newP);
         return obj;
       });
       return newNpcs.filter((n) => n.dead === false);
@@ -176,6 +188,38 @@ const Mario = () => {
     }
 
     piranha.y += piranha.ySpeed;
+
+    // piranha = checkNpcBoundaries(piranha);
+
+    return piranha;
+  }
+
+  function moveThwomp(obj, newP) {
+    let piranha = { ...obj };
+    piranha.ySpeed =
+      piranha.ySpeed === 0
+        ? rng(10) === 0
+          ? rng(2) === 1
+            ? -board.width / 10000
+            : board.width / 10000
+          : piranha.ySpeed
+        : piranha.ySpeed;
+
+        if (piranha.ySpeed > 0) {
+          piranha.ySpeed *= 1.12;
+        } else {
+          piranha.ySpeed *= 1.02;
+        }
+    piranha.y += piranha.ySpeed;
+
+    const newY = piranha.y + piranha.ySpeed;
+    if (newY < piranha.maxY) {
+      piranha.ySpeed = 0;
+      piranha.y = piranha.maxY;
+    } else if (newY > piranha.minY) {
+      piranha.ySpeed = 0;
+      piranha.y = piranha.minY;
+    }
 
     // piranha = checkNpcBoundaries(piranha);
 
@@ -228,7 +272,7 @@ const Mario = () => {
   function gameOver() {
     marioDeathSound();
     setPlaying(false);
-    setPlayer({score: player.score, dead: true});
+    setPlayer({ score: player.score, dead: true });
     setStaticPieces([]);
   }
 
@@ -292,7 +336,8 @@ const Mario = () => {
         if (
           newP.y + newP.height <= n.y &&
           py + newP.height > ny &&
-          n.type !== "piranha"
+          n.type !== "piranha" && 
+          n.type !== "thwomp"
         ) {
           newPlayer.ySpeed =
             newPlayer.ySpeed > 0 ? -newPlayer.ySpeed : newPlayer.ySpeed;
@@ -452,7 +497,7 @@ const Mario = () => {
         }
         if (oldX >= piece.x + piece.width && newX <= piece.x + piece.width) {
           newP.x = piece.x + piece.width;
-          newP.xSpeed = 0;   
+          newP.xSpeed = 0;
         }
       }
 
@@ -609,7 +654,7 @@ const Mario = () => {
   }, [board, staticPieces, playing, currentLevel, npcs]);
 
   useEffect(() => {
-    setBoard(resizeGame())
+    setBoard(resizeGame());
     window.addEventListener("resize", startGame);
 
     return () => {
@@ -619,11 +664,14 @@ const Mario = () => {
 
   return (
     <div className="h-full w-full bg-sky-400" ref={boardRef}>
-
-      
-      <Ui board={board} player={player}  />
+      <Ui board={board} player={player} />
       {!playing && (
-        <Menu board={board} player={player} firstGame={firstGame} startGame={startGame} />
+        <Menu
+          board={board}
+          player={player}
+          firstGame={firstGame}
+          startGame={startGame}
+        />
       )}
       {playing && (
         <>

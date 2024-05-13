@@ -121,3 +121,12 @@
     width: 100%;
     background-image: url("./assets/piranha.gif");
   }
+.thwomp {
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    background-image: url("./assets/thwomp.png");
+  }

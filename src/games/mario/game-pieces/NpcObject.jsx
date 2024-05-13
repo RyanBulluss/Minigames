@@ -14,7 +14,8 @@ const NpcObject = ({ npc, visable }) => {
     }}
     className={
         npc.type === "goomba" ? "goomba" :
-        npc.type === "piranha" ? "piranha" : ""
+        npc.type === "piranha" ? "piranha" :
+        npc.type === "thwomp" ? "thwomp" : ""
     }
   ></div>
   )
