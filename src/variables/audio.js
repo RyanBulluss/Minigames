@@ -26,6 +26,7 @@ import marioKill from "../assets/marioKill.mp3";
 import marioPowerUp from "../assets/marioPowerUp.mp3";
 import marioPowerDown from "../assets/marioPowerDown.mp3";
 import marioPowerUpSpawn from "../assets/marioPowerUpSpawn.mp3";
+import thwomp from "../assets/thwomp.mp3";
 
 
 
@@ -49,6 +50,7 @@ const playAudioNoSkip = (mp3) => {
   };
 };
 
+const thwompAudio = new Audio(thwomp);
 const marioBrickBreakAudio = new Audio(marioBrickBreak);
 const marioBumpAudio = new Audio(marioBump);
 const marioCoinAudio = new Audio(marioCoin);
@@ -74,7 +76,9 @@ const springAudio = new Audio(spring);
 const snapAudio = new Audio(snap);
 const doubleSpeedAudio = new Audio(doubleSpeed);
 
+
 const marioBumpSound = playAudioNoSkip(marioBump);
+const thwompSound = playAudio(thwompAudio);
 const marioBrickBreakSound = playAudio(marioBrickBreakAudio);
 const marioCoinSound = playAudio(marioCoinAudio);
 const marioDeathSound = playAudio(marioDeathAudio);
@@ -133,4 +137,5 @@ export {
   marioPowerUpSound,
   marioPowerDownSound,
   marioPowerUpSpawnSound,
+  thwompSound
 };

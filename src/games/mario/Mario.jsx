@@ -18,6 +18,7 @@ import {
   marioPowerDownSound,
   marioPowerUpSound,
   marioPowerUpSpawnSound,
+  thwompSound,
 } from "../../variables/audio";
 import Menu from "./game-pieces/Menu";
 import Ui from "./game-pieces/Ui";
@@ -61,6 +62,7 @@ const Mario = () => {
   }
 
   function createLevelCol(level, idx, newP) {
+    console.log(npcs)
     let y;
     let x = board.x + board.width - board.gridWidth;
     if (staticPieces.length) {
@@ -114,8 +116,9 @@ const Mario = () => {
               board.gridWidth * 2
             );
           }
-
-          newSP.push(newPiece);
+          if (piece !== "thwomp") {
+            newSP.push(newPiece);
+          }
         }
       });
 
@@ -189,6 +192,8 @@ const Mario = () => {
 
     piranha.y += piranha.ySpeed;
 
+    if (piranha.x < board.x + board.gridWidth) piranha.dead = true;
+
     // piranha = checkNpcBoundaries(piranha);
 
     return piranha;
@@ -196,32 +201,35 @@ const Mario = () => {
 
   function moveThwomp(obj, newP) {
     let piranha = { ...obj };
-    piranha.ySpeed =
-      piranha.ySpeed === 0
-        ? rng(10) === 0
-          ? rng(2) === 1
-            ? -board.width / 10000
-            : board.width / 10000
-          : piranha.ySpeed
-        : piranha.ySpeed;
-
-        if (piranha.ySpeed > 0) {
-          piranha.ySpeed *= 1.12;
-        } else {
-          piranha.ySpeed *= 1.02;
-        }
-    piranha.y += piranha.ySpeed;
-
     const newY = piranha.y + piranha.ySpeed;
+    
+    piranha.ySpeed =
+    piranha.ySpeed === 0
+    ? rng(10) === 0
+    ? piranha.y === piranha.minY
+    ? -board.width / 10000
+    : board.width / 10000
+    : piranha.ySpeed
+    : piranha.ySpeed;
+        
+    
+    if (piranha.ySpeed > 0) {
+      piranha.ySpeed *= 1.12;
+    } else {
+      piranha.ySpeed *= 1.02;
+    }
+    piranha.y += piranha.ySpeed;
+    
     if (newY < piranha.maxY) {
       piranha.ySpeed = 0;
       piranha.y = piranha.maxY;
     } else if (newY > piranha.minY) {
       piranha.ySpeed = 0;
       piranha.y = piranha.minY;
+      thwompSound();
     }
 
-    // piranha = checkNpcBoundaries(piranha);
+    if (piranha.x < board.x + board.gridWidth) piranha.dead = true;
 
     return piranha;
   }
