@@ -21,7 +21,7 @@ const level1 = [
     ["grass", "pipe", 0, 0, 0, 0, 0, 0, 0, 0, 0, "coin", 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
-    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, "thwomp", 0, 0, 0, 0, 0, 0, 0, 0,  0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
     ["grass", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
@@ -275,8 +275,8 @@ function tunnel() {
 
 
 
-// const levels = [level1, level2, level3, flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks()];
-const levels = [thwompField()];
+const levels = [level1, level2, level3, flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
+// const levels = [thwompField()];
 
 
 export { level1, levels }
