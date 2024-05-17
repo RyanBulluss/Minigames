@@ -1,5 +1,29 @@
 const gamesList = [
     {
+        name: "Mario",
+    },
+    {
+        name: "Zombies",
+    },
+    {
+        name: "Doodle Jump",
+    },
+    {
+        name: "Flappy Bird",
+    },
+    {
+        name: "Brick Breaker",
+    },
+    {
+        name: "Tetris",
+    },
+    {
+        name: "2048",
+    },
+    {
+        name: "Juggler",
+    },
+    {
         name: "Snake",
     },
     {
@@ -9,34 +33,10 @@ const gamesList = [
         name: "Minesweeper",
     },
     {
-        name: "Tetris",
-    },
-    {
-        name: "Juggler",
-    },
-    {
-        name: "Brick Breaker",
-    },
-    {
-        name: "2048",
-    },
-    {
-        name: "Flappy Bird",
-    },
-    {
-        name: "Doodle Jump",
-    },
-    {
-        name: "Zombies",
-    },
-    {
         name: "Pong",
     },
     {
         name: "Tron",
-    },
-    {
-        name: "Mario",
     },
 ]
 
