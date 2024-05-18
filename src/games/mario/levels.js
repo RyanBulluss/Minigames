@@ -164,6 +164,44 @@ const level4 = [
     [0, 0, 0, 0, 0, 0, 0, 0, "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0,],
 ];
 
+const level5 = [
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", "brick", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, "brick", 0, 0, 0, "question", 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", "brick", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", "brick", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+    ["grass", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,],
+];
+
 function createCols(n, type) {
     const arr = [];
     for (let i = 0; i < n; i++) {
@@ -201,6 +239,42 @@ function flatGrassStairs() {
     let newL = flatGrass();
     newL = addStairs(newL, "brick", 3, 1, 7);
     newL[13][13] = "coin";
+    return newL;
+}
+
+function hardJumps1() {
+    let newL = createCols(20, 0);
+    
+    newL[0][0] = "brick";
+    newL[6][4] = "brick";
+    newL[10][0] = "brick";
+    newL[11][0] = "brick";
+    newL[10][1] = "brick";
+    newL[11][1] = "brick";
+    newL[10][2] = "brick";
+    newL[11][2] = "brick";
+    newL[10][3] = "brick";
+    newL[11][3] = "brick";
+    newL[10][4] = "brick";
+    newL[11][4] = "brick";
+    newL[10][5] = "pipe";
+    newL[16][2] = "brick";
+    newL[19][0] = "brick";
+
+
+    return newL;
+}
+
+function hardJumps2() {
+    let newL = createCols(20, 0);
+    
+    newL[0][0] = "brick";
+    newL[6][4] = "brick";
+    newL[9][9] = "brick";
+    newL[14][2] = "brick";
+    newL[19][0] = "brick";
+
+
     return newL;
 }
 
@@ -308,8 +382,8 @@ function tunnel() {
 
 
 
-const levels = [level1, level2, level3, level4, flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
-// const levels = [level4];
+const levels = [level1, level2, level3, level4, hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
+// const levels = [hardJumps1()];
 
 
 export { level1, levels }
