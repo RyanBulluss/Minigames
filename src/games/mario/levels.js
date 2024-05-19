@@ -274,7 +274,6 @@ function hardJumps2() {
     newL[14][2] = "brick";
     newL[19][0] = "brick";
 
-
     return newL;
 }
 

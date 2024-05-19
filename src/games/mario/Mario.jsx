@@ -447,14 +447,35 @@ const Mario = () => {
       let newSP = JSON.parse(JSON.stringify(sp));
       newSP[idx].type = "brick";
       const oldP = newSP[idx];
-      const newMushroom = new GamePiece(
-        "mushroom",
-        oldP.y - board.gridHeight,
-        oldP.x,
-        board.gridHeight,
-        board.gridWidth
-      );
-      newSP.splice(newSP.length - 2, 0, newMushroom);
+      let newPiece;
+      const randNum = rng(3);
+      if (randNum === 0) {
+        newPiece = new GamePiece(
+          "coin",
+          oldP.y - board.gridHeight * 2,
+          oldP.x,
+          board.gridHeight,
+          board.gridWidth
+        );
+        newSP.splice(newSP.length - 2, 0, newPiece);
+      } else if (randNum === 1) {
+        newPiece = new GamePiece(
+          "mushroom",
+          oldP.y - board.gridHeight,
+          oldP.x,
+          board.gridHeight,
+          board.gridWidth
+        );
+        newSP.splice(newSP.length - 2, 0, newPiece);
+      } else {
+        spawnNpc(
+          "goomba",
+          oldP.y - board.gridHeight,
+          oldP.x,
+          board.gridHeight * 1.5,
+          board.gridWidth * 1.5
+        );
+      }
       return newSP;
     });
   }
