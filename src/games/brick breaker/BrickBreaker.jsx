@@ -4,6 +4,7 @@ import { levels, bricksPerRow } from "./constants";
 import Brick from "./Brick";
 import { createScore } from "../../utilities/leaderboards";
 import { popSound, pop2Sound, gameOverSound } from "../../variables/audio";
+import { faUnderline } from "@fortawesome/free-solid-svg-icons";
 
 const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
@@ -215,13 +216,21 @@ const BrickBreaker = ({ currentGame, user, setUpdateLb }) => {
   }, [ball, playing]);
 
   useEffect(() => {
-    const newBoard = boardRef.current;
-    window.addEventListener("resize", resizeBoard);
-    newBoard.addEventListener("mousemove", handleMouseMove);
+    function handleKeyPress(e) {
+      e.preventDefault();
+      if (e.key === " ") {
+        handleRestart()
+      }
+    }
 
+    window.addEventListener("resize", resizeBoard);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("keydown", handleKeyPress)
+    
     return () => {
       window.removeEventListener("resize", resizeBoard);
-      newBoard.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("keydown", handleKeyPress)
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [board, paddle]);
 

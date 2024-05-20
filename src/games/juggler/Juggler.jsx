@@ -242,13 +242,21 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
   }, [playing, balls, board]);
 
   useEffect(() => {
-    const newBoard = boardRef.current;
-    window.addEventListener("resize", handleSizeChange);
-    newBoard.addEventListener("mousemove", handleMouseMove);
+    function handleKeyPress(e) {
+      e.preventDefault();
+      if (e.key === " ") {
+        handleRestart()
+      }
+    }
 
+    window.addEventListener("resize", handleSizeChange);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("keydown", handleKeyPress);
+    
     return () => {
       window.removeEventListener("resize", handleSizeChange);
-      newBoard.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [board, paddle]);
 

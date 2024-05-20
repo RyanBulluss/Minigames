@@ -202,9 +202,9 @@ const Tetris = ( { currentGame, user, setUpdateLb } ) => {
   }, [playing]);
 
   useEffect(() => {
-    if (!playing) return;
-
+    
     const interval = setInterval(() => {
+      if (!playing) return;
       gameLoop();
     }, 200);
 
@@ -234,6 +234,9 @@ const Tetris = ( { currentGame, user, setUpdateLb } ) => {
           break;
         case "ArrowDown":
           gameLoop();
+          break;
+        case " ":
+          startGame();
           break;
         default:
           return;
