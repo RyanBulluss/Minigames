@@ -325,6 +325,26 @@ function questionSection() {
     return newL;
 }
 
+function questionSection2() {
+    let newL = flatGrass();
+    newL[5][5] = "breakable";
+    newL[6][5] = "breakable";
+    newL[7][5] = "breakable";
+    newL[8][5] = "platform";
+    newL[9][5] = "platform";
+    newL[10][5] = "platform";
+    newL[11][5] = "platform";
+    newL[12][5] = "platform";
+    newL[13][5] = "breakable";
+    newL[14][5] = "breakable";
+    newL[15][5] = "breakable";
+    newL[9][10] = "breakable";
+    newL[10][10] = "question";
+    newL[11][10] = "breakable";
+    
+    return newL;
+}
+
 function thwompField() {
     const newL = flatGrass();
 
@@ -381,8 +401,8 @@ function tunnel() {
 
 
 
-const levels = [level1, level2, level3, level4, hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
-// const levels = [hardJumps1()];
+const levels = [level1, level2, level3, level4, hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
+// const levels = [questionSection2()];
 
 
 export { level1, levels }

@@ -4,6 +4,7 @@ import { level1, levels } from "./levels";
 import { checkBorders } from "../../variables/boundaries";
 import Brick from "./game-pieces/Brick";
 import Pipe from "./game-pieces/Pipe";
+import Platform from "./game-pieces/Platform";
 import Player from "./game-pieces/Player";
 import "./Mario.css";
 import GameObject from "./game-pieces/GameObject";
@@ -508,8 +509,10 @@ const Mario = () => {
           } else if (piece.type === "question") {
             hitQuestion(idx);
           }
-          newP.y = piece.y + piece.height;
-          newP.ySpeed = 0;
+          if (piece.type !== "platform") {
+            newP.y = piece.y + piece.height;
+            newP.ySpeed = 0;
+          }
         }
       }
       if (
@@ -518,7 +521,8 @@ const Mario = () => {
         newX + newP.width >= piece.x &&
         oldY + newP.height > piece.y &&
         piece.type !== "coin" &&
-        piece.type !== "mushroom"
+        piece.type !== "mushroom" && 
+        piece.type !== "platform"
       ) {
         if (oldX + newP.width <= piece.x && newX + newP.width >= piece.x) {
           newP.x = piece.x - newP.width;
@@ -535,7 +539,8 @@ const Mario = () => {
         oldX < piece.x + piece.width &&
         oldY < piece.y + piece.height &&
         oldX + newP.width > piece.x &&
-        oldY + newP.height > piece.y
+        oldY + newP.height > piece.y && 
+        piece.type !== "platform"
       ) {
         if (piece.type === "coin") {
           deleteIdxs = getCoin(idx, deleteIdxs);
@@ -742,6 +747,12 @@ const Mario = () => {
               brick={piece}
               visable={checkBorders(board, piece)}
               isTop={false}
+            />
+          ) : piece.type === "platform" ? (
+            <Platform
+              key={idx}
+              platform={piece}
+              visable={checkBorders(board, piece)}
             />
           ) : (
             <GameObject
