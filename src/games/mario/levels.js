@@ -398,11 +398,61 @@ function tunnel() {
     return newL;
 }
 
+function ladder1() {
+    let newL = createCols(20, 0);
+    
+    newL[0][0] = "grass";
+    newL[1][0] = "grass";
+    newL[2][0] = "grass";
+    newL[3][0] = "grass";
+    
+    newL[1][5] = "platform";
+    newL[2][5] = "platform";
+    newL[3][5] = "platform";
+    newL[1][10] = "platform";
+    newL[2][10] = "platform";
+    newL[3][10] = "platform";
+
+    newL[1][15] = "platform";
+    newL[2][15] = "platform";
+    newL[3][15] = "platform";
+    newL[4][15] = "platform";
+    newL[5][15] = "platform";
+    newL[6][15] = "platform";
+    newL[7][15] = "platform";
+    newL[8][15] = "platform";
+    newL[9][15] = "platform";
+    newL[10][15] = "platform";
+    newL[11][15] = "platform";
+    newL[12][15] = "platform";
+    newL[13][15] = "platform";
+    newL[14][15] = "platform";
+    newL[15][15] = "platform";
+
+    newL[18][0] = "grass";
+    newL[19][0] = "grass";
+
+
+    return newL;
+}
+
+function ladder2() {
+    let newL = [...flatGrass(), ...fourPiranhas()];
+
+    newL[5][1] = "pipe";
+    newL[5][8] = "platform";
+    newL[6][8] = "platform";
+    for (let i = 5; i < 35; i++) {
+        newL[i][13] = "platform";
+    }
+
+    return newL;
+}
 
 
 
-const levels = [level1, level2, level3, level4, hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
-// const levels = [questionSection2()];
+const levels = [level1, level2, level3, level4, ladder1(), ladder2(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
+// const levels = [ladder2()];
 
 
 export { level1, levels }
