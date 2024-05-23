@@ -449,10 +449,56 @@ function ladder2() {
     return newL;
 }
 
+function ladder3() {
+    let newL = createCols(20, 0);
+
+    newL[0][0] = "brick";
+    newL[1][0] = "brick";
+    newL[2][0] = "brick";
+    newL[3][0] = "brick";
+    newL[4][0] = "brick";
+    newL[5][0] = "brick";
+    newL[4][5] = "platform";
+    newL[5][5] = "platform";
+    
+    newL[4][5] = "platform";
+    newL[5][5] = "platform";
+
+    newL[10][14] = "question";
+
+    for (let i = 4; i < 14; i++) {
+        newL[i][10] = "breakable";
+    }
+
+    return newL;
+}
+
+function ladder4() {
+    let newL = createCols(20, 0);
+
+    newL[0][0] = "brick";
+    newL[1][0] = "brick";
+
+    newL[0][5] = "brick";
+    newL[1][5] = "brick";
+
+    newL[0][10] = "brick";
+    newL[1][10] = "brick";
+
+    newL[2][8] = "coin";
+    newL[2][13] = "coin";
+
+    for (let i = 0; i < 14; i++) {
+        newL[i][15] = "brick";
+    }
+
+    return newL;
+}
 
 
-const levels = [level1, level2, level3, level4, ladder1(), ladder2(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
-// const levels = [ladder2()];
+
+const levels = [level1, level2, level3, level4, ladder1(), ladder2(), ladder3(), ladder4(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
+// const levels = [ladder4()];
 
 
 export { level1, levels }
