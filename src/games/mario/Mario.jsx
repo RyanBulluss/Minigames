@@ -506,7 +506,7 @@ const Mario = () => {
         if (oldY >= piece.y + piece.height && newY <= piece.y + piece.height) {
           if (piece.type === "breakable") {
             deleteIdxs = breakBlock(idx, deleteIdxs);
-          } else if (piece.type === "question") {
+          } else if (piece.type === "question" && oldP.type !== "goomba") {
             hitQuestion(idx);
           }
           if (piece.type !== "platform") {
@@ -543,9 +543,13 @@ const Mario = () => {
         piece.type !== "platform"
       ) {
         if (piece.type === "coin") {
-          deleteIdxs = getCoin(idx, deleteIdxs);
+          if (oldP.type !== "goomba") {
+            deleteIdxs = getCoin(idx, deleteIdxs);
+          }
         } else if (piece.type === "mushroom") {
-          [newP, deleteIdxs] = getMushroom(newP, idx, deleteIdxs);
+          if (oldP.type !== "goomba") {
+            [newP, deleteIdxs] = getMushroom(newP, idx, deleteIdxs);
+          }
         } else {
           const distBottom = piece.y + piece.height - oldY;
           const distTop = oldY + newP.height - piece.y;
