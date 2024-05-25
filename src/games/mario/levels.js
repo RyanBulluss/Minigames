@@ -544,8 +544,8 @@ function ladder4() {
 
 
 
-const levels = [level1, level2, level3, level4, ladder1(), ladder2(), ladder3(), ladder4(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), questionSection3(), questionSection4(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
-// const levels = [questionSection4()];
+const levels = [level1, level2, level3, level4, level5, ladder1(), ladder2(), ladder3(), ladder4(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), questionSection3(), questionSection4(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
+// const levels = [level5];
 
 
 export { level1, levels }
