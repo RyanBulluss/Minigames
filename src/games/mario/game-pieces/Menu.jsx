@@ -10,10 +10,10 @@ const Menu = ({ board, player, firstGame, startGame }) => {
             left: board.x,
             height: board.height,
             width: board.width,
-            backgroundColor: "black",
+            backgroundColor: "",
             zIndex: 60,
           }}
-          className="flex justify-center items-center text-2xl font-semibold"
+          className="flex justify-center items-center text-2xl font-semibold bg-sky-400"
         >
         {!firstGame ? 
         <div className="flex flex-col gap-8 items-center">
