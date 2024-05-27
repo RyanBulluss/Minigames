@@ -403,6 +403,23 @@ function thwompField() {
     return newL
 }
 
+function thwompField2() {
+    const newL = flatGrass();
+
+    newL[3][10] = "thwomp";
+    newL[8][1] = "pipe";
+    newL[13][10] = "thwomp";
+    newL[18][1] = "pipe";
+
+    return newL
+}
+
+function thwompField3() {
+    const newL = [...thwompField2(), ...thwompField2()];
+
+    return newL
+}
+
 function nineCoins() {
     let newL = flatGrass();
     
@@ -544,8 +561,8 @@ function ladder4() {
 
 
 
-const levels = [level1, level2, level3, level4, level5, ladder1(), ladder2(), ladder3(), ladder4(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), questionSection3(), questionSection4(), fourPiranhas(), nineCoins(), flatBricks(), thwompField()];
-// const levels = [level5];
+const levels = [level1, level2, level3, level4, level5, ladder1(), ladder2(), ladder3(), ladder4(), hardJumps1(), hardJumps2(), flatGrass(), flatGrass(), flatGrass(), flatGrass(), flatBreakable(), flatGrassStairs(), poleJumps(), questionSection(), questionSection2(), questionSection3(), questionSection4(), fourPiranhas(), nineCoins(), flatBricks(), thwompField(), thwompField2(), thwompField3()];
+// const levels = [thwompField3()];
 
 
 export { level1, levels }
