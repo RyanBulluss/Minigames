@@ -12,11 +12,22 @@ import Zombies from '../games/zombies/Zombies'
 import Pong from '../games/pong/Pong'
 import Tron from '../games/tron/Tron'
 import Mario from '../games/mario/Mario'
+import gamesList from '../variables/games-list'
 
-const GameArea = ( {currentGame, user, setUpdateLb} ) => {
+const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
   return (
     <div className=' h-[90vmin] w-[90vmin] p-3 bg-first no-select'>
-        {!currentGame && <div className='flex text-2xl font-semibold h-full w-full justify-center items-center'>Select a game to start playing</div>}
+        {!currentGame && 
+        <div className='flex text-xl font-semibold h-full w-full justify-center items-center flex-col gap-8'>
+          Select a game to start playing
+          <div className='grid grid-cols-4 gap-2 text-sm md:text-xl font-medium'>
+          {gamesList.map((game, idx) => (
+            <div key={idx} className="hover:bg-second p-2 hover:cursor-pointer bg-second hover:bg-second/50 rounded-xl h-20 flex justify-center items-center text-center" onClick={() => setCurrentGame(game.name)}>{game.name}</div>
+          ))}
+          </div>
+        </div>
+        }
+
         {currentGame === "Snake" && <Snake currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Minesweeper" && <Minesweeper currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Tetris" && <Tetris currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}

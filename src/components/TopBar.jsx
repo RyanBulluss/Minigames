@@ -12,7 +12,7 @@ const TopBar = ({ user, setUser, setCurrentGame }) => {
 
   return (
     <div className="flex justify-between xl:hidden bg-second no-select text-2xl px-4 pt-2" style={{zIndex: 9999}}>
-      <h1 className="cursor-pointer hover:bg-first/50 p-2">Minigames</h1>
+      <h1 className="cursor-pointer hover:bg-first/50 p-2" onClick={() => setCurrentGame(null)}>Minigames</h1>
       <div onClick={() => setShowNav(true)} className="cursor-pointer hover:bg-first/50 p-2"><FontAwesomeIcon icon={faBars} /></div>
       {showNav && (
         <div onClick={() => setShowNav(false)}  className="fixed h-[100%] w-full bg-black/80 z-50 flex flex-col gap-2 justify-center items-center">
