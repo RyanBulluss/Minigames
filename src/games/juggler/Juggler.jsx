@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import JugglerControls from "./JugglerControls";
 import { createScore } from "../../utilities/leaderboards";
-import { gameOverSound, pop2Sound } from "../../variables/audio";
+import { gameOverSound, pop2Sound, popSound } from "../../variables/audio";
 
 const Juggler = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
@@ -143,10 +143,12 @@ const Juggler = ({ currentGame, user, setUpdateLb }) => {
 
       if (newX + ball.width >= board.width || newX <= 0) {
         x = true;
+        pop2Sound();
       }
-
+      
       if (newY <= 0) {
         y = true;
+        pop2Sound();
       }
 
       setBalls((bs) => {
