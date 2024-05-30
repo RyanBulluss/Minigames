@@ -106,7 +106,17 @@ const doubleSpeedSound = playAudio(doubleSpeedAudio);
 const gunshotSound = playAudioNoSkip(gunshot);
 const cannonSound = playAudioNoSkip(cannon);
 const sniperSound = playAudioNoSkip(sniper);
-const zombieHitSound = playAudioNoSkip(zombieHit);
+
+const zombieHitSound = () => {
+  const newAudio = new Audio(zombieHit);
+  newAudio.volume = 0.01;
+  if (newAudio.currentTime === 0) {
+    newAudio.play();
+  }
+
+};
+
+
 
 export {
   flapSound,
