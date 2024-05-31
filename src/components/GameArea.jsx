@@ -13,6 +13,7 @@ import Pong from '../games/pong/Pong'
 import Tron from '../games/tron/Tron'
 import Mario from '../games/mario/Mario'
 import gamesList from '../variables/games-list'
+import MiniGolf from '../games/minigolf/MiniGolf'
 
 const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
   return (
@@ -41,6 +42,7 @@ const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
         {currentGame === "Pong" && <Pong currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Tron" && <Tron currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Mario" && <Mario currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Mini Golf" && <MiniGolf currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }

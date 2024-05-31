@@ -6,6 +6,9 @@ const gamesList = [
         name: "Zombies",
     },
     {
+        name: "Mini Golf",
+    },
+    {
         name: "Doodle Jump",
     },
     {
