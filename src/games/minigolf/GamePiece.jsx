@@ -10,6 +10,7 @@ const GamePiece = ({ piece }) => {
         height: piece.height,
         width: piece.width,
         background: "white",
+        borderRadius: piece.type === "ball" ? "50%" : 0
     }}
     >
 
