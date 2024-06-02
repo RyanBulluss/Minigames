@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import GamePiece from "./GamePiece";
-import { checkBorders } from "../../variables/boundaries";
+import { checkBorders, checkBoundaries } from "../../variables/boundaries";
 
 const MiniGolf = () => {
   const [boundaries, setBoundaries] = useState([]);
-  const [ball, setBall] = useState({});
   const [board, setBoard] = useState({});
+  const [ball, setBall] = useState({});
+  const [hole, setHole] = useState({});
   const [mouse, setMouse] = useState({});
   const [line, setLine] = useState({});
 
@@ -42,37 +43,68 @@ const MiniGolf = () => {
       x: newBoard.x + newBoard.width / 2 - newBoard.width / 250,
       angle: 0,
     });
+    setHole({
+      type: "hole",
+      height: newBoard.height / 25,
+      width: newBoard.width / 25,
+      y: newBoard.y + rng(newBoard.width - newBoard.height / 25),
+      x: newBoard.x + rng(newBoard.width - newBoard.width / 25),
+    });
+  }
+
+  function rng(n) {
+    return Math.floor(Math.random() * n);
   }
 
   function gameLoop() {
     setBall(b => {
+      let newB = {...b};
+      newB = checkBoundaries(board, newB);
+      newB.xSpeed *= 0.995;
+      newB.ySpeed *= 0.995;
+      if (newB.ySpeed || newB.xSpeed) {
+        if ((newB.ySpeed < board.height / 100000 && newB.ySpeed > -board.height / 100000)
+           && (newB.xSpeed < board.width / 100000 && newB.xSpeed > -board.width / 100000)) {
+          newB.xSpeed = 0;
+          newB.ySpeed = 0;
+        }
+      }
       return {
-        ...b,
-        y: b.y + b.ySpeed,
-        x: b.x + b.xSpeed,
+        ...newB,
+        y: newB.y + newB.ySpeed,
+        x: newB.x + newB.xSpeed,
       }
     })
   }
 
   function handleMouseDown(e) {
     e.preventDefault();
+    setLine((l) => {
+      return {...l, x: ball.x + ball.width / 2 - board.width / 250, y: ball.y + ball.height / 2}
+    })
     setMouse((m) => {
-      return { ...m, mouseDown: true };
+      return {
+        ...m,
+        mouseDown: true,
+        y: e.clientY - m.height / 2, 
+        x: e.clientX - m.width / 2
+       };
     });
   }
 
   function handleMouseUp(e) {
     e.preventDefault();
+    if (!mouse.mouseDown) return;
     setMouse((m) => {
       setBall(b => {
-        return { ...b, ySpeed: m.dy / 1000, xSpeed: m.dx / 1000 }
+        return { ...b, ySpeed: m.dy / 100, xSpeed: m.dx / 100 }
       })
       return { ...m, mouseDown: false };
     });
   }
 
   function handleMouseMove(e) {
-    const newMouse = {...mouse, y: e.clientY - board.y, x: e.clientX - mouse.width / 2};
+    const newMouse = {...mouse, y: e.clientY - mouse.height / 2, x: e.clientX - mouse.width / 2};
     const newLine = {...line};
 
     let dy = ball.y + ball.height / 2 - (newMouse.y + newMouse.height / 2);
@@ -89,10 +121,11 @@ const MiniGolf = () => {
     dy = dy > 0 ? dy : -dy;
     dx = dx > 0 ? dx : -dx;
 
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    distance = distance > board.height / 2 ? board.height / 2 : distance;
     
     newLine.angle = angleDegrees - 90;
-    newLine.height = distance;
+    newLine.height = distance / 2;
 
     setMouse(newMouse);
     setLine(newLine);
@@ -122,7 +155,7 @@ const MiniGolf = () => {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [mouse]);
+  }, [mouse, ball]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -133,10 +166,22 @@ const MiniGolf = () => {
       clearInterval(interval);
     }
   })
-
+  
   return (
     <div className="h-full w-full bg-[#89a934]" ref={boardRef}>
       <GamePiece piece={ball} />
+      <div
+        style={{
+          position: "absolute",
+          top: hole.y,
+          left: hole.x,
+          width: hole.width,
+          height: hole.height,
+          backgroundColor: "black",
+          borderRadius: "50%",
+          zIndex: 0
+        }}
+      ></div>
       {mouse.mouseDown && (
         <>
           <div
@@ -148,7 +193,8 @@ const MiniGolf = () => {
               width: mouse.width,
               borderRadius: "50%",
               border: "dashed white 3px",
-              zIndex: checkBorders(board, mouse) ? "-30" : "30",
+              display: checkBorders(board, mouse) ? "none" : "block",
+              zIndex: 50
             }}
           ></div>
           <div
@@ -162,6 +208,7 @@ const MiniGolf = () => {
               border: "dashed white 3px",
               transformOrigin: "top center",
               transform: `rotate(${line.angle}deg)`,
+              zIndex: 50
             }}
           ></div>
         </>
