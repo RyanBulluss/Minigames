@@ -64,6 +64,37 @@ const MiniGolf = () => {
     return Math.floor(Math.random() * n);
   }
 
+  function checkWalls(oldB) {
+    const newB = {...oldB};
+    const Y = newB.y + newB.ySpeed;
+    const X = newB.x + newB.xSpeed;
+    walls.forEach((wall, idx) => {
+      if (
+        newB.x + newB.width > wall.x &&
+        newB.x < wall.x + wall.width &&
+        newB.y + newB.height > wall.y &&
+        newB.y < wall.y + wall.height
+      ) {
+        const top = newB.y + newB.height - wall.y;
+        const bottom = wall.y + wall.height - newB.y;
+        const left = newB.x + newB.width - wall.x;
+        const right = wall.x + wall.width - newB.x;
+
+        if (top < bottom && top < left && top < right) {
+          newB.ySpeed = newB.ySpeed > 0 ? -newB.ySpeed : newB.ySpeed;
+        } else if (bottom < left && bottom < right) {
+          newB.ySpeed = newB.ySpeed > 0 ? newB.ySpeed : -newB.ySpeed;
+        } else if (left < right) {
+          newB.xSpeed = newB.xSpeed > 0 ? -newB.xSpeed : newB.xSpeed;
+        } else {
+          newB.xSpeed = newB.xSpeed > 0 ? newB.xSpeed : -newB.xSpeed;
+        }
+      }
+    })
+
+    return newB;
+  }
+
   function gameLoop() {
     setBall((b) => {
       let newB = { ...b };
@@ -81,6 +112,8 @@ const MiniGolf = () => {
           newB.ySpeed = 0;
         }
       }
+
+      newB = checkWalls(newB);
 
       newB = {
         ...newB,
