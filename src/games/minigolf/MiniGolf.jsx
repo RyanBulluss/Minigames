@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import GamePiece from "./GamePiece";
 import { checkBorders, checkBoundaries } from "../../variables/boundaries";
+import { level1 } from "./constants";
 
 const MiniGolf = () => {
   const [boundaries, setBoundaries] = useState([]);
@@ -20,15 +21,15 @@ const MiniGolf = () => {
   function startGame(loadout) {
     const newBoard = resizeBoard();
     setBoard(newBoard);
-    setBall({
-      type: "ball",
-      height: newBoard.height / 40,
-      width: newBoard.width / 40,
-      y: newBoard.y + newBoard.height / 2 - newBoard.height / 100,
-      x: newBoard.x + newBoard.width / 2 - newBoard.width / 100,
-      ySpeed: 0,
-      xSpeed: 0,
-    });
+    // setBall({
+    //   type: "ball",
+    //   height: newBoard.height / 40,
+    //   width: newBoard.width / 40,
+    //   y: newBoard.y + newBoard.height / 2 - newBoard.height / 100,
+    //   x: newBoard.x + newBoard.width / 2 - newBoard.width / 100,
+    //   ySpeed: 0,
+    //   xSpeed: 0,
+    // });
     setMouse({
       type: "mouse",
       height: newBoard.height / 15,
@@ -51,13 +52,37 @@ const MiniGolf = () => {
       y: newBoard.y + rng(newBoard.width - newBoard.height / 20),
       x: newBoard.x + rng(newBoard.width - newBoard.width / 20),
     });
-    setWalls([{
-      type: "wall",
-      height: newBoard.height / 20,
-      width: newBoard.width / 2,
-      y: newBoard.y + newBoard.height / 2 - newBoard.height / 40,
-      x: newBoard.x + newBoard.width / 4,
-    }]);
+    createLevel(level1, newBoard);
+  }
+
+  function createLevel(level, newBoard) {
+    const newWalls = level.walls.map(w => {
+      return {
+        ...w,
+        height: newBoard.height / w.height,
+        width: newBoard.width / w.width,
+        y: newBoard.y + newBoard.height / w.y,
+        x: newBoard.x + newBoard.width / w.x,
+      }
+    })
+    const newBall = {...level.ball};
+    newBall.height = newBoard.height / newBall.height;
+    newBall.width = newBoard.width / newBall.width;
+    newBall.y = newBoard.y + newBoard.height / newBall.y - newBall.height / 2;
+    newBall.x = newBoard.x + newBoard.width / newBall.x - newBall.width / 2;
+    newBall.ySpeed = 0;
+    newBall.xSpeed = 0;
+
+    const newHole = {...level.hole};
+    newHole.height = newBoard.height / newHole.height;
+    newHole.width = newBoard.width / newHole.width;
+    newHole.y = newBoard.y + newBoard.height / newHole.y - newHole.height / 2;
+    newHole.x = newBoard.x + newBoard.width / newHole.x - newHole.width / 2;
+
+    setHole(newHole);
+    setWalls(newWalls);
+    setBall(newBall);
+
   }
 
   function rng(n) {
@@ -225,7 +250,7 @@ const MiniGolf = () => {
       newBoard.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [ball]);
+  }, [ball, walls, line]);
 
   useEffect(() => {
     if (!mouse.mouseDown || ball.ySpeed || ball.xSpeed) return;
@@ -234,7 +259,7 @@ const MiniGolf = () => {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [mouse, ball]);
+  }, [mouse, ball, walls, line]);
 
   useEffect(() => {
     const interval = setInterval(() => {
