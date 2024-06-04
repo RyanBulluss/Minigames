@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import GamePiece from "./GamePiece";
 import { checkBorders, checkBoundaries } from "../../variables/boundaries";
-import { level1 } from "./constants";
+import { levels } from "./constants";
 
 const MiniGolf = () => {
   const [boundaries, setBoundaries] = useState([]);
@@ -52,7 +52,7 @@ const MiniGolf = () => {
       y: newBoard.y + rng(newBoard.width - newBoard.height / 20),
       x: newBoard.x + rng(newBoard.width - newBoard.width / 20),
     });
-    createLevel(level1, newBoard);
+    createLevel(levels[1], newBoard);
   }
 
   function createLevel(level, newBoard) {

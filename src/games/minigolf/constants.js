@@ -25,9 +25,23 @@ const level1 = {
     new Wall(20, 2, 10, 4),
     new Wall(20, 2, 1.1, 4),
     ],
-    ball: new Piece("ball", 40, 1.5, 2),
+    ball: new Piece("ball", 40, 1.2, 2),
     hole: new Piece("hole", 20, 4, 2)
 }
+
+const level2 = {
+    walls:[
+    new Wall(1.2, 20, 10, 1.42),
+    new Wall(1.2, 20, 10, 4),
+    new Wall(40, 4, 2, 2.7),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+    ],
+    ball: new Piece("ball", 40, 1.2, 2),
+    hole: new Piece("hole", 20, 4, 2)
+}
+
+const levels = [level1, level2];
 
 // {
 //     type: "wall",
@@ -38,5 +52,5 @@ const level1 = {
 //   }
 
 export {
-    level1
+    levels
 }
