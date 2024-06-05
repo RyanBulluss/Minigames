@@ -11,6 +11,7 @@ const MiniGolf = () => {
   const [mouse, setMouse] = useState({});
   const [line, setLine] = useState({});
   const [walls, setWalls] = useState([]);
+  const [currentLevel, setCurrentLevel] = useState(0);
 
   const boardRef = useRef();
 
@@ -18,18 +19,9 @@ const MiniGolf = () => {
     return boardRef.current.getBoundingClientRect();
   }
 
-  function startGame(loadout) {
+  function startGame() {
     const newBoard = resizeBoard();
     setBoard(newBoard);
-    // setBall({
-    //   type: "ball",
-    //   height: newBoard.height / 40,
-    //   width: newBoard.width / 40,
-    //   y: newBoard.y + newBoard.height / 2 - newBoard.height / 100,
-    //   x: newBoard.x + newBoard.width / 2 - newBoard.width / 100,
-    //   ySpeed: 0,
-    //   xSpeed: 0,
-    // });
     setMouse({
       type: "mouse",
       height: newBoard.height / 15,
@@ -45,14 +37,8 @@ const MiniGolf = () => {
       x: newBoard.x + newBoard.width / 2 - newBoard.width / 250,
       angle: 0,
     });
-    setHole({
-      type: "hole",
-      height: newBoard.height / 20,
-      width: newBoard.width / 20,
-      y: newBoard.y + rng(newBoard.width - newBoard.height / 20),
-      x: newBoard.x + rng(newBoard.width - newBoard.width / 20),
-    });
-    createLevel(levels[1], newBoard);
+    createLevel(levels[currentLevel], newBoard);
+    setCurrentLevel(1);
   }
 
   function createLevel(level, newBoard) {
@@ -82,7 +68,7 @@ const MiniGolf = () => {
     setHole(newHole);
     setWalls(newWalls);
     setBall(newBall);
-
+    setCurrentLevel(l => l + 1);
   }
 
   function rng(n) {
@@ -91,8 +77,6 @@ const MiniGolf = () => {
 
   function checkWalls(oldB) {
     const newB = {...oldB};
-    const Y = newB.y + newB.ySpeed;
-    const X = newB.x + newB.xSpeed;
     walls.forEach((wall, idx) => {
       if (
         newB.x + newB.width > wall.x &&
@@ -121,61 +105,43 @@ const MiniGolf = () => {
   }
 
   function gameLoop() {
-    setBall((b) => {
-      let newB = { ...b };
-      newB = checkBoundaries(board, newB);
-      newB.xSpeed *= 0.995;
-      newB.ySpeed *= 0.995;
-      if (newB.ySpeed || newB.xSpeed) {
-        if (
-          newB.ySpeed < board.height / 100000 &&
-          newB.ySpeed > -board.height / 100000 &&
-          newB.xSpeed < board.width / 100000 &&
-          newB.xSpeed > -board.width / 100000
-        ) {
-          newB.xSpeed = 0;
-          newB.ySpeed = 0;
-        }
-      }
-
-      newB = checkWalls(newB);
-
-      newB = {
-        ...newB,
-        y: newB.y + newB.ySpeed,
-        x: newB.x + newB.xSpeed,
-      };
-
-      const posY = newB.ySpeed > 0 ? newB.ySpeed : -newB.ySpeed;
-      const posX = newB.xSpeed > 0 ? newB.xSpeed : -newB.xSpeed;
-
+    let newB = { ...ball };
+    newB = checkBoundaries(board, newB);
+    newB.xSpeed *= 0.995;
+    newB.ySpeed *= 0.995;
+    if (newB.ySpeed || newB.xSpeed) {
       if (
-        newB.x + newB.width <= hole.x + hole.width &&
-        newB.x >= hole.x &&
-        newB.y + newB.height <= hole.y + hole.height &&
-        newB.y >= hole.y &&
-        posY + posX < board.height / 1000
+        newB.ySpeed < board.height / 100000 &&
+        newB.ySpeed > -board.height / 100000 &&
+        newB.xSpeed < board.width / 100000 &&
+        newB.xSpeed > -board.width / 100000
       ) {
-        newB = {
-          type: "ball",
-          height: board.height / 40,
-          width: board.width / 40,
-          y: board.y + rng(board.height - board.height / 40),
-          x: board.x + rng(board.width - board.width / 40),
-          ySpeed: 0,
-          xSpeed: 0,
-        };
-        setHole({
-          type: "hole",
-          height: board.height / 20,
-          width: board.width / 20,
-          y: board.y + rng(board.width - board.height / 20),
-          x: board.x + rng(board.width - board.width / 20),
-        });
+        newB.xSpeed = 0;
+        newB.ySpeed = 0;
       }
+    }
+    newB = checkWalls(newB);
 
-      return newB;
-    });
+    newB = {
+      ...newB,
+      y: newB.y + newB.ySpeed,
+      x: newB.x + newB.xSpeed,
+    };
+
+    const posY = newB.ySpeed > 0 ? newB.ySpeed : -newB.ySpeed;
+    const posX = newB.xSpeed > 0 ? newB.xSpeed : -newB.xSpeed;
+
+    if (
+      newB.x + newB.width <= hole.x + hole.width &&
+      newB.x >= hole.x &&
+      newB.y + newB.height <= hole.y + hole.height &&
+      newB.y >= hole.y &&
+      posY + posX < board.height / 1000
+    ) {
+      createLevel(levels[currentLevel], board);
+    } else {
+      setBall(newB);
+    }
   }
 
   function handleMouseDown(e) {
@@ -269,7 +235,7 @@ const MiniGolf = () => {
     return () => {
       clearInterval(interval);
     };
-  });
+  }, [ball, currentLevel, walls, hole]);
 
   return (
     <div className="h-full w-full bg-[#89a934]" ref={boardRef}>

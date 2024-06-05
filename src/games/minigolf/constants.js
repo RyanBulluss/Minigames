@@ -41,7 +41,7 @@ const level2 = {
     hole: new Piece("hole", 20, 4, 2)
 }
 
-const levels = [level1, level2];
+const levels = [level1, level2, level1, level2, level1, level2, level1, level2];
 
 // {
 //     type: "wall",
