@@ -68,7 +68,9 @@ const MiniGolf = () => {
     setHole(newHole);
     setWalls(newWalls);
     setBall(newBall);
-    setCurrentLevel(l => l + 1);
+    setCurrentLevel(l => {
+      return l + 1 >= levels.length ? 0 : l + 1
+    });
   }
 
   function rng(n) {

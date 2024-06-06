@@ -41,7 +41,19 @@ const level2 = {
     hole: new Piece("hole", 20, 4, 2)
 }
 
-const levels = [level1, level2, level1, level2, level1, level2, level1, level2];
+const level3 = {
+    walls:[
+    new Wall(1.2, 20, 10, 1.42),
+    new Wall(1.2, 20, 10, 4),
+    new Wall(1.5, 20, 3.5, 2.1),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+    ],
+    ball: new Piece("ball", 40, 1.2, 2.5),
+    hole: new Piece("hole", 20, 1.2, 1.65)
+}
+
+const levels = [level1, level2, level3];
 
 // {
 //     type: "wall",
