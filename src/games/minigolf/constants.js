@@ -1,59 +1,74 @@
 class Wall {
-    constructor(height, width, y, x) {
-        this.type = "wall";
-        this.height = height;
-        this.width = width;
-        this.y = y;
-        this.x = x;
-    }
+  constructor(height, width, y, x) {
+    this.type = "wall";
+    this.height = height;
+    this.width = width;
+    this.y = y;
+    this.x = x;
+  }
 }
 
 class Piece {
-    constructor(type, size, y, x) {
-        this.type = type;
-        this.height = size;
-        this.width = size;
-        this.y = y;
-        this.x = x;
-    }
+  constructor(type, size, y, x) {
+    this.type = type;
+    this.height = size;
+    this.width = size;
+    this.y = y;
+    this.x = x;
+  }
 }
 
 const level1 = {
-    walls:[
-    new Wall(1.2, 20, 10, 1.42),
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
     new Wall(20, 2, 10, 4),
     new Wall(20, 2, 1.1, 4),
-    ],
-    ball: new Piece("ball", 40, 1.2, 2),
-    hole: new Piece("hole", 20, 4, 2)
-}
+  ],
+  ball: new Piece("ball", 40, 1.2, 2),
+  hole: new Piece("hole", 20, 4, 2),
+};
 
 const level2 = {
-    walls:[
-    new Wall(1.2, 20, 10, 1.42),
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
     new Wall(40, 4, 2, 2.7),
     new Wall(20, 2, 10, 4),
     new Wall(20, 2, 1.1, 4),
-    ],
-    ball: new Piece("ball", 40, 1.2, 2),
-    hole: new Piece("hole", 20, 4, 2)
-}
+  ],
+  ball: new Piece("ball", 40, 1.2, 2),
+  hole: new Piece("hole", 20, 4, 2),
+};
 
 const level3 = {
-    walls:[
-    new Wall(1.2, 20, 10, 1.42),
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
     new Wall(1.5, 20, 3.5, 2.1),
     new Wall(20, 2, 10, 4),
     new Wall(20, 2, 1.1, 4),
-    ],
-    ball: new Piece("ball", 40, 1.2, 2.5),
-    hole: new Piece("hole", 20, 1.2, 1.65)
-}
+  ],
+  ball: new Piece("ball", 40, 1.2, 2.5),
+  hole: new Piece("hole", 20, 1.2, 1.65),
+};
 
-const levels = [level1, level2, level3];
+const level4 = {
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
+    new Wall(1.2, 20, 10, 4),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+    new Wall(20, 6, 1.8, 3.8),
+    new Wall(20, 6, 1.8, 1.75),
+    new Wall(20, 4, 2.5, 2.7),
+  ],
+  ball: new Piece("ball", 40, 1.2, 2),
+  hole: new Piece("hole", 20, 4, 2),
+};
+
+// const levels = [level1, level2, level3];
+const levels = [level4, level4];
 
 // {
 //     type: "wall",
@@ -63,6 +78,4 @@ const levels = [level1, level2, level3];
 //     x: newBoard.x + newBoard.width / 4,
 //   }
 
-export {
-    levels
-}
+export { levels };
