@@ -144,6 +144,8 @@ const MiniGolf = () => {
     } else {
       setBall(newB);
     }
+
+
   }
 
   function handleMouseDown(e) {

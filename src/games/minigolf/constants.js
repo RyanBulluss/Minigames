@@ -6,7 +6,7 @@ class Wall {
     this.y = y;
     this.x = x;
   }
-}
+  }
 
 class Piece {
   constructor(type, size, y, x) {
@@ -57,6 +57,20 @@ const level4 = {
   walls: [
     new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
+    new Wall(2, 20, 2.4, 2.1),
+    new Wall(20, 5, 2.5, 2.5),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+  ],
+  ball: new Piece("ball", 40, 1.2, 2.5),
+  hole: new Piece("hole", 20, 1.2, 1.65),
+};
+
+
+const level5 = {
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
+    new Wall(1.2, 20, 10, 4),
     new Wall(20, 2, 10, 4),
     new Wall(20, 2, 1.1, 4),
     new Wall(20, 6, 1.8, 3.8),
@@ -68,7 +82,7 @@ const level4 = {
 };
 
 // const levels = [level1, level2, level3];
-const levels = [level4, level4];
+const levels = [level1, level2, level3, level4, level5];
 
 // {
 //     type: "wall",
