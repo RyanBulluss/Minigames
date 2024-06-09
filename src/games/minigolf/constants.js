@@ -1,12 +1,14 @@
 class Wall {
-  constructor(height, width, y, x) {
+  constructor(height, width, y, x, moving) {
     this.type = "wall";
     this.height = height;
     this.width = width;
     this.y = y;
     this.x = x;
+    this.moving = moving ? true : false;
+    this.speed = 3000;
   }
-  }
+}
 
 class Piece {
   constructor(type, size, y, x) {
@@ -45,6 +47,18 @@ const level3 = {
   walls: [
     new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
+    new Wall(40, 4, 2, 2.7, true),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+  ],
+  ball: new Piece("ball", 40, 1.2, 2),
+  hole: new Piece("hole", 20, 4, 2),
+};
+
+const level4 = {
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
+    new Wall(1.2, 20, 10, 4),
     new Wall(1.5, 20, 3.5, 2.1),
     new Wall(20, 2, 10, 4),
     new Wall(20, 2, 1.1, 4),
@@ -53,7 +67,7 @@ const level3 = {
   hole: new Piece("hole", 20, 1.2, 1.65),
 };
 
-const level4 = {
+const level5 = {
   walls: [
     new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
@@ -67,7 +81,7 @@ const level4 = {
 };
 
 
-const level5 = {
+const level6 = {
   walls: [
     new Wall(1.2, 20, 10, 1.43),
     new Wall(1.2, 20, 10, 4),
@@ -81,8 +95,21 @@ const level5 = {
   hole: new Piece("hole", 20, 4, 2),
 };
 
-// const levels = [level1, level2, level3];
-const levels = [level1, level2, level3, level4, level5];
+const level7 = {
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
+    new Wall(1.2, 20, 10, 4),
+    new Wall(40, 4, 1.8, 4, true),
+    new Wall(40, 4, 2.5, 2.1, true),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+  ],
+  ball: new Piece("ball", 40, 1.2, 2),
+  hole: new Piece("hole", 20, 4, 2),
+};
+
+// const levels = [level1, level1, level1];
+const levels = [level1, level2, level3, level4, level5, level6, level7];
 
 // {
 //     type: "wall",

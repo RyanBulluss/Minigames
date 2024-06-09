@@ -133,6 +133,18 @@ const MiniGolf = () => {
     const posY = newB.ySpeed > 0 ? newB.ySpeed : -newB.ySpeed;
     const posX = newB.xSpeed > 0 ? newB.xSpeed : -newB.xSpeed;
 
+    const newWalls = walls.map(wall => {
+      if (!wall.moving) return wall;
+
+      wall.x += board.width / wall.speed;
+      if (wall.x + wall.width > board.x + board.width / 1.43) {
+        wall.speed = -3000;
+        } else if (wall.x < board.x + board.width / 4 + board.width / 20) {
+        wall.speed = 3000;
+      }
+      return wall;
+    })
+
     if (
       newB.x + newB.width <= hole.x + hole.width &&
       newB.x >= hole.x &&
@@ -144,8 +156,6 @@ const MiniGolf = () => {
     } else {
       setBall(newB);
     }
-
-
   }
 
   function handleMouseDown(e) {
