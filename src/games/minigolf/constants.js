@@ -108,8 +108,23 @@ const level7 = {
   hole: new Piece("hole", 20, 4, 2),
 };
 
-// const levels = [level1, level1, level1];
-const levels = [level1, level2, level3, level4, level5, level6, level7];
+const level8 = {
+  walls: [
+    new Wall(1.2, 20, 10, 1.43),
+    new Wall(1.2, 20, 10, 4),
+    new Wall(40, 8, 1.4, 4, true),
+    new Wall(40, 8, 1.65, 3.6, true),
+    new Wall(40, 8, 2, 3.2, true),
+    new Wall(40, 8, 2.5, 2.9, true),
+    new Wall(20, 2, 10, 4),
+    new Wall(20, 2, 1.1, 4),
+  ],
+  ball: new Piece("ball", 40, 1.2, 2),
+  hole: new Piece("hole", 20, 4, 2),
+};
+
+// const levels = [level8, level8, level8];
+const levels = [level1, level2, level3, level4, level5, level6, level7, level8];
 
 // {
 //     type: "wall",
