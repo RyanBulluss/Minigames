@@ -12,6 +12,7 @@ const MiniGolf = () => {
   const [line, setLine] = useState({});
   const [walls, setWalls] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(0);
+  const [score, setScore] = useState(0);
 
   const boardRef = useRef();
 
@@ -176,6 +177,7 @@ const MiniGolf = () => {
   function handleMouseUp(e) {
     e.preventDefault();
     if (!mouse.mouseDown) return;
+    setScore(s => s + 1);
     setMouse((m) => {
       setBall((b) => {
         return { ...b, ySpeed: m.dy / 50, xSpeed: m.dx / 50 };
@@ -217,6 +219,11 @@ const MiniGolf = () => {
 
   useEffect(() => {
     startGame();
+    window.addEventListener("resize", startGame);
+
+    return () => {
+      window.removeEventListener("resize", startGame);
+    };
   }, []);
 
   useEffect(() => {
@@ -257,6 +264,16 @@ const MiniGolf = () => {
       {walls.map((wall, idx) => (
       <GamePiece key={idx} piece={wall} />
       ))}
+      <div
+        style={{
+          position: "absolute",
+          top: board.y,
+          left: board.x,
+        }}
+        className="flex gap-4 md:p-2 p-1 font-semibold"
+      >
+        <h4>Strokes: {score}</h4>
+      </div>
       <div
         style={{
           position: "absolute",
