@@ -138,8 +138,8 @@ const level9 = {
   hole: new Piece("hole", 20, 4, 2),
 };
 
-// const levels = [level9, level9, level9];
-const levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9];
+const levels = [level1, level2];
+// const levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9];
 
 // {
 //     type: "wall",

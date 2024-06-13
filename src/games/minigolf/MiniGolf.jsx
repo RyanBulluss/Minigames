@@ -13,6 +13,7 @@ const MiniGolf = () => {
   const [walls, setWalls] = useState([]);
   const [currentLevel, setCurrentLevel] = useState(0);
   const [score, setScore] = useState(0);
+  const [playing, setPlaying] = useState(false);
 
   const boardRef = useRef();
 
@@ -21,7 +22,10 @@ const MiniGolf = () => {
   }
 
   function startGame() {
+    console.log(playing)
     const newBoard = resizeBoard();
+    setScore(0);
+    setPlaying(true);
     setBoard(newBoard);
     setMouse({
       type: "mouse",
@@ -38,11 +42,17 @@ const MiniGolf = () => {
       x: newBoard.x + newBoard.width / 2 - newBoard.width / 250,
       angle: 0,
     });
-    createLevel(levels[currentLevel], newBoard);
+    createLevel(levels[0], newBoard);
     setCurrentLevel(1);
   }
 
   function createLevel(level, newBoard) {
+    if (currentLevel >= levels.length) {
+      setPlaying(false);
+      setCurrentLevel(0);
+      return;
+    } 
+
     const newWalls = level.walls.map(w => {
       return {
         ...w,
@@ -66,12 +76,15 @@ const MiniGolf = () => {
     newHole.y = newBoard.y + newBoard.height / newHole.y - newHole.height / 2;
     newHole.x = newBoard.x + newBoard.width / newHole.x - newHole.width / 2;
 
+    
     setHole(newHole);
     setWalls(newWalls);
     setBall(newBall);
     setCurrentLevel(l => {
-      return l + 1 >= levels.length ? 0 : l + 1
+      return l + 1;
     });
+    
+
   }
 
   function rng(n) {
@@ -227,7 +240,7 @@ const MiniGolf = () => {
   }, []);
 
   useEffect(() => {
-    if (ball.ySpeed || ball.xSpeed) return;
+    if (ball.ySpeed || ball.xSpeed || !playing) return;
     const newBoard = boardRef.current;
 
     newBoard.addEventListener("mousedown", handleMouseDown);
@@ -237,7 +250,7 @@ const MiniGolf = () => {
       newBoard.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [ball, walls, line]);
+  }, [ball, walls, line, playing]);
 
   useEffect(() => {
     if (!mouse.mouseDown || ball.ySpeed || ball.xSpeed) return;
@@ -264,6 +277,23 @@ const MiniGolf = () => {
       {walls.map((wall, idx) => (
       <GamePiece key={idx} piece={wall} />
       ))}
+      {!playing && 
+        <div
+        style={{
+          position: "absolute",
+          top: board.y,
+          left: board.x,
+          width: board.width,
+          height: board.height,
+          backgroundColor: "#89a934",
+          zIndex: 50,
+        }}
+        className="flex flex-col justify-evenly items-center font-semibold text-2xl"
+        >
+          <h4>Course Finished!</h4>
+          <h4 className="text-xl">You completed the course in {score} Strokes</h4>
+          <button onClick={() => startGame()} className="hover:text-gray-300">Play Again</button>
+        </div>}
       <div
         style={{
           position: "absolute",
