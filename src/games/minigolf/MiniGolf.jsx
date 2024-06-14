@@ -22,7 +22,6 @@ const MiniGolf = () => {
   }
 
   function startGame() {
-    console.log(playing)
     const newBoard = resizeBoard();
     setScore(0);
     setPlaying(true);
@@ -303,6 +302,7 @@ const MiniGolf = () => {
         className="flex gap-4 md:p-2 p-1 font-semibold"
       >
         <h4>Strokes: {score}</h4>
+        <h4>Hole: {currentLevel} / {levels.length}</h4>
       </div>
       <div
         style={{
