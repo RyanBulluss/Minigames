@@ -169,8 +169,27 @@ const level11 = {
   hole: new Piece("hole", 20, 4, 4),
 };
 
-// const levels = [level11, level11];
-const levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11];
+const level12 = {
+  walls: [
+    new Wall(1.2, 20, 10, 1.133),
+    new Wall(1.2, 20, 10, 10),
+
+    // new Wall(40, 1.8, 2.8, 10),
+    new Wall(2.3, 40, 3.5, 1.585),
+    new Wall(4, 40, 3.5, 2.5),
+
+    new Wall(40, 4, 3.5, 2.5),
+    new Wall(40, 1.8, 1.4, 10),
+
+    new Wall(20, 1.2, 10, 10),
+    new Wall(20, 1.2, 1.1, 10),
+  ],
+  ball: new Piece("ball", 40, 1.2, 4),
+  hole: new Piece("hole", 20, 2.5, 1.9),
+};
+
+// const levels = [level12, level12];
+const levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12];
 
 // {
 //     type: "wall",
