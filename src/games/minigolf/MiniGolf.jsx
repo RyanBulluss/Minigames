@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import GamePiece from "./GamePiece";
 import { checkBorders, checkBoundaries } from "../../variables/boundaries";
 import { levels } from "./constants";
+import { pop2Sound, popSound, winSound } from "../../variables/audio" 
 
 const MiniGolf = () => {
   const [boundaries, setBoundaries] = useState([]);
@@ -103,6 +104,7 @@ const MiniGolf = () => {
         const bottom = wall.y + wall.height - newB.y;
         const left = newB.x + newB.width - wall.x;
         const right = wall.x + wall.width - newB.x;
+        pop2Sound();
 
         if (top < bottom && top < left && top < right) {
           newB.ySpeed = newB.ySpeed > 0 ? -newB.ySpeed : newB.ySpeed;
@@ -165,6 +167,7 @@ const MiniGolf = () => {
       newB.y >= hole.y &&
       posY + posX < board.height / 1000
     ) {
+      winSound();
       createLevel(levels[currentLevel], board);
     } else {
       setBall(newB);
@@ -189,6 +192,7 @@ const MiniGolf = () => {
   function handleMouseUp(e) {
     e.preventDefault();
     if (!mouse.mouseDown) return;
+    popSound();
     setScore(s => s + 1);
     setMouse((m) => {
       setBall((b) => {
