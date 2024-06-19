@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import GamePiece from "./GamePiece";
 import { checkBorders, checkBoundaries } from "../../variables/boundaries";
 import { levels } from "./constants";
-import { pop2Sound, popSound, winSound } from "../../variables/audio" 
+import { pop2Sound, winSound } from "../../variables/audio" 
 
 const MiniGolf = () => {
   const [boundaries, setBoundaries] = useState([]);
@@ -192,7 +192,6 @@ const MiniGolf = () => {
   function handleMouseUp(e) {
     e.preventDefault();
     if (!mouse.mouseDown) return;
-    popSound();
     setScore(s => s + 1);
     setMouse((m) => {
       setBall((b) => {
