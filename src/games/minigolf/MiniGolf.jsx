@@ -105,6 +105,7 @@ const MiniGolf = () => {
         const left = newB.x + newB.width - wall.x;
         const right = wall.x + wall.width - newB.x;
         pop2Sound();
+        newB.shake = 100;
 
         if (top < bottom && top < left && top < right) {
           newB.ySpeed = newB.ySpeed > 0 ? -newB.ySpeed : newB.ySpeed;
@@ -147,10 +148,19 @@ const MiniGolf = () => {
 
     const posY = newB.ySpeed > 0 ? newB.ySpeed : -newB.ySpeed;
     const posX = newB.xSpeed > 0 ? newB.xSpeed : -newB.xSpeed;
+    newB.shake = newB.shake === 0 ? 0 : newB.shake - 1;
+
+    let wallX = 0;
+    let wallY = 0;
+    if (newB.shake) {
+      wallX = Math.random() * board.width / 10000 - board.width / 20000;
+      wallY= Math.random() * board.height / 10000 - board.height / 20000;
+    }
 
     const newWalls = walls.map(wall => {
+      wall.x += wallX;
+      wall.y += wallY;
       if (!wall.moving) return wall;
-
       wall.x += board.width / wall.speed;
       if (wall.x + wall.width > board.x + board.width / 1.43) {
         wall.speed = -3000;
@@ -159,6 +169,10 @@ const MiniGolf = () => {
       }
       return wall;
     })
+
+    setWalls(newWalls);
+
+
 
     if (
       newB.x + newB.width <= hole.x + hole.width &&

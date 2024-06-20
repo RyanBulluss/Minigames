@@ -17,6 +17,7 @@ class Piece {
     this.width = size;
     this.y = y;
     this.x = x;
+    this.shake = 0;
   }
 }
 
@@ -224,7 +225,7 @@ const level14 = {
   hole: new Piece("hole", 20, 4, 4),
 };
 
-const levels = [level14, level14];
+const levels = [level7, level7];
 // const levels = [level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12];
 
 // {
