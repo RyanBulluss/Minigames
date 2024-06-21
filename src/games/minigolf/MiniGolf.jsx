@@ -150,16 +150,16 @@ const MiniGolf = () => {
     const posX = newB.xSpeed > 0 ? newB.xSpeed : -newB.xSpeed;
     newB.shake = newB.shake === 0 ? 0 : newB.shake - 1;
 
-    let wallX = 0;
-    let wallY = 0;
-    if (newB.shake) {
-      wallX = Math.random() * board.width / 10000 - board.width / 20000;
-      wallY= Math.random() * board.height / 10000 - board.height / 20000;
-    }
+    // let wallX = 0;
+    // let wallY = 0;
+    // if (newB.shake) {
+    //   wallX = Math.random() * board.width / 1000 - board.width / 2000;
+    //   wallY= Math.random() * board.height / 1000 - board.height / 2000;
+    // }
 
     const newWalls = walls.map(wall => {
-      wall.x += wallX;
-      wall.y += wallY;
+      // wall.x += wallX;
+      // wall.y += wallY;
       if (!wall.moving) return wall;
       wall.x += board.width / wall.speed;
       if (wall.x + wall.width > board.x + board.width / 1.43) {
