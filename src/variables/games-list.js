@@ -41,6 +41,9 @@ const gamesList = [
     {
         name: "Tron",
     },
+    {
+        name: "ThreeD",
+    },
 ]
 
 export default gamesList

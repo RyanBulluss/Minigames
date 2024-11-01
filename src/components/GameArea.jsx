@@ -14,6 +14,7 @@ import Tron from '../games/tron/Tron'
 import Mario from '../games/mario/Mario'
 import gamesList from '../variables/games-list'
 import MiniGolf from '../games/minigolf/MiniGolf'
+import ThreeD from '../games/ThreeD/ThreeD'
 
 const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
   return (
@@ -43,6 +44,7 @@ const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
         {currentGame === "Tron" && <Tron currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Mario" && <Mario currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Mini Golf" && <MiniGolf currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "ThreeD" && <ThreeD currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }
