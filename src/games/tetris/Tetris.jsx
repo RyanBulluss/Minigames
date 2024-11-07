@@ -4,7 +4,7 @@ import { board, createState, getRandomPiece } from "./constants";
 import GameCell from "./GameCell";
 import { createScore } from "../../utilities/leaderboards";
 
-const Tetris = ( { currentGame, user, setUpdateLb } ) => {
+const Tetris = ({ currentGame, user, setUpdateLb }) => {
   const [playing, setPlaying] = useState(false);
   const [timer, setTimer] = useState(0);
   const [score, setScore] = useState(0);
@@ -149,7 +149,7 @@ const Tetris = ( { currentGame, user, setUpdateLb } ) => {
   async function gameOver() {
     setPlaying(false);
     await createScore(currentGame, user, score, timer);
-    setUpdateLb(lb => !lb);
+    setUpdateLb((lb) => !lb);
   }
 
   function gameLoop() {
@@ -202,7 +202,6 @@ const Tetris = ( { currentGame, user, setUpdateLb } ) => {
   }, [playing]);
 
   useEffect(() => {
-    
     const interval = setInterval(() => {
       if (!playing) return;
       gameLoop();
