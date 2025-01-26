@@ -20,7 +20,8 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   const boardRef = useRef(null);
   
   function startGame() {
-    setBoard(resizeGame());
+    const newBoard = resizeGame();
+    setBoard(newBoard);
     setRocket({
       angle: 0,
       spinSpeed: 0,
@@ -36,10 +37,10 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     });
 
     setLandingZone({
-      width: board.width / 4,
-      height: board.height / 100,
-      x: board.x + rng(board.width - (board.width / 4)),
-      y: board.y + board.height - (board.height / 100),
+      width: newBoard.width / 4,
+      height: newBoard.height / 100,
+      x: newBoard.x + rng(newBoard.width - (newBoard.width / 4)),
+      y: newBoard.y + newBoard.height - (newBoard.height / 100),
     })
 
     setPlaying(true);
