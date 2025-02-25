@@ -42,7 +42,7 @@ const gamesList = [
         name: "Tron",
     },
     {
-        name: "ThreeD",
+        name: "Lander",
     },
 ]
 
