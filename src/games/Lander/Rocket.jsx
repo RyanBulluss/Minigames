@@ -1,21 +1,18 @@
 import React from 'react'
 
-const Rocket = ({ rocket }) => {
+const Rocket = ({ rocket, board }) => {
   return (
-    <div className='flex flex-col justify-center items-center'
-    style={{ rotate: `${rocket.angle}deg` }}
+    <div className='flex flex-col justify-center items-center bg-blue-300'
+    style={{ 
+      rotate: `${rocket.angle}deg`, 
+      position: 'relative', 
+      width: board.width / rocket.width, 
+      height: board.height / rocket.height,
+      left: board.x + rocket.x,
+      top: board.y + rocket.y,
+    }}
     >
-      <div className='h-7 w-7 bg-black rotate-45 mb-[-13px]'></div>
-      <div className='h-20 w-10 bg-black'></div>
-
-      <div className='flex'>
-      <div className='h-3 w-3 rotate-45 mt-[-5px] bg-black'></div>
-      <div className='h-3 w-3 rotate-45 mt-[-5px] bg-black'></div>
-      <div className='h-3 w-3 rotate-45 mt-[-5px] bg-black'></div>
-
-         
-      </div>
-
+      <div className='h-full w-full bg-black'></div>
     </div>
   )
 }
