@@ -5,22 +5,21 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   const [rocket, setRocket] = useState({
     angle: 0,
     spinSpeed: 0,
-    width: 10,
-    height: 5,
+    width: 18,
+    height: 9,
     x: 10,
     y: 10,
+    xSpeed: 0,
+    ySpeed: 0,
     rightKeyDown: false,
     leftKeyDown: false,
+    upKeyDown: false,
   });
   const [board, setBoard] = useState({});
   const [playing, setPlaying] = useState(true);
 
   const boardRef = useRef(null);
-
-  function gameLoop() {
-    rotateRocket();
-  }
-
+  
   function startGame() {
     setBoard(resizeGame());
     setRocket({
@@ -35,8 +34,30 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     setPlaying(true);
   }
 
-  function rotateRocket() {
-    const newRocket = { ...rocket };
+  function gameLoop() {
+    let newRocket = { ...rocket };
+    newRocket = rotateRocket(newRocket);
+    newRocket = moveRocket(newRocket);
+
+    setRocket(newRocket);
+  }
+
+  function moveRocket(newRocket) {
+    // if (newRocket.upKeyDown) {
+
+    //   newRocket.ySpeed -= board.height / 5000;
+    // }
+    // newRocket.ySpeed += board.height / 10000;
+
+    newRocket.x += newRocket.xSpeed;
+    newRocket.y += newRocket.ySpeed;
+
+
+    return newRocket
+  }
+
+  function rotateRocket(newRocket) {
+
     if (rocket.leftKeyDown && newRocket.spinSpeed - 0.1 > -5) {newRocket.spinSpeed -= 0.1};
     if (rocket.rightKeyDown && newRocket.spinSpeed + 0.1 < 5) {newRocket.spinSpeed += 0.1};
 
@@ -44,7 +65,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       setRocket((r) => {
         return { ...r, spinSpeed: 0 };
       });
-      return;
+      return newRocket;
     }
 
     newRocket.angle += rocket.spinSpeed;
@@ -55,7 +76,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       newRocket.spinSpeed += 0.05;
     }
 
-    setRocket(newRocket);
+    return newRocket;
   }
 
   function resizeGame() {
@@ -70,13 +91,21 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       e.preventDefault();
       const k = e.key;
       if (k === "a" || k === "A" || k === "ArrowLeft") {
+        if (rocket.leftKeyDown) return;
         setRocket((r) => {
           return { ...r, leftKeyDown: true };
         });
       }
       if (k === "d" || k === "D" || k === "ArrowRight") {
+        if (rocket.rightKeyDown) return;
         setRocket((r) => {
           return { ...r, rightKeyDown: true };
+        });
+      }
+      if (k === "w" || k === "W" || k === "ArrowUp") {
+        if (rocket.upKeyDown) return;
+        setRocket((r) => {
+          return { ...r, upKeyDown: true };
         });
       }
     };
@@ -92,6 +121,11 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       if (k === "d" || k === "D" || k === "ArrowRight") {
         setRocket((r) => {
           return { ...r, rightKeyDown: false };
+        });
+      }
+      if (k === "w" || k === "W" || k === "ArrowUp") {
+        setRocket((r) => {
+          return { ...r, upKeyDown: false };
         });
       }
     };
@@ -114,7 +148,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [playing, rocket]);
+  }, [playing, rocket, board]);
 
   useEffect(() => {
     setBoard(resizeGame());
@@ -131,8 +165,6 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
         <Rocket rocket={rocket} board={board} />
         {/* {rocket.angle} */}
         {/* {rocket.spinSpeed} */}
-        {rocket.leftKeyDown === false ? 1 : 2}
-        {rocket.rightKeyDown === false ? 1 : 2}
       </div>
     </div>
   );

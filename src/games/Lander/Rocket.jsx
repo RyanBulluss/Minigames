@@ -8,8 +8,8 @@ const Rocket = ({ rocket, board }) => {
       position: 'relative', 
       width: board.width / rocket.width, 
       height: board.height / rocket.height,
-      left: board.x + rocket.x,
-      top: board.y + rocket.y,
+      left: rocket.x,
+      top: rocket.y,
     }}
     >
       <div className='h-full w-full bg-black'></div>
