@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import Rocket from "./Rocket";
+import Car from "./Car";
 import { set } from "mongoose";
 
 const rocketSpeed = 5000;
-const gravity = 10000;
 
-const Lander = ({ currentGame, user, setUpdateLb }) => {
+const DriftKing = ({ currentGame, user, setUpdateLb }) => {
   const [rocket, setRocket] = useState({
     angle: 0,
     spinSpeed: 0,
@@ -27,7 +26,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   function startGame() {
     setBoard(resizeGame());
     setRocket({
-      angle: 0,
+      angle: 90,
       spinSpeed: 0,
       width: 18,
       height: 9,
@@ -85,9 +84,6 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       newRocket.xSpeed += speed * x;
     }
      
-    
-    //gravity
-    newRocket.ySpeed += board.height / gravity;
 
     newRocket.x += newRocket.xSpeed;
     newRocket.y += newRocket.ySpeed;
@@ -247,7 +243,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   return (
     <div className="h-full w-full flex flex-col">
       <div className="h-full absoloute bg-gray-500" ref={boardRef}>
-        <Rocket rocket={rocket} board={board} />
+        <Car rocket={rocket} board={board} />
         {/* {rocket.angle} */}
         {/* {rocket.spinSpeed} */}
       </div>
@@ -255,4 +251,4 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   );
 };
 
-export default Lander;
+export default DriftKing;

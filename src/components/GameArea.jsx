@@ -15,6 +15,7 @@ import Mario from '../games/mario/Mario'
 import gamesList from '../variables/games-list'
 import MiniGolf from '../games/minigolf/MiniGolf'
 import Lander from '../games/Lander/Lander'
+import DriftKing from '../games/drift king/DriftKing'
 
 const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
   return (
@@ -45,6 +46,7 @@ const GameArea = ( {currentGame, setCurrentGame, user, setUpdateLb} ) => {
         {currentGame === "Mario" && <Mario currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Mini Golf" && <MiniGolf currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
         {currentGame === "Lander" && <Lander currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
+        {currentGame === "Drift King" && <DriftKing currentGame={currentGame} user={user} setUpdateLb={setUpdateLb} />}
     </div>
   )
 }
