@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Rocket from "./Rocket";
-import { set } from "mongoose";
+import "./lander.css"
 
 const rocketSpeed = 5000;
 const gravity = 10000;
@@ -9,8 +9,8 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   const [rocket, setRocket] = useState({
     angle: 0,
     spinSpeed: 0,
-    width: 18,
-    height: 9,
+    width: 2,
+    height: 2,
     x: 10,
     y: 10,
     xSpeed: 0,
@@ -29,7 +29,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     setRocket({
       angle: 0,
       spinSpeed: 0,
-      width: 18,
+      width: 9,
       height: 9,
       x: 10,
       y: 10,
