@@ -1,24 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import Rocket from "./Rocket";
 import "./lander.css"
+import { height, width } from "@fortawesome/free-solid-svg-icons/fa0";
+import LandingZone from "./LandingZone";
 
 const rocketSpeed = 5000;
 const gravity = 10000;
 
+function rng(n) {
+  return Math.floor(Math.random() * n);
+}
+
 const Lander = ({ currentGame, user, setUpdateLb }) => {
-  const [rocket, setRocket] = useState({
-    angle: 0,
-    spinSpeed: 0,
-    width: 2,
-    height: 2,
-    x: 10,
-    y: 10,
-    xSpeed: 0,
-    ySpeed: 0,
-    rightKeyDown: false,
-    leftKeyDown: false,
-    upKeyDown: false,
-  });
+  const [rocket, setRocket] = useState({});
+  const [landingZone, setLandingZone] = useState({})
   const [board, setBoard] = useState({});
   const [playing, setPlaying] = useState(false);
 
@@ -29,8 +24,8 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     setRocket({
       angle: 0,
       spinSpeed: 0,
-      width: 9,
-      height: 9,
+      width: 10,
+      height: 10,
       x: 10,
       y: 10,
       xSpeed: 0,
@@ -40,19 +35,27 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       upKeyDown: false,
     });
 
+    setLandingZone({
+      width: board.width / 4,
+      height: board.height / 100,
+      x: board.x + rng(board.width - (board.width / 4)),
+      y: board.y + board.height - (board.height / 100),
+    })
+
     setPlaying(true);
   }
 
   function checkGameOver(newRocket) {
     // checkWin()
-    checkLoss(newRocket);
-  }
-
-  function checkLoss(newRocket) {
     const left = newRocket.x;
     const right = newRocket.x + board.width / newRocket.width;
     const top = newRocket.y;
-    const bottom = newRocket.y + board.height / newRocket.height;
+    const bottom = newRocket.y + ((board.height / newRocket.height) / 6 * 5);
+
+    if (left >= landingZone.x &&
+      right <= landingZone.x + landingZone.width) {
+        console.log("Successful landing!")
+      }
 
     if (
       left < 0 || 
@@ -60,8 +63,21 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       top < 0 ||
       bottom > board.height
     ) {
+      if (bottom > board.height &&
+        left >= landingZone.x &&
+        right <= landingZone.x + landingZone.width) {
+          console.log("Successful landing!")
+        } else if (bottom > board.height) {
+          console.log("You missed the landing zone!")
+      } else {
+        console.log("You crashed!")
+      }
       setPlaying(false);
     }
+  }
+
+  function checkLoss(newRocket) {
+    
   }
 
   function gameLoop() {
@@ -180,7 +196,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
         });
       }
       if (k === "w" || k === "W" || k === "ArrowUp") {
-        if (rocket.upKeyDown) return;
+        if (rocket.upKeyDown || !playing) return;
         setRocket((r) => {
           return { ...r, upKeyDown: true };
         });
@@ -248,6 +264,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     <div className="h-full w-full flex flex-col">
       <div className="h-full absoloute bg-gray-500" ref={boardRef}>
         <Rocket rocket={rocket} board={board} />
+        <LandingZone landingZone={landingZone} board={board} />
         {/* {rocket.angle} */}
         {/* {rocket.spinSpeed} */}
       </div>
