@@ -4,7 +4,7 @@ import "./lander.css";
 const Rocket = ({ rocket, board }) => {
   return (
     <div
-      className="flex flex-col justify-center items-center bg-black"
+      className="flex flex-col justify-center items-center"
       style={{
         rotate: `${rocket.angle}deg`,
         position: "relative",
