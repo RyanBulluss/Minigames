@@ -25,10 +25,10 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     setRocket({
       angle: 0,
       spinSpeed: 0,
-      width: 10,
-      height: 10,
-      x: 10,
-      y: 10,
+      width: newBoard.height / 10,
+      height: newBoard.height / 10,
+      x: newBoard.x + 10,
+      y: newBoard.y + 10,
       xSpeed: 0,
       ySpeed: 0,
       rightKeyDown: false,
@@ -49,20 +49,22 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   function checkGameOver(newRocket) {
     // checkWin()
     const left = newRocket.x;
-    const right = newRocket.x + board.width / newRocket.width;
+    const right = newRocket.x + newRocket.width;
     const top = newRocket.y;
-    const bottom = newRocket.y + ((board.height / newRocket.height) / 6 * 5);
+    const bottom = newRocket.y + newRocket.height;
+
+    console.log(left, landingZone.x)
 
     if (left >= landingZone.x &&
       right <= landingZone.x + landingZone.width) {
-        console.log("Successful landing!")
+        // console.log("Successful landing!")
       }
 
     if (
-      left < 0 || 
-      right > board.width ||
+      left < board.x || 
+      right > board.width + board.x ||
       top < 0 ||
-      bottom > board.height
+      bottom > board.height + board.y
     ) {
       if (bottom > board.height &&
         left >= landingZone.x &&
@@ -250,7 +252,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [playing, rocket, board]);
+  }, [playing, rocket, board, landingZone]);
 
   useEffect(() => {
     setBoard(resizeGame());

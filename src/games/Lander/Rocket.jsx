@@ -7,9 +7,9 @@ const Rocket = ({ rocket, board }) => {
       className="flex flex-col justify-center items-center"
       style={{
         rotate: `${rocket.angle}deg`,
-        position: "relative",
-        width: board.width / rocket.width,
-        height: board.height / rocket.height,
+        position: "absolute",
+        width: rocket.width,
+        height: rocket.height,
         left: rocket.x,
         top: rocket.y,
       }}
