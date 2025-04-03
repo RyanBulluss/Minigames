@@ -268,8 +268,9 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       <div className="h-full absoloute bg-gray-500" ref={boardRef}>
         <Rocket rocket={rocket} board={board} />
         <LandingZone landingZone={landingZone} board={board} />
-        {/* {rocket.angle} */}
-        {/* {rocket.spinSpeed} */}
+        {!playing && 
+          <div className="h-full w-full flex justify-center items-center">Press SPACE To Start</div>
+        }
       </div>
     </div>
   );
