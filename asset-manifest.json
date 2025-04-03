@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Minigames/static/css/main.9aa9901c.css",
-    "main.js": "/Minigames/static/js/main.6291bfcd.js",
+    "main.css": "/Minigames/static/css/main.12c85c1e.css",
+    "main.js": "/Minigames/static/js/main.50dd85f9.js",
     "static/media/question.webp": "/Minigames/static/media/question.ac984cf34a018b1c97f2.webp",
     "static/media/zBackground.png": "/Minigames/static/media/zBackground.29b7b7763b2308d62636.png",
     "static/media/background.jpg": "/Minigames/static/media/background.0aee3325af846025bc1b.jpg",
@@ -25,6 +25,7 @@
     "static/media/z2.png": "/Minigames/static/media/z2.bd4a0cd086da653dc846.png",
     "static/media/z9.png": "/Minigames/static/media/z9.9dda50255b45b0d9c3e9.png",
     "static/media/z14.png": "/Minigames/static/media/z14.201a0ed5011cf35c5123.png",
+    "static/media/rocket.png": "/Minigames/static/media/rocket.a64c7213788eb974e2cf.png",
     "static/media/z6.png": "/Minigames/static/media/z6.df425c3a2b923fbdfa2c.png",
     "static/media/z3.png": "/Minigames/static/media/z3.eeb8eb6177a22f07436a.png",
     "static/media/z10.png": "/Minigames/static/media/z10.f535e00e3e0814c05aa2.png",
@@ -64,11 +65,11 @@
     "index.html": "/Minigames/index.html",
     "static/media/mario-jump.webp": "/Minigames/static/media/mario-jump.faa3e824e91d1883f43e.webp",
     "static/media/mario-still.webp": "/Minigames/static/media/mario-still.132ce167ecba756d7867.webp",
-    "main.9aa9901c.css.map": "/Minigames/static/css/main.9aa9901c.css.map",
-    "main.6291bfcd.js.map": "/Minigames/static/js/main.6291bfcd.js.map"
+    "main.12c85c1e.css.map": "/Minigames/static/css/main.12c85c1e.css.map",
+    "main.50dd85f9.js.map": "/Minigames/static/js/main.50dd85f9.js.map"
   },
   "entrypoints": [
-    "static/css/main.9aa9901c.css",
-    "static/js/main.6291bfcd.js"
+    "static/css/main.12c85c1e.css",
+    "static/js/main.50dd85f9.js"
   ]
 }
