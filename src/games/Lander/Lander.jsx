@@ -16,6 +16,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   const [landingZone, setLandingZone] = useState({})
   const [board, setBoard] = useState({});
   const [playing, setPlaying] = useState(false);
+  const [message, setMessage] = useState("")
 
   const boardRef = useRef(null);
   
@@ -55,10 +56,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
 
     console.log(left, landingZone.x)
 
-    if (left >= landingZone.x &&
-      right <= landingZone.x + landingZone.width) {
-        // console.log("Successful landing!")
-      }
+
 
     if (
       left < board.x || 
@@ -69,11 +67,12 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       if (bottom > board.height &&
         left >= landingZone.x &&
         right <= landingZone.x + landingZone.width) {
-          console.log("Successful landing!")
+
+          setMessage("Successful landing!")
         } else if (bottom > board.height) {
-          console.log("You missed the landing zone!")
+          setMessage("You missed the landing zone!")
       } else {
-        console.log("You crashed!")
+        setMessage("You crashed!")
       }
       setPlaying(false);
     }
@@ -269,7 +268,10 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
         <Rocket rocket={rocket} board={board} />
         <LandingZone landingZone={landingZone} board={board} />
         {!playing && 
-          <div className="h-full w-full flex justify-center items-center">Press SPACE To Start</div>
+          <div className="h-full w-full flex justify-center items-center flex-col">
+            <div>{message}</div>
+            <div>Press SPACE To Start</div>
+          </div>
         }
       </div>
     </div>
