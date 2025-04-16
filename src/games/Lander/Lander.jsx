@@ -53,8 +53,8 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     const right = newRocket.x + newRocket.width;
     const top = newRocket.y;
     const bottom = newRocket.y + newRocket.height;
+    const angle = newRocket.angle;
 
-    console.log(left, landingZone.x)
 
 
 
@@ -67,11 +67,15 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       if (bottom > board.height &&
         left >= landingZone.x &&
         right <= landingZone.x + landingZone.width) {
-
-          setMessage("Successful landing!")
+          if (angle > 15 &&
+            angle < 345) {
+              setMessage("Not straight enough, you crashed!")
+          } else {
+            setMessage("Successful landing!")
+          }
         } else if (bottom > board.height) {
           setMessage("You missed the landing zone!")
-      } else {
+      }  else {
         setMessage("You crashed!")
       }
       setPlaying(false);
