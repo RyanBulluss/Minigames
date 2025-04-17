@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Rocket from "./Rocket";
-import "./lander.css"
+import "./lander.css";
 import { height, width } from "@fortawesome/free-solid-svg-icons/fa0";
 import LandingZone from "./LandingZone";
 
@@ -13,13 +13,13 @@ function rng(n) {
 
 const Lander = ({ currentGame, user, setUpdateLb }) => {
   const [rocket, setRocket] = useState({});
-  const [landingZone, setLandingZone] = useState({})
+  const [landingZone, setLandingZone] = useState({});
   const [board, setBoard] = useState({});
   const [playing, setPlaying] = useState(false);
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
 
   const boardRef = useRef(null);
-  
+
   function startGame() {
     const newBoard = resizeGame();
     setBoard(newBoard);
@@ -40,9 +40,9 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     setLandingZone({
       width: newBoard.width / 4,
       height: newBoard.height / 100,
-      x: newBoard.x + rng(newBoard.width - (newBoard.width / 4)),
-      y: newBoard.y + newBoard.height - (newBoard.height / 100),
-    })
+      x: newBoard.x + rng(newBoard.width - newBoard.width / 4),
+      y: newBoard.y + newBoard.height - newBoard.height / 100,
+    });
 
     setPlaying(true);
   }
@@ -54,37 +54,37 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
     const top = newRocket.y;
     const bottom = newRocket.y + newRocket.height;
     const angle = newRocket.angle;
-
-
-
+    const speed = board.height / newRocket.ySpeed;
+    console.log(speed);
 
     if (
-      left < board.x || 
+      left < board.x ||
       right > board.width + board.x ||
       top < 0 ||
       bottom > board.height + board.y
     ) {
-      if (bottom > board.height &&
+      if (
+        bottom > board.height &&
         left >= landingZone.x &&
-        right <= landingZone.x + landingZone.width) {
-          if (angle > 15 &&
-            angle < 345) {
-              setMessage("Not straight enough, you crashed!")
-          } else {
-            setMessage("Successful landing!")
-          }
-        } else if (bottom > board.height) {
-          setMessage("You missed the landing zone!")
-      }  else {
-        setMessage("You crashed!")
+        right <= landingZone.x + landingZone.width
+      ) {
+        if (angle > 15 && angle < 345) {
+          setMessage("Not straight enough, you crashed!");
+        } else if (speed < 700) {
+          setMessage("Fell too fast, you crashed!");
+        } else {
+          setMessage("Successful landing!");
+        }
+      } else if (bottom > board.height) {
+        setMessage("You missed the landing zone!");
+      } else {
+        setMessage("You crashed!");
       }
       setPlaying(false);
     }
   }
 
-  function checkLoss(newRocket) {
-    
-  }
+  function checkLoss(newRocket) {}
 
   function gameLoop() {
     let newRocket = { ...rocket };
@@ -96,9 +96,7 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
   }
 
   function moveRocket(newRocket) {
-
     if (newRocket.upKeyDown) {
-
       const [x, y] = findAngle(newRocket);
       let speed = board.height / rocketSpeed;
 
@@ -106,49 +104,47 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       newRocket.ySpeed += speed * y;
       newRocket.xSpeed += speed * x;
     }
-     
-    
+
     //gravity
     newRocket.ySpeed += board.height / gravity;
 
     newRocket.x += newRocket.xSpeed;
     newRocket.y += newRocket.ySpeed;
 
-
-    return newRocket
+    return newRocket;
   }
 
   function findAngle(newRocket) {
-    const angle = newRocket.angle
+    const angle = newRocket.angle;
     let x;
     let y;
 
     if (angle >= 0 && angle <= 90) {
       x = angle;
-      y = 90 - angle
-      return [x,-y]
+      y = 90 - angle;
+      return [x, -y];
     } else if (angle >= 90 && angle <= 180) {
       x = 90 - (angle - 90);
       y = angle - 90;
-      return [x,y]
+      return [x, y];
     } else if (angle >= 180 && angle <= 270) {
       x = angle - 180;
       y = 90 - (angle - 180);
-      return [-x,y]
-      
+      return [-x, y];
     } else if (angle >= 270 && angle <= 360) {
       x = 90 - (angle - 270);
       y = angle - 270;
-      return [-x,-y]
+      return [-x, -y];
     }
-
-
   }
 
   function rotateRocket(newRocket) {
-
-    if (newRocket.leftKeyDown && newRocket.spinSpeed - 0.1 > -5) {newRocket.spinSpeed -= 0.1};
-    if (newRocket.rightKeyDown && newRocket.spinSpeed + 0.1 < 5) {newRocket.spinSpeed += 0.1};
+    if (newRocket.leftKeyDown && newRocket.spinSpeed - 0.1 > -5) {
+      newRocket.spinSpeed -= 0.1;
+    }
+    if (newRocket.rightKeyDown && newRocket.spinSpeed + 0.1 < 5) {
+      newRocket.spinSpeed += 0.1;
+    }
 
     // to allow rocket to be still
     if (newRocket.spinSpeed < 0.1 && newRocket.spinSpeed > -0.1) {
@@ -160,14 +156,14 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
 
     // keep angle between 0 - 360
     if (newRocket.angle + newRocket.spinSpeed > 360) {
-      const remainder = newRocket.spinSpeed - (360 - newRocket.angle)
+      const remainder = newRocket.spinSpeed - (360 - newRocket.angle);
       newRocket.angle = remainder;
     } else if (newRocket.angle + newRocket.spinSpeed < 0) {
       newRocket.angle = 360 - newRocket.angle + newRocket.spinSpeed;
     } else {
       newRocket.angle += newRocket.spinSpeed;
     }
-    
+
     // Slow down spinning naturally
     if (newRocket.spinSpeed > 0) {
       newRocket.spinSpeed -= 0.05;
@@ -208,12 +204,12 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
         });
       }
       if (k === " ") {
-       startGame();
+        startGame();
       }
       if (k === "s") {
-       setRocket(r => {
-        return {...r, xSpeed: 0, ySpeed: 0}
-       });
+        setRocket((r) => {
+          return { ...r, xSpeed: 0, ySpeed: 0 };
+        });
       }
     };
 
@@ -271,12 +267,12 @@ const Lander = ({ currentGame, user, setUpdateLb }) => {
       <div className="h-full absoloute bg-gray-500" ref={boardRef}>
         <Rocket rocket={rocket} board={board} />
         <LandingZone landingZone={landingZone} board={board} />
-        {!playing && 
+        {!playing && (
           <div className="h-full w-full flex justify-center items-center flex-col">
             <div>{message}</div>
             <div>Press SPACE To Start</div>
           </div>
-        }
+        )}
       </div>
     </div>
   );
